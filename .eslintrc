@@ -1,0 +1,62 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+	"standard",
+	"standard-react"
+  ],
+  "plugins": [
+	"flow-vars"
+  ],
+  "env": {
+	"browser": true
+  },
+  "globals": {
+	"Action": false,
+	"__DEV__": false,
+	"__PROD__": false,
+	"__DEBUG__": false,
+	"__DEBUG_NEW_WINDOW__": false,
+	"__BASENAME__": false
+  },
+  "rules": {
+	"no-duplicate-imports": 0,
+	"no-unsafe-finally": 0,
+	"no-useless-computed-key": 0,
+	"no-useless-escape": 0,
+	"react/jsx-space-before-closing": 0,
+	"semi": [
+	  2,
+	  "always"
+	],
+	"space-infix-ops": 0,
+	"max-len": [
+	  2,
+	  120,
+	  2
+	],
+	"flow-vars/define-flow-type": 0,
+	"flow-vars/use-flow-type": 0,
+	"indent": [
+	  0
+	],
+	"react/jsx-indent-props": [
+	  0,
+	  "tab"
+	],
+	"react/jsx-indent": [
+	  0,
+	  "tab"
+	],
+	"react/jsx-boolean-value": 0,
+	"react/jsx-no-bind": 0,
+	"no-mixed-spaces-and-tabs": [
+	  0,
+	  "smart-tabs"
+	],
+	"no-multiple-empty-lines": 0,
+	"no-multi-spaces": 0,
+	"space-before-function-paren": 0,
+	"one-var": 0,
+	"arrow-parens": 0
+  }
+}

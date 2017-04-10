@@ -1,0 +1,10 @@
+{
+  "verbose": false,
+  "ignore": [
+	"dist",
+	"coverage",
+	"tests",
+	"src",
+	"node_modules"
+  ]
+}

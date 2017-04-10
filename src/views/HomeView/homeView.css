@@ -1,0 +1,3 @@
+.container {
+	composes: clearfix from 'shared/css/layout.css';
+}
