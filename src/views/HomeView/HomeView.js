@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 import classes from './homeView.css';
 
 class HomeView extends Component {
+	static propTypes = {};
+	
 	render() {
 		return (
 			<div className={classes.container}>
@@ -18,4 +20,5 @@ const mapStateToProps = state => ({});
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeView);
+// export default connect(mapStateToProps, mapDispatchToProps)(HomeView);
+export default HomeView;

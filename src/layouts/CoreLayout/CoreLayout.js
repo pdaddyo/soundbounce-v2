@@ -36,4 +36,5 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(CoreLayout);
+// export default connect(mapStateToProps, mapDispatchToProps)(CoreLayout);
+export default CoreLayout;
