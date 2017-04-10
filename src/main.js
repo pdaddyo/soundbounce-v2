@@ -38,11 +38,12 @@ const routes = makeRoutes(store);
 // tell google analytics when we navigate
 history.listen(location => {
 	const {ga} = window;
+	// TODO: hook up GA to this
 	if (!ga) {
-		console.log('Couldn\'t find google analytics object to notify of navigate');
+		//	console.log('Couldn\'t find google analytics object to notify of navigate');
 		return;
 	}
-	ga('send', 'pageview', location.pathname);
+	// ga('send', 'pageview', location.pathname);
 });
 
 // Now that redux and react-router have been configured, we can render the
