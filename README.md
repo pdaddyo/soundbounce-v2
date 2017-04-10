@@ -7,6 +7,8 @@ http://soundbounce.org
 To get dev environment up and running:
 
 `yarn install`
+
 `npm run-script dev`
+
 Then open your browser `http://localhost:1337/`
 
