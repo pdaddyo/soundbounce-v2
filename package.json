@@ -74,7 +74,6 @@
 	"es6-promise": "^3.1.2",
 	"event-source-polyfill": "0.0.7",
 	"exports-loader": "^0.6.3",
-	"fsevents": "^1.0.14",
 	"gregorian-calendar": "^4.1.6",
 	"history": "^2.0.0",
 	"iconv-lite": "^0.4.13",

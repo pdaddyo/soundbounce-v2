@@ -2838,7 +2838,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-fsevents@^1.0.0, fsevents@^1.0.14:
+fsevents@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.1.1.tgz#f19fd28f43eeaf761680e519a203c4d0b3d31aff"
   dependencies:
