@@ -50,6 +50,13 @@
 	  }
 	},
 	"test": {
+	  "command": "node ./node_modules/babel-cli/bin/babel-node.js ./node_modules/karma/bin/karma start build/karma.conf",
+	  "env": {
+		"NODE_ENV": "test",
+		"DEBUG": "app:*"
+	  }
+	},
+	"test-monitor": {
 	  "command": "nodemon --exec node ./node_modules/babel-cli/bin/babel-node.js ./node_modules/karma/bin/karma start build/karma.conf",
 	  "env": {
 		"NODE_ENV": "test",
