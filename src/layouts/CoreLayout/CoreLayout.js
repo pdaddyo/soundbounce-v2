@@ -1,5 +1,4 @@
 import React, {PropTypes, Component} from 'react';
-import {connect} from 'react-redux';
 
 import classes from './layout.css';
 
@@ -32,9 +31,4 @@ class CoreLayout extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({});
-
-// export default connect(mapStateToProps, mapDispatchToProps)(CoreLayout);
 export default CoreLayout;
