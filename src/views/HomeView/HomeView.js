@@ -9,7 +9,7 @@ class HomeView extends Component {
 	render() {
 		return (
 			<div className={classes.container}>
-				Home
+				<a href='/login'>Login to Spotify...</a>
 			</div>
 		);
 	}
