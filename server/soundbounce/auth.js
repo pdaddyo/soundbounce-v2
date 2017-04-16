@@ -53,7 +53,7 @@ export default (app) => {
 				}));
 		} else {
 			res.clearCookie(stateKey);
-			var authOptions = {
+			const authOptions = {
 				url: 'https://accounts.spotify.com/api/token',
 				form: {
 					code: code,
@@ -73,7 +73,7 @@ export default (app) => {
 					const accessToken = body.access_token,
 						refreshToken = body.refresh_token;
 
-					var options = {
+					const options = {
 						// url: 'https://api.spotify.com/v1/me',
 						url: 'https://api.spotify.com/v1/me/player/devices',
 						headers: { 'Authorization': 'Bearer ' + accessToken },
