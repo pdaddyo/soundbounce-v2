@@ -12,6 +12,8 @@ class HomeView extends Component {
 		socket.on('hello', (msg) => {
 			console.log(`client received hello ${msg}`);
 		});
+		console.log('about to emit on socket');
+		socket.emit('login', 'details');
 	};
 
 	render() {
@@ -19,7 +21,6 @@ class HomeView extends Component {
 			<div className={classes.container}>
 				<a href='/login'>Login to Spotify...</a><br/>
 				<button onClick={this.clickConnectToWebsocket}>connect to websocket</button><br/>
-
 			</div>
 		);
 	}
