@@ -4,4 +4,3 @@ dist/**
 *.spec.js
 src/index.html
 api/**
-client-bin/**
