@@ -67,9 +67,8 @@ export default (app) => {
 				json: true
 			};
 
-			request.post(authOptions, function(error, response, body) {
+			request.post(authOptions, (error, response, body) => {
 				if (!error && response.statusCode === 200) {
-
 					const accessToken = body.access_token,
 						refreshToken = body.refresh_token;
 
@@ -81,8 +80,11 @@ export default (app) => {
 					};
 
 					// use the access token to access the Spotify Web API
-					request.get(options, function(error, response, body) {
+					request.get(options, (error, response, body) => {
 						console.log(body);
+						if (error) {
+							console.log(error);
+						}
 					});
 
 					// we can also pass the token to the browser to make requests from there
