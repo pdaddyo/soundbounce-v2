@@ -30,10 +30,15 @@ class CoreLayout extends Component {
 			if (matches) {
 				const [, accessToken, refreshToken] = matches;
 				dispatch(spotifyAuthInit({accessToken, refreshToken}));
+
 				// strip the hash so we don't share it accidentally
 				history.replaceState({}, document.title,
 					href.substr(0, href.length - hash.length));
 			}
+		} else {
+			// redirect to oauth login because the app just started but
+			// there was no access token in hash
+			window.location = '/login';
 		}
 	}
 

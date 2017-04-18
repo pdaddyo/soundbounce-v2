@@ -19,7 +19,6 @@ class HomeView extends Component {
 	render() {
 		return (
 			<div className={classes.container}>
-				<a href='/login?redirectUrl=/home/'>Login to Spotify...</a><br/>
 				<button onClick={this.clickConnectToWebsocket}>connect to websocket</button>
 				<br/>
 			</div>
