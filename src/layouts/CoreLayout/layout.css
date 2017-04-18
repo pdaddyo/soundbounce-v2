@@ -1,10 +1,8 @@
 html, body {
-
 	background-color: #151518;
 	margin: 0;
 	padding: 0;
 	color: rgba(255, 255, 255, 0.8);
-	text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 .app {
