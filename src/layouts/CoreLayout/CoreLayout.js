@@ -1,4 +1,5 @@
 import React, {PropTypes, Component} from 'react';
+import {spotifyAuthInit} from 'redux/modules/spotify';
 
 import classes from './layout.css';
 
@@ -8,7 +9,8 @@ class CoreLayout extends Component {
 	};
 
 	static contextTypes = {
-		router: PropTypes.object
+		router: PropTypes.object,
+		dispatch: PropTypes.func
 	};
 
 	componentDidMount() {
@@ -17,7 +19,22 @@ class CoreLayout extends Component {
 	}
 
 	startup() {
+		this.checkHashForAccessToken();
+	}
 
+	checkHashForAccessToken() {
+		const {hash, href} = window.location;
+		const {dispatch} = this.context;
+		if (hash) {
+			const matches = hash.match(/access_token=(.+)&refresh_token=(.+)/);
+			if (matches) {
+				const [, accessToken, refreshToken] = matches;
+				dispatch(spotifyAuthInit({accessToken, refreshToken}));
+				// strip the hash so we don't share it accidentally
+				history.replaceState({}, document.title,
+					href.substr(0, href.length - hash.length));
+			}
+		}
 	}
 
 	render() {

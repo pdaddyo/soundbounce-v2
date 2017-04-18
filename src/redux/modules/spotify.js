@@ -10,14 +10,14 @@ const defaultSpotifyState = {
 	isLoggedIn: false
 };
 
-export const authInit = ({accessToken, refreshToken}) => ({
+export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
 	type: SPOTIFY_AUTH_INIT,
 	accessToken,
 	refreshToken
 });
 
 export const actions = {
-	authInit
+	spotifyAuthInit
 };
 
 // ------------------------------------
