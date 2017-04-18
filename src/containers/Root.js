@@ -9,6 +9,14 @@ export default class Root extends React.Component {
 		store: PropTypes.object.isRequired
 	};
 
+	static childContextTypes = {
+		dispatch: React.PropTypes.any
+	};
+
+	getChildContext() {
+		return {dispatch: this.props.store.dispatch};
+	}
+
 	get content() {
 		return (
 			<Router onUpdate={() => window.scrollTo(0, 0)} history={this.props.history}>
@@ -19,23 +27,23 @@ export default class Root extends React.Component {
 
 	get devTools() {
 		/* if (__DEBUG__) {
-			if (__DEBUG_NEW_WINDOW__) {
-				if (!window.devToolsExtension) {
-					require('../redux/utils/createDevToolsWindow').default(this.props.store);
-				} else {
-					window.devToolsExtension.open();
-				}
-			} else if (!window.devToolsExtension) {
-				const DevTools = require('containers/DevTools').default;
-				return <DevTools />;
-			}
+		 if (__DEBUG_NEW_WINDOW__) {
+		 if (!window.devToolsExtension) {
+		 require('../redux/utils/createDevToolsWindow').default(this.props.store);
+		 } else {
+		 window.devToolsExtension.open();
+		 }
+		 } else if (!window.devToolsExtension) {
+		 const DevTools = require('containers/DevTools').default;
+		 return <DevTools />;
+		 }
 		 }*/
 	}
 
 	render() {
 		return (
 			<Provider store={this.props.store}>
-				<div style={{ height: '100%' }}>
+				<div style={{height: '100%'}}>
 					{this.content}
 					{this.devTools}
 				</div>
