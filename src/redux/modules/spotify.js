@@ -12,8 +12,7 @@ const defaultSpotifyState = {
 
 export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
 	type: SPOTIFY_AUTH_INIT,
-	accessToken,
-	refreshToken
+	payload: {accessToken, refreshToken}
 });
 
 export const actions = {
@@ -24,10 +23,10 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-	[SPOTIFY_AUTH_INIT]: (state, {accessToken, refreshToken}) => ({
+	[SPOTIFY_AUTH_INIT]: (state, {payload}) => ({
 		...state,
-		accessToken,
-		refreshToken
+		accessToken: payload.accessToken,
+		refreshToken: payload.refreshToken
 	})
 };
 
