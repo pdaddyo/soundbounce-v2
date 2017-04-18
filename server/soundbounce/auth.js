@@ -5,34 +5,38 @@ import request from 'request';
 import querystring from 'querystring';
 import secrets from '../../config/secrets/secrets';
 import randomString from './util/randomString';
+import _debug from 'debug';
+const debug = _debug('app:server:auth');
 
-const stateKey = 'spotify_auth_state';
-
-const spotifyScopes = [
-	'user-read-playback-state',
-	'user-modify-playback-state',
-	'playlist-read-private',
-	'playlist-read-collaborative',
-	'playlist-modify-public',
-	'playlist-modify-private',
-	'user-follow-modify',
-	'user-follow-read',
-	'user-library-read',
-	'user-library-modify',
-	'user-read-private',
-	'user-read-birthdate',
-	'user-read-email',
-	'user-top-read'
-];
+const stateKey = 'spotify_auth_state',
+	spotifyScopes = [
+		'user-read-playback-state',
+		'user-modify-playback-state',
+		'playlist-read-private',
+		'playlist-read-collaborative',
+		'playlist-modify-public',
+		'playlist-modify-private',
+		'user-follow-modify',
+		'user-follow-read',
+		'user-library-read',
+		'user-library-modify',
+		'user-read-private',
+		'user-read-birthdate',
+		'user-read-email',
+		'user-top-read'
+	];
 
 export default (app) => {
-	app.get('/login', function(req, res) {
-
+	app.get('/login', (req, res) => {
 		const state = randomString(16);
 
 		res.cookie(stateKey, state);
 
-		// your application requests authorization
+		if (req.query.redirectUrl) {
+			res.cookie('redirectUrl', req.query.redirectUrl);
+		}
+
+		// request authorization from spotify
 		res.redirect('https://accounts.spotify.com/authorize?' +
 			querystring.stringify({
 				response_type: 'code',
@@ -43,14 +47,12 @@ export default (app) => {
 			}));
 	});
 
-	app.get('/spotify-oauth-callback', function(req, res) {
+	// spotify will reply on this endpoint (malicious users won't know the secret state)
+	app.get('/spotify-oauth-callback', (req, res) => {
 		const {code, state} = req.query;
-		const  storedState = req.cookies ? req.cookies[stateKey] : null;
+		const storedState = req.cookies ? req.cookies[stateKey] : null;
 		if (state === null || state !== storedState) {
-			res.redirect('/#' +
-				querystring.stringify({
-					error: 'state_mismatch'
-				}));
+			res.redirect('/error/invalid-oauth-state');
 		} else {
 			res.clearCookie(stateKey);
 			const authOptions = {
@@ -72,32 +74,19 @@ export default (app) => {
 					const accessToken = body.access_token,
 						refreshToken = body.refresh_token;
 
-					const options = {
-						// url: 'https://api.spotify.com/v1/me',
-						url: 'https://api.spotify.com/v1/me/player/devices',
-						headers: { 'Authorization': 'Bearer ' + accessToken },
-						json: true
-					};
-
-					// use the access token to access the Spotify Web API
-					request.get(options, (error, response, body) => {
-						console.log(body);
-						if (error) {
-							console.log(error);
-						}
-					});
-
-					// we can also pass the token to the browser to make requests from there
-					res.redirect('/#' +
+					const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
+					if (redirectUrl) {
+						res.clearCookie('redirectUrl');
+					}
+					debug('spotify auth successful, redirecting client');
+					// pass the token to the browser to make requests from there
+					res.redirect((redirectUrl || '/') + '#' +
 						querystring.stringify({
 							access_token: accessToken,
 							refresh_token: refreshToken
 						}));
 				} else {
-					res.redirect('/#' +
-						querystring.stringify({
-							error: 'invalid_token'
-						}));
+					res.redirect('/error/invalid-token');
 				}
 			});
 		}
