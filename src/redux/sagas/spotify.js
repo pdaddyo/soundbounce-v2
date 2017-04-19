@@ -56,8 +56,7 @@ function * pollSpotifyPlayerStatus() {
 		if (isLoggedIn) {
 			yield call(updatePlayerState);
 			yield delay(2000);
-		}
-		else {
+		} else {
 			// don't wait long to check again to see if we're logged in
 			yield delay(200);
 		}
