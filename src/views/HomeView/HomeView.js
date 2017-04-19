@@ -1,11 +1,11 @@
 /* @flow */
 import React, {Component} from 'react';
 import io from 'socket.io-client';
+import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
 import classes from './homeView.css';
 
 class HomeView extends Component {
-	static propTypes = {};
 
 	clickConnectToWebsocket = () => {
 		const socket = io.connect('http://localhost:1337');
@@ -19,6 +19,7 @@ class HomeView extends Component {
 	render() {
 		return (
 			<div className={classes.container}>
+				<SpotifyPlayerStatus />
 				<button onClick={this.clickConnectToWebsocket}>connect to websocket</button>
 				<br/>
 			</div>

@@ -27,8 +27,8 @@ const APP_ENTRY_PATH = paths.base(config.dir_client) + '/main.js';
 
 webpackConfig.entry = {
 	app: __DEV__
-    ? [APP_ENTRY_PATH, `webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`]
-    : [APP_ENTRY_PATH],
+		? [APP_ENTRY_PATH, `webpack-hot-middleware/client?reload=true&path=${config.compiler_public_path}__webpack_hmr`]
+		: [APP_ENTRY_PATH],
 	vendor: config.compiler_vendor
 };
 
@@ -61,22 +61,22 @@ webpackConfig.plugins = [
 if (__DEV__) {
 	debug('Enable plugins for live development (HMR, NoErrors).');
 	webpackConfig.plugins.push(
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-  );
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.NoErrorsPlugin()
+	);
 } else if (__PROD__) {
 	debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).');
 	webpackConfig.plugins.push(
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-		compress: {
-			unused: true,
-			dead_code: true,
-			warnings: false
-		}
-    })
-  );
+		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.optimize.DedupePlugin(),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				unused: true,
+				dead_code: true,
+				warnings: false
+			}
+		})
+	);
 }
 
 // Don't split bundles during testing, since we only want import one bundle
@@ -121,8 +121,8 @@ webpackConfig.module.loaders = [{
 						}, {
 							transform: 'react-transform-catch-errors',
 							imports: ['react', 'redbox-react']
-            }]
-          }]
+						}]
+					}]
 				]
 			},
 			production: {
@@ -134,10 +134,10 @@ webpackConfig.module.loaders = [{
 		}
 	}
 },
-{
-	test: /\.json$/,
-	loader: 'json'
-}];
+	{
+		test: /\.json$/,
+		loader: 'json'
+	}];
 
 // File loaders
 /* eslint-disable */
@@ -150,27 +150,36 @@ webpackConfig.module.loaders.push(
 		test: /\.woff2(\?.*)?$/,
 		loader: 'file?name=client/fonts/[name].[ext]&limit=10000&mimetype=application/font-woff2'
 	},
-	{test: /\.otf(\?.*)?$/, loader: 'file?name=client/fonts/[name].[ext]&limit=10000&mimetype=font/opentype'},
+	{
+		test: /\.otf(\?.*)?$/,
+		loader: 'file?name=client/fonts/[name].[ext]&limit=10000&mimetype=font/opentype'
+	},
 	{
 		test: /\.ttf(\?.*)?$/,
 		loader: 'file?name=client/fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream'
 	},
 	{test: /\.eot(\?.*)?$/, loader: 'file?name=client/fonts/[hash].[ext]'},
-	{test: /\.svg(\?.*)?$/, loader: 'file?name=client/img/[hash].[ext]&limit=10000&mimetype=image/svg+xml'},
-	{test: /\.(jpe?g|png|gif)$/i, loader: 'file?&hash=sha512&digest=hex&name=client/img/img-[hash].[ext]&limit=20000'}
+	{
+		test: /\.svg(\?.*)?$/,
+		loader: 'file?name=client/img/[hash].[ext]&limit=10000&mimetype=image/svg+xml'
+	},
+	{
+		test: /\.(jpe?g|png|gif)$/i,
+		loader: 'file?&hash=sha512&digest=hex&name=client/img/img-[hash].[ext]&limit=20000'
+	}
 );
 
 /* eslint-enable */
 
 // Styles
 const cssLoader = !config.compiler_css_modules
-  ? 'css?sourceMap'
-  : [
-	'css?modules',
-	'sourceMap',
-	'importLoaders=1',
-	'localIdentName=[name]__[local]___[hash:base64:5]'
-  ].join('&');
+	? 'css?sourceMap'
+	: [
+		'css?modules',
+		'sourceMap',
+		'importLoaders=1',
+		'localIdentName=[name]__[local]___[hash:base64:5]'
+	].join('&');
 
 webpackConfig.module.loaders.push({
 	test: /\.scss$/,
@@ -235,7 +244,6 @@ webpackConfig.postcss = [
 	})
 ];
 
-
 // ------------------------------------
 // Finalize Configuration
 // ------------------------------------
@@ -245,19 +253,19 @@ webpackConfig.postcss = [
 if (!__DEV__) {
 	debug('Apply ExtractTextPlugin to CSS loaders.');
 	webpackConfig.module.loaders.filter((loader) =>
-    loader.loaders && loader.loaders.find((name) => /css/.test(name.split('?')[0]))
-  ).forEach((loader) => {
+		loader.loaders && loader.loaders.find((name) => /css/.test(name.split('?')[0]))
+	).forEach((loader) => {
 		const [first, ...rest] = loader.loaders;
 		loader.loader = ExtractTextPlugin.extract(first, rest.join('!'));
 		delete loader.loaders;
-  });
+	});
 
 	webpackConfig.plugins.push(
 		new ExtractTextPlugin('client/css/[name].[contenthash].css', {
 			allChunks: true,
 			ignoreOrder: true
-    })
-  );
+		})
+	);
 }
 
 export default webpackConfig;
