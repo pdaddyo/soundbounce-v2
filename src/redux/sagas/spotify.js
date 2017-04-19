@@ -55,8 +55,12 @@ function * pollSpotifyPlayerStatus() {
 		const {isLoggedIn} = yield select(state => state.spotify);
 		if (isLoggedIn) {
 			yield call(updatePlayerState);
+			yield delay(2000);
 		}
-		yield delay(2000);
+		else {
+			// don't wait long to check again to see if we're logged in
+			yield delay(200);
+		}
 	}
 }
 

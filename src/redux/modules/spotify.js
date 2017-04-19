@@ -17,6 +17,9 @@ export const actions = {
 	SPOTIFY_PLAYER_STATE_UPDATE
 };
 
+// ------------------------------------
+// Default state
+// ------------------------------------
 const defaultSpotifyState = {
 	isFetching: false,
 	accessToken: null,
@@ -26,6 +29,9 @@ const defaultSpotifyState = {
 	profile: null
 };
 
+// ------------------------------------
+// Action Creators
+// ------------------------------------
 export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
 	type: SPOTIFY_AUTH_INIT,
 	payload: {accessToken, refreshToken}
