@@ -14,7 +14,7 @@
 	"lint:fix": "npm run lint -- --fix",
 	"start": "better-npm-run start",
 	"dev": "better-npm-run dev",
-	"dev-node-debug": "better-npm-run dev-node-debug",
+	"dev-webstorm-debug": "better-npm-run dev-webstorm-debug",
 	"dev:nw": "npm run dev -- --nw",
 	"dev:no-debug": "npm run dev -- --no_debug",
 	"test": "better-npm-run test",
@@ -31,23 +31,16 @@
 	  }
 	},
 	"dev": {
+	  "command": "nodemon --exec node ./node_modules/babel-cli/bin/babel-node.js client-bin/server",
+	  "env": {
+		"NODE_ENV": "development",
+		"DEBUG": "app:*"
+	  }
+	},
+	"dev-webstorm-debug": {
 	  "command": "nodemon $NODE_DEBUG_OPTION --exec node ./node_modules/babel-cli/bin/babel-node.js client-bin/server",
 	  "env": {
 		"NODE_ENV": "development",
-		"DEBUG": "app:*"
-	  }
-	},
-	"dev-windows": {
-	  "command": "nodemon %NODE_DEBUG_OPTION% --exec node ./node_modules/babel-cli/bin/babel-node.js client-bin/server",
-	  "env": {
-		"NODE_ENV": "development",
-		"DEBUG": "app:*"
-	  }
-	},
-	"deploy": {
-	  "command": "./deploy.sh",
-	  "env": {
-		"NODE_ENV": "production",
 		"DEBUG": "app:*"
 	  }
 	},
