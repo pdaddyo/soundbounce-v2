@@ -27,7 +27,8 @@
 	"compile": {
 	  "command": "node ./node_modules/babel-cli/bin/babel-node.js client-bin/compile",
 	  "env": {
-		"DEBUG": "app:*"
+		"DEBUG": "app:*",
+		"NODE_ENV": "production"
 	  }
 	},
 	"dev": {
