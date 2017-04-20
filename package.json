@@ -47,6 +47,7 @@
 	"start": {
 	  "command": "nodemon --exec node ./node_modules/babel-cli/bin/babel-node.js client-bin/server",
 	  "env": {
+		"NODE_ENV": "production",
 		"DEBUG": "app:*"
 	  }
 	},
