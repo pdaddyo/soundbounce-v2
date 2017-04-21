@@ -6,12 +6,10 @@ import {
 	spotifyPlayerStateUpdate,
 	actions as spotifyActions
 } from '../modules/spotify';
-import {
-	socketConnectBegin,
-	actions as socketActions
-} from '../modules/socket';
+import {socketConnectBegin} from '../modules/socket';
 
 const webApiBaseUrl = 'https://api.spotify.com';
+const pollPlayerDelay = 10000; // 2000 (lowered for dev to keep console calm)
 
 function * beginLogin() {
 	const {hash, href} = window.location;
@@ -28,13 +26,15 @@ function * beginLogin() {
 
 			// ok we have a successful auth, let's open a socket
 			yield put(socketConnectBegin());
-
+			// strip the hash so we don't share it accidentally
+			history.replaceState({}, document.title,
+				href.substr(0, href.length - hash.length));
+			return;
 		}
-	} else {
-		// redirect to oauth login on server because the app just started but
-		// there was no access token in hash
-		window.location = '/login';
 	}
+	// redirect to oauth login on server because the app just started but
+	// there was no access token in hash
+	window.location = '/login';
 }
 
 function * getMyProfile() {
@@ -58,7 +58,7 @@ function * pollSpotifyPlayerStatus() {
 		const {isLoggedIn} = yield select(state => state.spotify);
 		if (isLoggedIn) {
 			yield call(updatePlayerState);
-			yield delay(2000);
+			yield delay(pollPlayerDelay);
 		} else {
 			// don't wait long to check again to see if we're logged in
 			yield delay(200);

@@ -47,12 +47,6 @@ export const spotifyPlayerStateUpdate = (playerState) => ({
 	payload: {playerState}
 });
 
-export const actionCreators = {
-	spotifyAuthInit,
-	spotifyAuthOK,
-	spotifyPlayerStateUpdate
-};
-
 // ------------------------------------
 // Action Handlers
 // ------------------------------------

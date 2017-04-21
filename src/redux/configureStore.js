@@ -2,6 +2,7 @@ import {applyMiddleware, createStore} from 'redux';
 import rootReducer from './rootReducer';
 import createSagaMiddleware, {END} from 'redux-saga';
 import rootSaga from './sagas/root';
+import socketClient from '../socketClient/client';
 
 export default function configureStore(initialState = {}) {
 	// Compose final middleware and use devtools in debug environment
@@ -26,6 +27,9 @@ export default function configureStore(initialState = {}) {
 
 	store.runSaga = sagaMiddleware.run;
 	store.close = () => store.dispatch(END);
+
+	// connect the socket client to the store
+	socketClient.setStore(store);
 
 	// start up the root saga
 	sagaMiddleware.run(rootSaga);
