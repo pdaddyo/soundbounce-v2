@@ -114,6 +114,7 @@
 		"redux-saga": "^0.14.6",
 		"request": "^2.81.0",
 		"sequelize": "^3.30.4",
+		"shortid": "^2.2.8",
 		"socket.io": "^1.7.3",
 		"socket.io-client": "^1.7.3",
 		"whatwg-fetch": "^0.11.0",
