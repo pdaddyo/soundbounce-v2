@@ -11,7 +11,6 @@ class CoreLayout extends Component {
 		const {children} = this.props;
 		return (
 			<div className={classes.app}>
-				Soundbounce v2
 				{children}
 			</div>
 		);
