@@ -1,30 +1,48 @@
 /* @flow */
-import React, {Component} from 'react';
-import io from 'socket.io-client';
+import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
+import {socketEmitRoomCreate} from 'redux/modules/socket';
 
 import classes from './homeView.css';
 
 class HomeView extends Component {
+	static propTypes = {
+		createRoom: PropTypes.func.isRequired,
+		profile: PropTypes.object
+	};
 
-	clickConnectToWebsocket = () => {
-		const socket = io.connect('http://localhost:1337');
-		socket.on('hello', (msg) => {
-			console.log(`client received hello ${msg}`);
+	clickCreateRoom = (evt) => {
+		const {createRoom, profile} = this.props;
+
+		const roomName = prompt('Enter your room name (this will be nice ui later!)',
+			`${profile.display_name}'s room`);
+
+		createRoom({
+			name: roomName,
+			creator: profile.id
 		});
-		console.log('about to emit on socket');
-		socket.emit('login', 'details');
 	};
 
 	render() {
 		return (
 			<div className={classes.container}>
 				<SpotifyPlayerStatus />
-				<button onClick={this.clickConnectToWebsocket}>connect to websocket</button>
+				<button onClick={this.clickCreateRoom}>Create room</button>
 				<br/>
 			</div>
 		);
 	}
 }
 
-export default HomeView;
+const mapStateToProps = state => ({
+	profile: state.spotify.profile
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	createRoom: (room) => {
+		dispatch(socketEmitRoomCreate(room));
+	}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeView);
