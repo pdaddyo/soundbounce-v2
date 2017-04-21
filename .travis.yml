@@ -1,3 +1,5 @@
 language: node_js
 node_js:
   - "node"
+notifications:
+  slack: soundbounce:7XQcgmgudS0rzSZA6URp2Fs7
