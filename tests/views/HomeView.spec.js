@@ -21,9 +21,12 @@ describe('(View) Home', function () {
 	beforeEach(function () {
 		_component = shallowRenderWithProps(_props)
 	})
+	/*
 
-	it('Should render as a <div>.', function () {
-		expect(_component.type).to.equal('div')
-	})
+	 example test if we want to add these specs later
 
-})
+	 it('Should render as a <div>.', function () {
+	 expect(_component.type).to.equal('div')
+	 })
+	 */
+});
