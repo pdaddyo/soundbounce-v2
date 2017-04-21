@@ -16,10 +16,6 @@ class SocketClient {
 
 	connect() {
 		const {dispatch} = this.store;
-		const {store} = this;
-		if (!store) {
-			throw new Error('Cannot connect to socket until redux store is set');
-		}
 		this.socket = io.connect('/');
 		this.socket.on('connect', () => {
 			dispatch(socketConnectOk());
