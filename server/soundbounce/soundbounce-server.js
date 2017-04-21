@@ -3,6 +3,7 @@
  */
 import auth from './auth';
 import socket from './socket';
+import Rooms from './data/Rooms';
 
 import _debug from 'debug';
 
@@ -15,6 +16,9 @@ export default class SoundbounceServer {
 
 	init() {
 		debug('initalising app...');
+		this.app.data = {
+			rooms: new Rooms()
+		};
 		auth(this.app);
 		socket(this.app);
 		debug('init OK');
