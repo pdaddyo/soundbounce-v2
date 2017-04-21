@@ -20,7 +20,7 @@ export const actions = {
 // ------------------------------------
 // Default state
 // ------------------------------------
-const defaultSpotifyState = {
+const defaultState = {
 	isFetching: false,
 	accessToken: null,
 	refreshToken: null,
@@ -77,7 +77,7 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 
-export default function currentUserReducer(state = defaultSpotifyState, action) {
+export default function spotifyReducer(state = defaultState, action) {
 	const handler = ACTION_HANDLERS[action.type];
 	return handler ? handler(state, action) : state;
 }

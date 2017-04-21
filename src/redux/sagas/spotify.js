@@ -4,8 +4,12 @@ import {
 	spotifyAuthInit,
 	spotifyAuthOK,
 	spotifyPlayerStateUpdate,
-	actions
+	actions as spotifyActions
 } from '../modules/spotify';
+import {
+	socketConnectBegin,
+	actions as socketActions
+} from '../modules/socket';
 
 const webApiBaseUrl = 'https://api.spotify.com';
 
@@ -22,10 +26,9 @@ function * beginLogin() {
 			const profile = yield call(getMyProfile);
 			yield put(spotifyAuthOK(profile));
 
-			console.log(yield getPlayerState());
-			// strip the hash so we don't share it accidentally
-			history.replaceState({}, document.title,
-				href.substr(0, href.length - hash.length));
+			// ok we have a successful auth, let's open a socket
+			yield put(socketConnectBegin());
+
 		}
 	} else {
 		// redirect to oauth login on server because the app just started but
@@ -70,7 +73,7 @@ function * spotifyApiCall(url) {
 		throw new Error('Tried to make spotify api call with no accessToken present');
 	}
 
-	yield put({type: actions.SPOTIFY_API_REQUEST_START, payload: {url}});
+	yield put({type: spotifyActions.SPOTIFY_API_REQUEST_START, payload: {url}});
 	try {
 		const json = yield fetch(webApiBaseUrl + url, {
 			method: 'GET',
@@ -87,13 +90,13 @@ function * spotifyApiCall(url) {
 				return json;
 			});
 		if (json) {
-			yield put({type: actions.SPOTIFY_API_REQUEST_OK, payload: {json}});
+			yield put({type: spotifyActions.SPOTIFY_API_REQUEST_OK, payload: {json}});
 		}
 
 		return json;
 	} catch (fetchError) {
 		yield put({
-			type: actions.SPOTIFY_API_REQUEST_ERROR,
+			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
 			payload: fetchError.message || 'very bad things'
 		});
 	}
