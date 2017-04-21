@@ -17,9 +17,10 @@ export default class Rooms {
 	}
 
 	createRoom(room, callback) {
+		debug(`Creating room "${room.name}"`);
 		if (!room.roomId) {
 			room.roomId = shortid.generate();
-			debug(`room created with no id, setting to ${room.roomId}`);
+			debug(`Room created with blank id, setting to ${room.roomId}`);
 		} else {
 			if (this.rooms[room.roomId]) {
 				// this room already exists
@@ -42,7 +43,7 @@ export default class Rooms {
 		if (!room.roomId) {
 			callback({
 				error: {
-					message: `Can't update room with missing roomId(${room.roomId})`
+					message: `Can't update room with missing roomId (${room.roomId})`
 				}
 			});
 		}

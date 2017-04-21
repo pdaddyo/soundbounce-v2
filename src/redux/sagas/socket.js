@@ -11,12 +11,11 @@ function * watchForSocketConnectBegin() {
 
 function * watchForSocketEmitRoomCreate() {
 	while (true) {
-		const {payload} = yield take(socketActions.SOCKET_EMIT_ROOM_CREATE);
 		if (!socketClient.socket) {
 			// wait for the socket if it's not ready
 			yield take(socketActions.SOCKET_CONNECT_OK);
 		}
-
+		const {payload} = yield take(socketActions.SOCKET_EMIT_ROOM_CREATE);
 		socketClient.emit('room:create', payload.room);
 	}
 }

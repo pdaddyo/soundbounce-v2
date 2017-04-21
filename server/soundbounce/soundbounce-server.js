@@ -15,12 +15,12 @@ export default class SoundbounceServer {
 	}
 
 	init() {
-		debug('initalising app...');
+		debug('Begin server init...');
 		this.app.data = {
 			rooms: new Rooms()
 		};
 		auth(this.app);
 		socket(this.app);
-		debug('init OK');
+		debug('Server init OK');
 	}
 }
