@@ -23,12 +23,18 @@ class SocketClient {
 		this.socket = io.connect('/');
 		this.socket.on('connect', () => {
 			dispatch(socketConnectOk());
-			this.setupMessageHandlers();
 		});
 		this.socket.on('connect_error', (error) => {
 			dispatch(socketConnectError(error.message || 'Socket connect error'));
-			this.setupMessageHandlers();
 		});
+		this.setupMessageHandlers();
+	}
+
+	disconnect() {
+		if (!this.socket) {
+			return;
+		}
+		this.socket.close();
 	}
 
 	setupMessageHandlers() {
@@ -40,7 +46,7 @@ class SocketClient {
 	}
 
 	emit(eventName, param) {
-		console.log(`emit [${eventName}] -->`, param);
+		//	console.log(`emit [${eventName}] -->`, param);
 		this.socket.emit(eventName, param);
 	}
 }
