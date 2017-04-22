@@ -11,6 +11,7 @@ import {socketConnectBegin} from '../modules/socket';
 
 const webApiBaseUrl = 'https://api.spotify.com';
 const pollPlayerDelay = 10000; // 2000 (lowered for dev to keep console calm)
+const error401 = '401-unauthorized';
 
 function * beginLogin() {
 	const {hash, href} = window.location;
@@ -42,7 +43,7 @@ function * getMyProfile() {
 }
 
 function * getPlayerState() {
-	return yield spotifyApiCall('/v1/me/player');
+	return yield call(spotifyApiCall, '/v1/me/player');
 }
 
 function * updatePlayerState() {
@@ -84,8 +85,12 @@ function * spotifyApiCall(url) {
 			.then(response =>
 				response.json().then(json => ({json, response}))
 			).then(({json, response}) => {
-				if (response.code === 401) {
-					throw new Error('unauthorised');
+				if (response.status === 401) {
+					throw new Error(error401);
+				}
+				if (response.status === 201) {
+					// 201 accepted, spotify docs say to retry up to 5 times
+					// todo: retry 201s
 				}
 				if (!response.ok) {
 					return Promise.reject(json);
@@ -99,7 +104,7 @@ function * spotifyApiCall(url) {
 
 		return json;
 	} catch (fetchError) {
-		if (fetchError.message === 'unauthorised') {
+		if (fetchError.message === error401) {
 			yield put({
 				type: spotifyActions.SPOTIFY_AUTH_REQUIRED
 			});
