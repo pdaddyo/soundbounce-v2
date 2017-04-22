@@ -10,7 +10,7 @@ import {
 import {socketConnectBegin} from '../modules/socket';
 
 const webApiBaseUrl = 'https://api.spotify.com';
-const pollPlayerDelay = 10000; // 2000 (lowered for dev to keep console calm)
+const pollPlayerDelay = 2000;
 const error401 = '401-unauthorized';
 
 function * beginLogin() {

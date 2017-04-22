@@ -1,3 +1,5 @@
+import update from 'react-addons-update';
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -29,7 +31,7 @@ const defaultState = {
 	isLoggedIn: false,
 	player: null,
 	profile: null,
-	tracks: []  // tracks stored by trackId
+	tracks: {}  // tracks stored by key object key 'id'
 };
 
 // ------------------------------------
@@ -68,10 +70,30 @@ const ACTION_HANDLERS = {
 		profile: payload.profile,
 		isLoggedIn: true
 	}),
-	[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => ({
-		...state,
-		player: payload.playerState
-	})
+	[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => {
+		const {item} = payload.playerState;
+		const newState = {
+			...state,
+			player: payload.playerState
+		};
+
+		// this might be a new track that we haven't seen before, check if it's in our
+		// track state already
+		if (item && item.type !== 'track') {
+			// we're only set up to deal with spotify playing tracks
+			throw new Error(`Unexpected spotify player item type (${item.type})`);
+		}
+
+		if (!state.tracks[item.id]) {
+			// add track to state
+			newState.tracks = update(state.tracks, {[item.id]: {$set: item}});
+		} else {
+			// update existing info with our info (we may have requested more details already, so
+			// don't want to overwrite the existing track.
+			newState.tracks[item.id] = {...newState.tracks[item.id], ...item};
+		}
+		return newState;
+	}
 };
 
 // ------------------------------------
