@@ -1,7 +1,6 @@
 /* @flow */
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 import {socketEmitRoomCreate} from 'redux/modules/socket';
 
 import classes from './homeView.css';
@@ -27,7 +26,6 @@ class HomeView extends Component {
 	render() {
 		return (
 			<div className={classes.container}>
-				<SpotifyPlayerStatus />
 				<button onClick={this.clickCreateRoom}>Create room</button>
 				<br/>
 			</div>

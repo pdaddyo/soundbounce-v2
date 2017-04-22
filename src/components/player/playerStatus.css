@@ -1,4 +1,28 @@
 .status {
-	color: white;
-	font-size: 50px;
+	float: right;
+	height: 3.4rem;
+}
+
+.artwork {
+	background-size: contain;
+	width: 3.4rem;
+	height: 3.4rem;
+	display: inline-block;
+}
+
+.info {
+	position: relative;
+	top: -1rem;
+	height: 1rem;
+	margin-right: 0.5rem;
+	display: inline-block;
+}
+
+.title {
+	font-size: 0.8rem;
+}
+
+.artists {
+	font-size: 0.7rem;
+	color: rgba(255, 255, 255, 0.5);
 }

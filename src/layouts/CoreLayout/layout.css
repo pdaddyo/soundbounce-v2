@@ -1,7 +1,8 @@
 html, body {
-	background-color: #232129;
+	background-color: #353442;
 	margin: 0;
 	padding: 0;
+	font-size: 120%;
 	color: rgba(255, 255, 255, 0.8);
 }
 
@@ -11,3 +12,6 @@ html, body {
 	font-weight: 200;
 }
 
+.children {
+	padding-top: 3.2rem;
+}

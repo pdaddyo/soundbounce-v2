@@ -1,5 +1,5 @@
 import React, {PropTypes, Component} from 'react';
-
+import TopBar from 'components/topBar/TopBar';
 import classes from './layout.css';
 
 class CoreLayout extends Component {
@@ -11,7 +11,10 @@ class CoreLayout extends Component {
 		const {children} = this.props;
 		return (
 			<div className={classes.app}>
-				{children}
+				<TopBar/>
+				<div className={classes.children}>
+					{children}
+				</div>
 			</div>
 		);
 	}
