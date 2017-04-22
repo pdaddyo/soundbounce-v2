@@ -12,17 +12,20 @@
 
 .info {
 	position: relative;
-	top: -1rem;
+	top: -0.9rem;
 	height: 1rem;
-	margin-right: 0.5rem;
+	margin-right: 0.75rem;
 	display: inline-block;
 }
 
 .title {
 	font-size: 0.8rem;
+	text-align: right;
 }
 
 .artists {
 	font-size: 0.7rem;
+	text-align: right;
 	color: rgba(255, 255, 255, 0.5);
 }
+

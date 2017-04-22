@@ -12,7 +12,7 @@ class SpotifyPlayerStatus extends Component {
 	render() {
 		const {player} = this.props;
 		// no player state so return nothing
-		if (!player || !player.item) {
+		if (!player || !player.item || !player.is_playing) {
 			return null;
 		}
 
@@ -21,7 +21,6 @@ class SpotifyPlayerStatus extends Component {
 
 		return (
 			<div className={classes.status}>
-
 				<div className={classes.info}>
 					<div className={classes.title}>
 						<Title trackId={player.item.id}/>
@@ -29,9 +28,9 @@ class SpotifyPlayerStatus extends Component {
 					<div className={classes.artists}>
 						<Artists trackId={player.item.id}/>
 					</div>
+
 				</div>
 				<div className={classes.artwork} style={{backgroundImage: artwork}}/>
-
 			</div>
 		);
 	}
