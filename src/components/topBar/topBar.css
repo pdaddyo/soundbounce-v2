@@ -12,3 +12,59 @@
 	text-indent: 1rem;
 	font-size: 1.2rem;
 }
+
+.right {
+	float: right;
+}
+
+.user {
+	float: right;
+	display: inline-block;
+	height: 1.5rem;
+	position: relative;
+	margin-right: 1rem;
+	top: 1rem;
+}
+
+.avatar {
+	display: inline-block;
+	background-size: cover;
+	position: relative;
+	top: -0.5rem;
+	margin-left: 0.7rem;
+	width: 1.7rem;
+	height: 1.7rem;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 50%;
+}
+
+.text {
+	display: inline-block;
+	position: relative;
+	top: -0.6rem;
+	text-align: right;
+}
+
+.profileName {
+	display: inline-block;
+	text-align: right;
+	font-size: 0.8rem;
+}
+
+.room {
+	border-bottom: solid 1px rgba(255, 255, 255, 0.3);
+}
+
+.device {
+	font-size: 0.7rem;
+	text-align: right;
+	margin-right: -0.45rem;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.dropdownArrow {
+	font-size: 0.3rem;
+	position: relative;
+	top: -0.1rem;
+	color: rgba(255, 255, 255, 0.5);
+}

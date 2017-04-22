@@ -1,4 +1,5 @@
 .status {
+	display: inline-block;
 	float: right;
 	height: 3.4rem;
 }
