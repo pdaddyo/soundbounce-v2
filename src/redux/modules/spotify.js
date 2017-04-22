@@ -1,6 +1,7 @@
 // ------------------------------------
 // Constants
 // ------------------------------------
+export const SPOTIFY_AUTH_REQUIRED = 'SPOTIFY_AUTH_REQUIRED';
 export const SPOTIFY_AUTH_INIT = 'SPOTIFY_AUTH_INIT';
 export const SPOTIFY_AUTH_OK = 'SPOTIFY_AUTH_OK';
 export const SPOTIFY_API_REQUEST_START = 'SPOTIFY_API_REQUEST_START';
@@ -9,6 +10,7 @@ export const SPOTIFY_API_REQUEST_ERROR = 'SPOTIFY_API_REQUEST_ERROR';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
 
 export const actions = {
+	SPOTIFY_AUTH_REQUIRED,
 	SPOTIFY_AUTH_INIT,
 	SPOTIFY_AUTH_OK,
 	SPOTIFY_API_REQUEST_START,
@@ -18,7 +20,7 @@ export const actions = {
 };
 
 // ------------------------------------
-// Default state
+// Default spotify state
 // ------------------------------------
 const defaultState = {
 	isFetching: false,
@@ -26,12 +28,17 @@ const defaultState = {
 	refreshToken: null,
 	isLoggedIn: false,
 	player: null,
-	profile: null
+	profile: null,
+	tracks: []  // tracks stored by trackId
 };
 
 // ------------------------------------
 // Action Creators
 // ------------------------------------
+export const spotifyAuthRequired = () => ({
+	type: SPOTIFY_AUTH_REQUIRED
+});
+
 export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
 	type: SPOTIFY_AUTH_INIT,
 	payload: {accessToken, refreshToken}

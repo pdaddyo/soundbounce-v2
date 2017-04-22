@@ -1,6 +1,7 @@
 import {delay} from 'redux-saga';
-import {select, put, call} from 'redux-saga/effects';
+import {select, put, call, take} from 'redux-saga/effects';
 import {
+	spotifyAuthRequired,
 	spotifyAuthInit,
 	spotifyAuthOK,
 	spotifyPlayerStateUpdate,
@@ -32,9 +33,8 @@ function * beginLogin() {
 			return;
 		}
 	}
-	// redirect to oauth login on server because the app just started but
-	// there was no access token in hash
-	window.location = '/login';
+	// if we get here we didn't have a login hash from the server, auth step is now required
+	yield put(spotifyAuthRequired());
 }
 
 function * getMyProfile() {
@@ -84,9 +84,13 @@ function * spotifyApiCall(url) {
 			.then(response =>
 				response.json().then(json => ({json, response}))
 			).then(({json, response}) => {
+				if (response.code === 401) {
+					throw new Error('unauthorised');
+				}
 				if (!response.ok) {
 					return Promise.reject(json);
 				}
+
 				return json;
 			});
 		if (json) {
@@ -95,6 +99,11 @@ function * spotifyApiCall(url) {
 
 		return json;
 	} catch (fetchError) {
+		if (fetchError.message === 'unauthorised') {
+			yield put({
+				type: spotifyActions.SPOTIFY_AUTH_REQUIRED
+			});
+		}
 		yield put({
 			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
 			payload: fetchError.message || 'very bad things'
@@ -102,13 +111,25 @@ function * spotifyApiCall(url) {
 	}
 }
 
+function * watchForAuthRequired() {
+	while (true) {
+		yield take(spotifyActions.SPOTIFY_AUTH_REQUIRED);
+		// for now we'll redirect to the login page on the server which will bring us back
+		// auth'd with a token in the url hash
+		// todo: use refresh token instead of redirect if available, redirect to previous url
+		window.location = '/login';
+	}
+}
+
 export default function * spotifyInit() {
 	try {
 		yield [
+			watchForAuthRequired(),
 			beginLogin(),
 			pollSpotifyPlayerStatus()
 		];
 	} catch (err) {
 		console.log('unhandled spotify saga error: ' + err);
+		throw err;
 	}
 }
