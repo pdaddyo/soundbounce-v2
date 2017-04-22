@@ -4,6 +4,7 @@ import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
 	spotifyAuthOK,
+	spotifyPlayerStateRequest,
 	spotifyPlayerStateUpdate,
 	actions as spotifyActions
 } from '../modules/spotify';
@@ -43,6 +44,7 @@ function * getMyProfile() {
 }
 
 function * getPlayerState() {
+	yield put(spotifyPlayerStateRequest());
 	return yield call(spotifyApiCall, '/v1/me/player');
 }
 

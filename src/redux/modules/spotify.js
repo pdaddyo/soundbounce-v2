@@ -9,6 +9,7 @@ export const SPOTIFY_AUTH_OK = 'SPOTIFY_AUTH_OK';
 export const SPOTIFY_API_REQUEST_START = 'SPOTIFY_API_REQUEST_START';
 export const SPOTIFY_API_REQUEST_OK = 'SPOTIFY_API_REQUEST_OK';
 export const SPOTIFY_API_REQUEST_ERROR = 'SPOTIFY_API_REQUEST_ERROR';
+export const SPOTIFY_PLAYER_STATE_REQUEST = 'SPOTIFY_PLAYER_STATE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
 
 export const actions = {
@@ -18,6 +19,7 @@ export const actions = {
 	SPOTIFY_API_REQUEST_START,
 	SPOTIFY_API_REQUEST_OK,
 	SPOTIFY_API_REQUEST_ERROR,
+	SPOTIFY_PLAYER_STATE_REQUEST,
 	SPOTIFY_PLAYER_STATE_UPDATE
 };
 
@@ -49,6 +51,10 @@ export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
 export const spotifyAuthOK = (profile) => ({
 	type: SPOTIFY_AUTH_OK,
 	payload: {profile}
+});
+
+export const spotifyPlayerStateRequest = () => ({
+	type: SPOTIFY_PLAYER_STATE_REQUEST
 });
 
 export const spotifyPlayerStateUpdate = (playerState) => ({
