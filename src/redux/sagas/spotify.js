@@ -4,6 +4,7 @@ import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
 	spotifyAuthOK,
+	spotifyProfileRequest,
 	spotifyPlayerStateRequest,
 	spotifyPlayerStateUpdate,
 	actions as spotifyActions
@@ -40,6 +41,7 @@ function * beginLogin() {
 }
 
 function * getMyProfile() {
+	yield put(spotifyProfileRequest());
 	return yield call(spotifyApiCall, '/v1/me');
 }
 
