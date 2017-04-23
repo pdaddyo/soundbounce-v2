@@ -4,6 +4,7 @@
 import auth from './auth';
 import socket from './socket';
 import Rooms from './data/Rooms';
+import {syncDatabaseSchema} from './data/schema';
 
 import _debug from 'debug';
 
@@ -16,11 +17,15 @@ export default class SoundbounceServer {
 
 	init() {
 		debug('Begin server init...');
-		this.app.data = {
-			rooms: new Rooms()
-		};
-		auth(this.app);
-		socket(this.app);
-		debug('Server init OK');
+		const {app} = this;
+
+		socket(app);
+		auth(app);
+		syncDatabaseSchema(() => {
+			app.data = {
+				rooms: new Rooms()
+			};
+			debug('Server init OK');
+		});
 	}
 }

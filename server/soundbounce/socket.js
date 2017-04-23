@@ -9,20 +9,15 @@ export default (app) => {
 	io.on('connection', (socket) => {
 		debug('A user connected');
 
+		// todo: only listen for an auth command, then store the user against this socket
+		
 		socket.on('room:create', (room) => {
 			debug(`room:create (${room})`);
-			app.data.rooms.createRoom(room, (room) => {
-				if (room.error) {
-					debug(`room:create:error - ${room.error.message}`);
-					socket.emit('room:create:error', room)
-				} else {
-					socket.emit('room:create:ok', room);
-				}
-			});
+			app.data.rooms.createRoom(room)
+				.then(room => {
+					socket.emit('room:create:ok', room.get({plain: true}));
+				});
 		});
-
-		setInterval(function () {
-			io.emit('server:time', new Date);
-		}, 1000);
 	});
+
 };
