@@ -4,9 +4,12 @@
 
 export default ({
 	spotify: {
-		clientId: 'xyz',
-		clientSecret: 'xyz',
-		redirectUri: 'https://...'
+		clientId: '----copy paste from spotify developer console----',
+		clientSecret: '----copy paste from spotify developer console----',
+		redirectUri: 'http://localhost:1337/spotify-oauth-callback' // << -- add this url to developer console
+	},
+	postgres: {
+		uri: 'postgres://localhost:5432/soundbounce'
 	}
 });
 
