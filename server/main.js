@@ -12,6 +12,7 @@ import path from 'path';
 const debug = _debug('app:server');
 const paths = config.utils_paths;
 const app = express();
+const compiler = webpack(webpackConfig);
 
 app.use(compress());
 app.use(cookieParser());
@@ -21,7 +22,6 @@ const soundbounce = new SoundbounceServer(app);
 soundbounce.init();
 
 if (config.env === 'development') {
-	const compiler = webpack(webpackConfig);
 
 	debug('DEV MODE - Enabling webpack dev and HMR middleware');
 	app.use(require('webpack-dev-middleware')(compiler, {
