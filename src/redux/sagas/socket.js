@@ -1,4 +1,4 @@
-import {take} from 'redux-saga/effects';
+import {take, select} from 'redux-saga/effects';
 import {actions as socketActions} from '../modules/socket';
 import socketClient from '../../socketClient/client';
 
@@ -6,6 +6,14 @@ function * watchForSocketConnectBegin() {
 	while (true) {
 		yield take(socketActions.SOCKET_CONNECT_BEGIN);
 		socketClient.connect();
+	}
+}
+
+function * watchForSocketConnectOk() {
+	while (true) {
+		yield take(socketActions.SOCKET_CONNECT_OK);
+		const {accessToken} = yield select(state => state.spotify);
+		socketClient.emit('user:auth', {accessToken});
 	}
 }
 
@@ -31,6 +39,7 @@ export default function * socketInit() {
 	try {
 		yield [
 			watchForSocketConnectBegin(),
+			watchForSocketConnectOk(),
 			watchForSocketEmitRoomCreate(),
 			watchForSocketOnRoomCreateOk()
 		];
