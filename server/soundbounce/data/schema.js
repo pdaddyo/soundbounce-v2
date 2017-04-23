@@ -35,7 +35,9 @@ export const User = sequelize.define('user', {
 	profile: {type: Sequelize.JSON},
 	accessToken: {type: Sequelize.STRING(400)},
 	refreshToken: {type: Sequelize.STRING(400)},
-	currentDeviceId: {type: Sequelize.STRING}
+	currentDeviceId: {type: Sequelize.STRING},
+	currentRoomId: {type: Sequelize.STRING},
+	isSynced: {type: Sequelize.BOOLEAN}
 });
 
 export const UserActivity = sequelize.define('userActivity', {
