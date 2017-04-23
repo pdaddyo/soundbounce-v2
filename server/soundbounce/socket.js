@@ -16,7 +16,9 @@ export default (app) => {
 
 				if (currentUser === null) {
 					debug('Unknown accessToken sent during initial socket handshake');
-					socket.close();
+					if (socket) {
+						socket.disconnect();
+					}
 					return;
 				}
 				const currentUserDebugName = `${currentUser.get('name')} (${currentUser.get('id')})`;

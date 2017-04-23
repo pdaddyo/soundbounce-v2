@@ -90,7 +90,7 @@ export default (app) => {
 						// use the access token to access the Spotify Web API
 						request.get(profileOptions, (error, response, profile) => {
 							const {id, display_name, email, images} = profile;
-							debug(`${display_name} (${id}) has logged in.`);
+							debug(`${display_name} (${id}) has authorized with spotify.`);
 
 							// create the user if it doesn't exist
 							User.findOrCreate({
