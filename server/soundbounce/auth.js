@@ -7,7 +7,9 @@ import secrets from '../../config/secrets/secrets';
 import randomString from './util/randomString';
 import _debug from 'debug';
 const debug = _debug('app:server:auth');
+import {User} from './data/schema';
 
+const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';
 const stateKey = 'spotify_auth_state',
 	spotifyScopes = [
 		'user-read-playback-state',
@@ -70,25 +72,57 @@ export default (app) => {
 			};
 
 			request.post(authOptions, (error, response, body) => {
-				if (!error && response.statusCode === 200) {
-					const accessToken = body.access_token,
-						refreshToken = body.refresh_token;
+					if (!error && response.statusCode === 200) {
+						const accessToken = body.access_token,
+							refreshToken = body.refresh_token;
 
-					const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
-					if (redirectUrl) {
-						res.clearCookie('redirectUrl');
+						const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
+						if (redirectUrl) {
+							res.clearCookie('redirectUrl');
+						}
+
+						const profileOptions = {
+							url: 'https://api.spotify.com/v1/me',
+							headers: {'Authorization': 'Bearer ' + accessToken},
+							json: true
+						};
+
+						// use the access token to access the Spotify Web API
+						request.get(profileOptions, (error, response, profile) => {
+							const {id, display_name, email, images} = profile;
+							debug(`${display_name} (${id}) has logged in.`);
+
+							// create the user if it doesn't exist
+							User.findOrCreate({
+								where: {id},
+								defaults: {
+									name: display_name,
+									nickname: display_name,
+									avatar: images.length > 0 ? images[0].url : emptyAvatar,
+									email,
+									profile
+								}
+							}).spread((user, created) => {
+								// update the access / refresh token in the db
+								user.set('accessToken', accessToken);
+								user.set('refreshToken', refreshToken);
+								user.save().then(() => {
+									// pass the token to the browser to make requests from there
+									res.redirect((redirectUrl || '/') + '#' +
+										querystring.stringify({
+											access_token: accessToken,
+											refresh_token: refreshToken
+										}));
+								});
+							});
+
+						});
 					}
-					debug('spotify auth successful, redirecting client');
-					// pass the token to the browser to make requests from there
-					res.redirect((redirectUrl || '/') + '#' +
-						querystring.stringify({
-							access_token: accessToken,
-							refresh_token: refreshToken
-						}));
-				} else {
-					res.redirect('/error/invalid-token');
+					else {
+						res.redirect('/error/invalid-token');
+					}
 				}
-			});
+			);
 		}
 	});
 };
