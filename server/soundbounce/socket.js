@@ -5,6 +5,8 @@ import {User} from './data/schema';
 
 const io = socketIo();
 
+let connectedSockets = [];
+
 export default (app) => {
 	app.io = io;
 	io.on('connection', (socket) => {
@@ -17,7 +19,16 @@ export default (app) => {
 					socket.close();
 					return;
 				}
-				debug(`${currentUser.get('name')} (${currentUser.get('id')} connected over socketio`);
+				const currentUserDebugName = `${currentUser.get('name')} (${currentUser.get('id')})`;
+
+				connectedSockets.push(socket);
+				socket.on('disconnect', s => {
+					// remove from the connectedSockets list
+					connectedSockets = connectedSockets.filter(sock => sock !== socket);
+					debug(`${currentUserDebugName} disconnected, ${connectedSockets.length} still connected.`);
+				});
+
+				debug(`${currentUserDebugName} connected, ${connectedSockets.length} now connected.`);
 
 				///
 				/// User is now auth'd over sockets, so event listeners below are
