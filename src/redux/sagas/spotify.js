@@ -55,7 +55,9 @@ function * getPlayerState() {
 function * updatePlayerState() {
 	// get player state from api then update redux state with the return
 	const playerState = yield getPlayerState();
-	yield put(spotifyPlayerStateUpdate(playerState));
+	if (playerState) {
+		yield put(spotifyPlayerStateUpdate(playerState));
+	}
 }
 
 // this saga runs forever checking the player status
@@ -83,21 +85,21 @@ function * spotifyApiCall(url, method) {
 		for (let retryCount = 0; retryCount < maxRetry; retryCount++) {
 			const {json, response} = yield fetch(webApiBaseUrl + url, {
 				method: method || 'GET',
-				headers: {
-					Authorization: `Bearer ${accessToken}`
+				headers: {Authorization: `Bearer ${accessToken}`}
+			}).then(response => {
+				return response.text().then(text => ({
+					json: text.length > 0 ? JSON.parse(text) : {},
+					response
+				}))
+			}).then(({json, response}) => {
+				if (response.status === 401) {
+					throw new Error(error401);
 				}
-			})
-				.then(response =>
-					response.json().then(json => ({json, response}))
-				).then(({json, response}) => {
-					if (response.status === 401) {
-						throw new Error(error401);
-					}
-					if (!response.ok) {
-						return Promise.reject(json);
-					}
-					return {json, response};
-				});
+				if (!response.ok) {
+					return Promise.reject(json);
+				}
+				return {json, response};
+			});
 
 			if (json && response.status !== 202) {
 				yield put({type: spotifyActions.SPOTIFY_API_REQUEST_OK, payload: {json}});
@@ -106,7 +108,9 @@ function * spotifyApiCall(url, method) {
 
 			// 202 accepted or no data, wait several seconds then loop around and retry
 			yield delay(apiRetryDelay);
+			yield put({type: spotifyActions.SPOTIFY_API_REQUEST_RETRY});
 		}
+
 		yield put({
 			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
 			payload: `Spotify API failed after ${maxRetry} retries, aborting.`
