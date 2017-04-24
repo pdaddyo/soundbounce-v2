@@ -11,9 +11,11 @@ import {
 } from '../modules/spotify';
 import {socketConnectBegin} from '../modules/socket';
 
-const webApiBaseUrl = 'https://api.spotify.com';
-const pollPlayerDelay = 2000;
-const error401 = '401-unauthorized';
+const webApiBaseUrl = 'https://api.spotify.com',
+	pollPlayerDelay = 2000,
+	apiRetryDelay = 2000,
+	maxRetry = 5,
+	error401 = '401-unauthorized';
 
 function * beginLogin() {
 	const {hash, href} = window.location;
@@ -69,7 +71,7 @@ function * pollSpotifyPlayerStatus() {
 	}
 }
 
-function * spotifyApiCall(url) {
+function * spotifyApiCall(url, method) {
 	const {accessToken} = yield select(state => state.spotify);
 	if (!accessToken) {
 		// wait for spotify auth to initialise if we don't have an access token yet
@@ -78,33 +80,38 @@ function * spotifyApiCall(url) {
 
 	yield put({type: spotifyActions.SPOTIFY_API_REQUEST_START, payload: {url}});
 	try {
-		const json = yield fetch(webApiBaseUrl + url, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${accessToken}`
-			}
-		})
-			.then(response =>
-				response.json().then(json => ({json, response}))
-			).then(({json, response}) => {
-				if (response.status === 401) {
-					throw new Error(error401);
+		for (let retryCount = 0; retryCount < maxRetry; retryCount++) {
+			const {json, response} = yield fetch(webApiBaseUrl + url, {
+				method: method || 'GET',
+				headers: {
+					Authorization: `Bearer ${accessToken}`
 				}
-				if (response.status === 201) {
-					// 201 accepted, spotify docs say to retry up to 5 times
-					// todo: retry 201s
-				}
-				if (!response.ok) {
-					return Promise.reject(json);
-				}
+			})
+				.then(response =>
+					response.json().then(json => ({json, response}))
+				).then(({json, response}) => {
+					if (response.status === 401) {
+						throw new Error(error401);
+					}
+					if (!response.ok) {
+						return Promise.reject(json);
+					}
+					return {json, response};
+				});
 
+			if (json && response.status !== 202) {
+				yield put({type: spotifyActions.SPOTIFY_API_REQUEST_OK, payload: {json}});
 				return json;
-			});
-		if (json) {
-			yield put({type: spotifyActions.SPOTIFY_API_REQUEST_OK, payload: {json}});
-		}
+			}
 
-		return json;
+			// 202 accepted or no data, wait several seconds then loop around and retry
+			yield delay(apiRetryDelay);
+		}
+		yield put({
+			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
+			payload: `Spotify API failed after ${maxRetry} retries, aborting.`
+		});
+		return null;
 	} catch (fetchError) {
 		if (fetchError.message === error401) {
 			yield put({
