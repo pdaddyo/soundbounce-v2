@@ -1,23 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {selectCurrentUser} from 'redux/modules/users';
+
 // import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
 import classes from './topBar.css';
 
 class TopBar extends Component {
 	static propTypes = {
-		profile: PropTypes.object,
+		currentUser: PropTypes.object,
 		player: PropTypes.object
 	};
 
 	render() {
-		const {profile, player} = this.props;
+		const {currentUser, player} = this.props;
 
-		let avatarImg = 'none';
-		if (profile && profile.images && profile.images.length > 0) {
-			avatarImg = `url(${profile.images[0].url})`;
-		}
-		// const [, firstName] = profile.display_name.match(/(.+) /);
 		return (
 			<div className={classes.topBar}>
 				<div className={classes.soundbounce}>
@@ -38,7 +35,7 @@ class TopBar extends Component {
 							</div>
 						</div>
 						<div className={classes.avatar}
-							 style={{backgroundImage: avatarImg}}/>
+							 style={{backgroundImage: `url(${currentUser.avatar})`}}/>
 					</div>
 
 				</div>
@@ -49,7 +46,7 @@ class TopBar extends Component {
 
 // map the spotify player state to prop 'player'
 const mapStateToProps = state => ({
-	profile: state.spotify.profile,
+	currentUser: selectCurrentUser(state),
 	player: state.spotify.player
 });
 
