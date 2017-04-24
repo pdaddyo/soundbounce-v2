@@ -15,14 +15,14 @@ const requiredFK = (field) => ({
 export const Artist = sequelize.define('artist', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
-	json: {type: Sequelize.JSON}
+	json: {type: Sequelize.JSONB}
 });
 
 export const Track = sequelize.define('track', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
 	albumArt: {type: Sequelize.STRING, allowNull: false},
-	json: {type: Sequelize.JSON},
+	json: {type: Sequelize.JSONB},
 	youtubeId: {type: Sequelize.STRING}
 });
 
@@ -32,7 +32,8 @@ export const User = sequelize.define('user', {
 	nickname: {type: Sequelize.STRING, allowNull: false},
 	avatar: {type: Sequelize.STRING, allowNulls: false},
 	email: {type: Sequelize.STRING, allowNulls: false},
-	profile: {type: Sequelize.JSON},
+	profile: {type: Sequelize.JSONB},
+	prefs: {type: Sequelize.JSONB},
 	accessToken: {type: Sequelize.STRING(400)},
 	refreshToken: {type: Sequelize.STRING(400)},
 	currentDeviceId: {type: Sequelize.STRING},
@@ -42,7 +43,7 @@ export const User = sequelize.define('user', {
 
 export const UserActivity = sequelize.define('userActivity', {
 	type: {type: Sequelize.STRING, allowNull: false}, /* login, ... */
-	detail: {type: Sequelize.JSON}
+	detail: {type: Sequelize.JSONB}
 });
 UserActivity.belongsTo(User, requiredFK('userId'));
 
@@ -50,7 +51,7 @@ export const Room = sequelize.define('room', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
 	active: {type: Sequelize.BOOLEAN},
-	state: {type: Sequelize.JSON},
+	state: {type: Sequelize.JSONB},
 	nowPlayingStartedAt: {type: Sequelize.INTEGER}
 });
 
@@ -63,7 +64,7 @@ Artist.belongsToMany(Track, {through: TrackArtist});
 
 export const TrackActivity = sequelize.define('trackActivity', {
 	type: {type: Sequelize.STRING, allowNull: false}, /* add, vote up, vote down, play etc */
-	detail: {type: Sequelize.JSON}
+	detail: {type: Sequelize.JSONB}
 });
 TrackActivity.belongsTo(User, requiredFK('userId'));
 TrackActivity.belongsTo(Room, requiredFK('roomId'));
@@ -71,7 +72,7 @@ TrackActivity.belongsTo(Track, requiredFK('trackId'));
 
 export const RoomActivity = sequelize.define('roomActivity', {
 	type: {type: Sequelize.STRING, allowNull: false}, /* user:join, user:leave, admin:command */
-	detail: {type: Sequelize.JSON}
+	detail: {type: Sequelize.JSONB}
 });
 RoomActivity.belongsTo(Room, requiredFK('roomId'));
 RoomActivity.belongsTo(User); // optional
