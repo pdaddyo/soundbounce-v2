@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
+import {User} from './data/schema';
 import _debug from 'debug';
 const debug = _debug('app:server:socket');
-import {User} from './data/schema';
 
 const io = socketIo();
 
@@ -21,7 +21,7 @@ export default (app) => {
 					}
 					return;
 				}
-				const currentUserDebugName = `${currentUser.get('name')} (${currentUser.get('id')})`;
+				const currentUserDebugName = `${currentUser.get('nickname')} (${currentUser.get('id')})`;
 
 				connectedSockets.push(socket);
 				socket.on('disconnect', s => {
@@ -31,6 +31,9 @@ export default (app) => {
 				});
 
 				debug(`${currentUserDebugName} connected, ${connectedSockets.length} now connected.`);
+
+				// send the current user info back to the client
+				socket.emit('user:auth:ok', currentUser.get({plain: true}));
 
 				///
 				/// User is now auth'd over sockets, so event listeners below are
@@ -44,8 +47,12 @@ export default (app) => {
 							socket.emit('room:create:ok', room.get({plain: true}));
 						});
 				});
+
+				socket.on('user:current', () => {
+					debug(`user:current`);
+					socket.emit('user:current:ok', currentUser.get({plain: true}));
+				});
 			});
 		});
 	});
-
 };

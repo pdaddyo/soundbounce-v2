@@ -4,9 +4,10 @@
 
 import io from 'socket.io-client';
 import {
-	socketOnRoomCreateOk,
+	socketRoomCreateOk,
 	socketConnectOk,
-	socketConnectError
+	socketConnectError,
+	socketAuthOk
 } from 'redux/modules/socket';
 
 class SocketClient {
@@ -37,7 +38,10 @@ class SocketClient {
 		const {socket} = this;
 		const {dispatch} = this.store;
 		socket.on('room:create:ok', (room) => {
-			dispatch(socketOnRoomCreateOk(room));
+			dispatch(socketRoomCreateOk(room));
+		});
+		socket.on('user:auth:ok', (user) => {
+			dispatch(socketAuthOk(user));
 		});
 	}
 

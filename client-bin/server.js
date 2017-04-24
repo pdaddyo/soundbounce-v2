@@ -9,14 +9,13 @@ const port = config.server_port;
 const host = config.server_host;
 
 server.on('error', err => {
-	debug('http error' + err);
+	debug('http error: ' + err);
 });
 
 app.ready = () => {
 	server.listen(port);
-	const io = app.io; // this is set in socket.js
-	io.listen(server);
-	debug(`Server is now running at http://${host}:${port}.`);
+	app.io.listen(server); // this is set in socket.js
+	debug(`Init OK at http://${host}:${port}.`);
 };
 
 

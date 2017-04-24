@@ -28,6 +28,8 @@ export default class Users {
 			// update the access / refresh token in the db
 			user.set('accessToken', accessToken);
 			user.set('refreshToken', refreshToken);
+			user.set('profile', profile);
+			user.set('avatar', images.length > 0 ? images[0].url : emptyAvatar);
 			return user.save();
 		});
 	}

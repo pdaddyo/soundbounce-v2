@@ -1,5 +1,6 @@
-import {take, select} from 'redux-saga/effects';
+import {take, select, put} from 'redux-saga/effects';
 import {actions as socketActions} from '../modules/socket';
+import {setCurrentUser} from '../modules/users';
 import socketClient from '../../socketClient/client';
 
 function * watchForSocketConnectBegin() {
@@ -17,6 +18,13 @@ function * watchForSocketConnectOk() {
 	}
 }
 
+function * watchForSocketAuthOk() {
+	while (true) {
+		const {payload} = yield take(socketActions.SOCKET_AUTH_OK);
+		yield put(setCurrentUser(payload.user));
+	}
+}
+
 function * watchForSocketEmitRoomCreate() {
 	while (true) {
 		if (!socketClient.socket) {
@@ -30,7 +38,7 @@ function * watchForSocketEmitRoomCreate() {
 
 function * watchForSocketOnRoomCreateOk() {
 	while (true) {
-		const {payload} = yield take(socketActions.SOCKET_ON_ROOM_CREATE_OK);
+		const {payload} = yield take(socketActions.SOCKET_ROOM_CREATE_OK);
 		console.log('room created on server: ', payload.room);
 	}
 }
@@ -40,6 +48,7 @@ export default function * socketInit() {
 		yield [
 			watchForSocketConnectBegin(),
 			watchForSocketConnectOk(),
+			watchForSocketAuthOk(),
 			watchForSocketEmitRoomCreate(),
 			watchForSocketOnRoomCreateOk()
 		];

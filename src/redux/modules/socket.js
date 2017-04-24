@@ -5,14 +5,16 @@ export const SOCKET_CONNECT_BEGIN = 'SOCKET_CONNECT_BEGIN';
 export const SOCKET_CONNECT_OK = 'SOCKET_CONNECT_OK';
 export const SOCKET_CONNECT_ERROR = 'SOCKET_CONNECT_ERROR';
 export const SOCKET_EMIT_ROOM_CREATE = 'SOCKET_EMIT_ROOM_CREATE';
-export const SOCKET_ON_ROOM_CREATE_OK = 'SOCKET_ON_ROOM_CREATE_OK';
+export const SOCKET_ROOM_CREATE_OK = 'SOCKET_ON_ROOM_CREATE_OK';
+export const SOCKET_AUTH_OK = 'SOCKET_ON_AUTH_OK';
 
 export const actions = {
 	SOCKET_CONNECT_BEGIN,
 	SOCKET_CONNECT_OK,
 	SOCKET_CONNECT_ERROR,
 	SOCKET_EMIT_ROOM_CREATE,
-	SOCKET_ON_ROOM_CREATE_OK
+	SOCKET_ROOM_CREATE_OK,
+	SOCKET_AUTH_OK
 };
 
 // ------------------------------------
@@ -45,9 +47,14 @@ export const socketEmitRoomCreate = (room) => ({
 	payload: {room}
 });
 
-export const socketOnRoomCreateOk = (room) => ({
-	type: SOCKET_ON_ROOM_CREATE_OK,
+export const socketRoomCreateOk = (room) => ({
+	type: SOCKET_ROOM_CREATE_OK,
 	payload: {room}
+});
+
+export const socketAuthOk = (user) => ({
+	type: SOCKET_AUTH_OK,
+	payload: {user}
 });
 
 // ------------------------------------
