@@ -86,12 +86,11 @@ function * spotifyApiCall(url, method) {
 			const {json, response} = yield fetch(webApiBaseUrl + url, {
 				method: method || 'GET',
 				headers: {Authorization: `Bearer ${accessToken}`}
-			}).then(response => {
-				return response.text().then(text => ({
-					json: text.length > 0 ? JSON.parse(text) : {},
+			}).then(response => response.text().then(text => ({
+					json: text.length > 0 ? JSON.parse(text) : null, // only parse if present
 					response
 				}))
-			}).then(({json, response}) => {
+			).then(({json, response}) => {
 				if (response.status === 401) {
 					throw new Error(error401);
 				}
@@ -115,6 +114,7 @@ function * spotifyApiCall(url, method) {
 			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
 			payload: `Spotify API failed after ${maxRetry} retries, aborting.`
 		});
+
 		return null;
 	} catch (fetchError) {
 		if (fetchError.message === error401) {
@@ -124,7 +124,7 @@ function * spotifyApiCall(url, method) {
 		}
 		yield put({
 			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
-			payload: fetchError.message || 'very bad things'
+			payload: fetchError.message || 'Unknown Spotify API error' + fetchError
 		});
 	}
 }
