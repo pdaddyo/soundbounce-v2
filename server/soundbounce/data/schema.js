@@ -77,6 +77,11 @@ export const RoomActivity = sequelize.define('roomActivity', {
 RoomActivity.belongsTo(Room, requiredFK('roomId'));
 RoomActivity.belongsTo(User); // optional
 
+export const RoomActivities = {
+	userJoin: 'userJoin',
+	userLeave: 'userLeave'
+};
+
 /// called on app startup
 export function syncDatabaseSchema(done) {
 	debug('Syncing database schema (sequelize.sync)...');
