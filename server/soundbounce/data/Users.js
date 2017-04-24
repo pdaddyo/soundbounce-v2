@@ -1,7 +1,7 @@
 import shortid from 'shortid';
 import _debug from 'debug';
 const debug = _debug('app:data:users');
-import {User} from './schema';
+import {User, UserActivity, UserActivities} from './schema';
 
 const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';
 
@@ -15,6 +15,7 @@ export default class Users {
 		}
 
 		debug(`${display_name} (${id}) has authorized with spotify.`);
+
 		return User.findOrCreate({
 			where: {id},
 			defaults: {
@@ -25,11 +26,18 @@ export default class Users {
 				profile
 			}
 		}).spread((user, created) => {
+			// log to db (but don't wait for this to resolve, lazy write)
+			UserActivity.create({
+				userId: id,
+				type: UserActivities.login
+			});
+
 			// update the access / refresh token in the db
 			user.set('accessToken', accessToken);
 			user.set('refreshToken', refreshToken);
 			user.set('profile', profile);
 			user.set('avatar', images.length > 0 ? images[0].url : emptyAvatar);
+
 			return user.save();
 		});
 	}

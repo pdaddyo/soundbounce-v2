@@ -46,6 +46,9 @@ export const UserActivity = sequelize.define('userActivity', {
 	detail: {type: Sequelize.JSONB}
 });
 UserActivity.belongsTo(User, requiredFK('userId'));
+export const UserActivities = {
+	login: 'login'
+};
 
 export const Room = sequelize.define('room', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
