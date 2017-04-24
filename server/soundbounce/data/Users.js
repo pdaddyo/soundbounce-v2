@@ -3,6 +3,8 @@ import _debug from 'debug';
 const debug = _debug('app:data:users');
 import {User} from './schema';
 
+const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';
+
 export default class Users {
 	loginUser({profile, accessToken, refreshToken}) {
 		let {display_name} = profile;

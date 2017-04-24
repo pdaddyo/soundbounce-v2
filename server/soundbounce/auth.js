@@ -7,9 +7,7 @@ import secrets from '../../config/secrets/secrets';
 import randomString from './util/randomString';
 import _debug from 'debug';
 const debug = _debug('app:server:auth');
-import {User} from './data/schema';
 
-const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';
 const stateKey = 'spotify_auth_state',
 	spotifyScopes = [
 		'user-read-playback-state',

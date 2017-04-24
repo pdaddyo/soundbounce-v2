@@ -31,7 +31,7 @@ export const User = sequelize.define('user', {
 	name: {type: Sequelize.STRING, allowNull: false},
 	nickname: {type: Sequelize.STRING, allowNull: false},
 	avatar: {type: Sequelize.STRING, allowNulls: false},
-	email: {type: Sequelize.STRING, allowNulls: false},
+	email: {type: Sequelize.STRING},
 	profile: {type: Sequelize.JSONB},
 	prefs: {type: Sequelize.JSONB},
 	accessToken: {type: Sequelize.STRING(400)},
