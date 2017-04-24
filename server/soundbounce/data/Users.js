@@ -5,7 +5,13 @@ import {User} from './schema';
 
 export default class Users {
 	loginUser({profile, accessToken, refreshToken}) {
-		const {id, display_name, email, images} = profile;
+		let {display_name} = profile;
+		const {id, email, images} = profile;
+		if (!display_name) {
+			// use the username (id) as the display name if none provided
+			display_name = id;
+		}
+
 		debug(`${display_name} (${id}) has authorized with spotify.`);
 		return User.findOrCreate({
 			where: {id},
