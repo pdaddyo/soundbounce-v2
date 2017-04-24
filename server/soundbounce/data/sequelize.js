@@ -4,7 +4,7 @@
 import Sequelize from 'sequelize';
 import secrets from '../../../config/secrets/secrets';
 
-const options = {};
+const options = {define: {paranoid: true}};
 const sequelize = new Sequelize(secrets.postgres.uri, options);
 
 export default sequelize;
