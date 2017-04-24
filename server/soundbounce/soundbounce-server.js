@@ -4,6 +4,7 @@
 import auth from './auth';
 import socket from './socket';
 import Rooms from './data/Rooms';
+import Users from './data/Users';
 import {syncDatabaseSchema} from './data/schema';
 
 import _debug from 'debug';
@@ -23,8 +24,10 @@ export default class SoundbounceServer {
 		auth(app);
 		syncDatabaseSchema(() => {
 			app.data = {
-				rooms: new Rooms()
+				rooms: new Rooms(),
+				users: new Users()
 			};
+			app.ready();
 			debug('Server init OK');
 		});
 	}

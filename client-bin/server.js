@@ -12,11 +12,12 @@ server.on('error', err => {
 	debug('http error' + err);
 });
 
-server.listen(port);
+app.ready = () => {
+	server.listen(port);
+	const io = app.io; // this is set in socket.js
+	io.listen(server);
+	debug(`Server is now running at http://${host}:${port}.`);
+};
 
-const io = app.io; // this is set in socket.js
-io.listen(server);
-
-debug(`Server is now running at http://${host}:${port}.`);
 
 

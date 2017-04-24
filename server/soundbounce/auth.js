@@ -89,32 +89,18 @@ export default (app) => {
 
 						// use the access token to access the Spotify Web API
 						request.get(profileOptions, (error, response, profile) => {
-							const {id, display_name, email, images} = profile;
-							debug(`${display_name} (${id}) has authorized with spotify.`);
 
 							// create the user if it doesn't exist
-							User.findOrCreate({
-								where: {id},
-								defaults: {
-									name: display_name,
-									nickname: display_name,
-									avatar: images.length > 0 ? images[0].url : emptyAvatar,
-									email,
-									profile
-								}
-							}).spread((user, created) => {
-								// update the access / refresh token in the db
-								user.set('accessToken', accessToken);
-								user.set('refreshToken', refreshToken);
-								user.save().then(() => {
+							app.data.users
+								.loginUser({profile, accessToken, refreshToken})
+								.then(user => {
 									// pass the token to the browser to make requests from there
 									res.redirect((redirectUrl || '/') + '#' +
 										querystring.stringify({
 											access_token: accessToken,
 											refresh_token: refreshToken
 										}));
-								});
-							});
+								})
 
 						});
 					}

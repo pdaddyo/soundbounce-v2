@@ -1,5 +1,3 @@
-import sequelize from './sequelize';
-
 import shortid from 'shortid';
 import _debug from 'debug';
 const debug = _debug('app:data:rooms');
