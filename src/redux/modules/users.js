@@ -26,6 +26,13 @@ export const setCurrentUser = (user) => ({
 });
 
 // ------------------------------------
+// Selectors
+// ------------------------------------
+export const selectCurrentUser = (state) => (
+	state.users.currentUserId ? state.users.users[state.users.currentUserId] : null
+);
+
+// ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
