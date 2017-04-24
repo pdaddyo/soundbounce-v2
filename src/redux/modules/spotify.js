@@ -36,7 +36,6 @@ const defaultState = {
 	refreshToken: null,
 	isLoggedIn: false,
 	player: null,
-	profile: null,
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -81,7 +80,6 @@ const ACTION_HANDLERS = {
 	}),
 	[SPOTIFY_AUTH_OK]: (state, {payload}) => ({
 		...state,
-		profile: payload.profile,
 		isLoggedIn: true
 	}),
 	[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => {

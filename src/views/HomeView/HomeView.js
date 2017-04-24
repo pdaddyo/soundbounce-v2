@@ -2,24 +2,24 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {socketEmitRoomCreate} from 'redux/modules/socket';
+import {selectCurrentUser} from 'redux/modules/users';
 
 import classes from './homeView.css';
 
 class HomeView extends Component {
 	static propTypes = {
 		createRoom: PropTypes.func.isRequired,
-		profile: PropTypes.object
+		currentUser: PropTypes.object
 	};
 
 	clickCreateRoom = (evt) => {
-		const {createRoom, profile} = this.props;
+		const {createRoom, currentUser} = this.props;
 
 		const roomName = prompt('Enter your room name (this will be nice ui later!)',
-			`${profile.display_name}'s room`);
+			`${currentUser.nickname}'s room`);
 
 		createRoom({
-			name: roomName,
-			creator: profile.id
+			name: roomName
 		});
 	};
 
@@ -34,7 +34,7 @@ class HomeView extends Component {
 }
 
 const mapStateToProps = state => ({
-	profile: state.spotify.profile
+	currentUser: selectCurrentUser(state)
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
