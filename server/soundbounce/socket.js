@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
 import {User} from './data/schema';
 import _debug from 'debug';
-const debug = _debug('soundbounce:server:socket');
+const debug = _debug('soundbounce:socket');
 
 const io = socketIo();
 

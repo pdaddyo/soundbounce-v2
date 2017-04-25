@@ -2,7 +2,7 @@
  * Created by paulbarrass on 25/04/2017.
  */
 import _debug from 'debug';
-const debug = _debug('soundbounce:active:room');
+const debug = _debug('soundbounce:rooms:active');
 
 export default class ActiveRoom {
 	constructor(room) {

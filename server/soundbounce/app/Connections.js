@@ -7,7 +7,7 @@ export default class Connections {
 		this.connectedSockets = [];
 	}
 
-	getUsersForRoom(roomId) {
+	getConnectedUsersForRoom(roomId) {
 		const users = [];
 		// a user may have multiple sockets, but we just want the unique users
 		// we could in theory query this from db but that would end up slow / bottlenecking

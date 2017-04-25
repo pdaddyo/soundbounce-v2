@@ -6,7 +6,7 @@ import querystring from 'querystring';
 import secrets from '../../config/secrets/secrets';
 import randomString from './util/randomString';
 import _debug from 'debug';
-const debug = _debug('soundbounce:server:auth');
+const debug = _debug('soundbounce:auth');
 
 const stateKey = 'spotify_auth_state',
 	spotifyScopes = [

@@ -35,9 +35,7 @@ export default class Rooms {
 				debug(`${user.get('nickname')} joined ${room.get('name')}`);
 
 				let activeRoom = this.findActiveRoom(roomId);
-				debug('activeRoom', activeRoom);
 				if (!activeRoom) {
-
 					activeRoom = new ActiveRoom(room);
 					activeRoom.startup();
 					this.activeRooms.push(activeRoom);
@@ -85,7 +83,7 @@ export default class Rooms {
 			]).then(() => {
 				// now the user is saved, check if the room is still active
 				const activeRoom = this.findActiveRoom(roomId);
-				if (activeRoom && this.app.connections.getUsersForRoom(roomId).length === 0) {
+				if (activeRoom && this.app.connections.getConnectedUsersForRoom(roomId).length === 0) {
 					debug(`No more users left in room '${room.get('name')}', shutting down`);
 					activeRoom.shutdown();
 				}
