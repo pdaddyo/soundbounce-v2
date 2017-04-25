@@ -57,7 +57,7 @@ export default class Connections {
 				.then(room => {
 					room.setCreator(socket.authenticatedUser);
 					socket.emit('room:create:ok', room.get({plain: true}));
-
+					socket.join(`room:${room.get('id')}`);
 					// join the room we just created
 					this.app.rooms.joinRoom(room.get('id'), socket.authenticatedUser)
 						.then(room => {
@@ -68,6 +68,7 @@ export default class Connections {
 		});
 
 		socket.on('room:join', roomId => {
+			socket.join(`room:${roomId}`);
 			this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(room => {
 				socket.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
 			});

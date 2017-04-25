@@ -34,15 +34,15 @@ export default class Rooms {
 			return Room.findOne({where: {id: roomId}}).then(room => {
 				debug(`${user.get('nickname')} joined ${room.get('name')}`);
 
+				user.set('currentRoomId', roomId);
+
 				let activeRoom = this.findActiveRoom(roomId);
 				if (!activeRoom) {
-					activeRoom = new ActiveRoom(room);
+					activeRoom = new ActiveRoom({room, app: this.app});
 					activeRoom.startup();
 					this.activeRooms.push(activeRoom);
 				}
-
-				user.set('currentRoomId', roomId);
-
+				
 				// log this join
 				RoomActivity.create({
 					type: RoomActivities.userJoin,
