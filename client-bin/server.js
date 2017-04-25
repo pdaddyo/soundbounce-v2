@@ -15,7 +15,7 @@ server.on('error', err => {
 app.ready = () => {
 	server.listen(port);
 	app.io.listen(server); // this is set in socket.js
-	debug(`Init OK at http://${host}:${port}.`);
+	debug(`Listening at http://${host}:${port}.`);
 };
 
 

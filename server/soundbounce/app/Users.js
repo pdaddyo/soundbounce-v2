@@ -36,7 +36,7 @@ export default class Users {
 			user.set('accessToken', accessToken);
 			user.set('refreshToken', refreshToken);
 			user.set('profile', profile);
-			user.set('avatar', images.length > 0 ? images[0].url : emptyAvatar);
+			user.set('avatar', (images && images.length) > 0 ? images[0].url : emptyAvatar);
 
 			return user.save();
 		});

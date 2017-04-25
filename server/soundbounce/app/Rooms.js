@@ -13,9 +13,13 @@ export default class Rooms {
 
 	createRoom(roomOptions) {
 		debug(`Creating room "${roomOptions.name}"`);
+
 		return Room.create({
 			id: shortid.generate(),
 			name: roomOptions.name,
+			state: null,
+			nowPlayingStartedAt: null,
+			nowPlayingTrackId: null
 		});
 	}
 
@@ -42,7 +46,7 @@ export default class Rooms {
 					activeRoom.startup();
 					this.activeRooms.push(activeRoom);
 				}
-				
+
 				// log this join
 				RoomActivity.create({
 					type: RoomActivities.userJoin,

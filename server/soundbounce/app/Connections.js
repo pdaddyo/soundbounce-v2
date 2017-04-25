@@ -54,7 +54,6 @@ export default class Connections {
 	joinRoom({socket, roomId}) {
 		socket.join(`room:${roomId}`);
 		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(room => {
-			console.log('emitting now');
 			this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
 		});
 	}
