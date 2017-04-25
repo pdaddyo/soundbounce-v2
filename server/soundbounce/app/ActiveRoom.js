@@ -17,6 +17,10 @@ export default class ActiveRoom {
 		debug(`Active room startup() for '${this.name}'`);
 	}
 
+	handleRoomEventMessage({sender, message}) {
+		debug(`handleRoomEventMessage()`);
+	}
+
 	emit(eventName, args) {
 		this.app.io.to(`room:${this.id}`).emit(eventName, args);
 	}

@@ -78,6 +78,15 @@ export default class Connections {
 		socket.on('user:current', () => {
 			socket.emit('user:current:ok', socket.authenticatedUser.get({plain: true}));
 		});
+
+		socket.on('room:event', ({roomId, event}) => {
+			const activeRoom = this.app.rooms.findActiveRoom(roomId);
+			if (!activeRoom) {
+				debug('Unable to process room message for inactive room ' + roomId);
+				return;
+			}
+			activeRoom.handleRoomEventMessage({sender: socket.authenticatedUser, event});
+		});
 	}
 
 	removeClient(socket) {
@@ -89,7 +98,7 @@ export default class Connections {
 
 		if (!userHasOtherSocketsOpen) {
 			// this was the last socket closed by this user, so leave any room they might be in
-			const roomId = socket.authenticatedUser.get('currentRoomId')
+			const roomId = socket.authenticatedUser.get('currentRoomId');
 			if (roomId) {
 				this.app.rooms.leaveRoom(roomId, socket.authenticatedUser);
 			}
