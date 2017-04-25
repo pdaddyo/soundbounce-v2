@@ -3,7 +3,7 @@ import _debug from 'debug';
 import path from 'path';
 import { argv } from 'yargs';
 
-const debug = _debug('app:config:_base');
+const debug = _debug('soundbounce:config:_base');
 const config = {
 	env: process.env.NODE_ENV || 'development',
 

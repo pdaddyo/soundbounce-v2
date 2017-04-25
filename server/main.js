@@ -9,7 +9,7 @@ import SoundbounceServer from './soundbounce/app/Server';
 import compress from 'compression';
 import path from 'path';
 
-const debug = _debug('app:server');
+const debug = _debug('soundbounce:server');
 const paths = config.utils_paths;
 const app = express();
 const compiler = webpack(webpackConfig);

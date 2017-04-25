@@ -10,7 +10,7 @@ import {syncDatabaseSchema} from '../data/schema';
 
 import _debug from 'debug';
 
-const debug = _debug('app:soundbounce:server');
+const debug = _debug('soundbounce:server');
 
 export default class Server {
 	constructor(expressApp) {

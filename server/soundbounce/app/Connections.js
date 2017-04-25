@@ -1,5 +1,5 @@
 import _debug from 'debug';
-const debug = _debug('app:server:connections');
+const debug = _debug('soundbounce:connections');
 
 export default class Connections {
 	constructor(app) {

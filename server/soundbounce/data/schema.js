@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import sequelize from './sequelize';
 import _debug from 'debug';
-const debug = _debug('app:data:schema');
+const debug = _debug('soundbounce:data:schema');
 
 // helper function to get settings for a required foreign key
 const requiredFK = (field) => ({

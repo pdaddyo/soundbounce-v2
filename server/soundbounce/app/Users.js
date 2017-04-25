@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 import _debug from 'debug';
-const debug = _debug('app:server:users');
+const debug = _debug('soundbounce:users');
 import {User, UserActivity, UserActivities} from '../data/schema';
 
 const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';

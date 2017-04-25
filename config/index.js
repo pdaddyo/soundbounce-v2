@@ -2,7 +2,7 @@ import fs from 'fs';
 import _debug from 'debug';
 import config from './_base';
 
-const debug = _debug('app:config');
+const debug = _debug('soundbounce:config');
 debug('Create configuration.');
 debug(`Apply environment overrides for NODE_ENV "${config.env}".`);
 

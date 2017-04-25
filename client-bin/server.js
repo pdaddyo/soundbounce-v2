@@ -4,7 +4,7 @@ import _debug from 'debug';
 import http from 'http';
 
 const server = http.Server(app);
-const debug = _debug('app:bin:server');
+const debug = _debug('soundbounce:bin:server');
 const port = config.server_port;
 const host = config.server_host;
 
