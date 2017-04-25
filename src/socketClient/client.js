@@ -48,6 +48,10 @@ class SocketClient {
 			dispatch(socketRoomJoinRequest(roomId));
 			socket.emit('room:join', roomId);
 		});
+		socket.on('room:join:ok', (room) => {
+			//todo: handle room join
+			console.log('room join ok!');
+		});
 	}
 
 	emit(eventName, param) {

@@ -51,6 +51,14 @@ export default class Connections {
 		debug(`${socket.debugUserName} connected, ${this.connectedSockets.length} total clients.`);
 	}
 
+	joinRoom({socket, roomId}) {
+		socket.join(`room:${roomId}`);
+		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(room => {
+			console.log('emitting now');
+			this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
+		});
+	}
+
 	addSocketEventListeners(socket) {
 		socket.on('room:create', (roomOptions) => {
 			this.app.rooms.createRoom(roomOptions)
@@ -58,17 +66,13 @@ export default class Connections {
 					room.setCreator(socket.authenticatedUser);
 					room.save().then(() => {
 						socket.emit('room:create:ok', room.get({plain: true}));
-						socket.to(socket.allSocketsForThisUser)
-							.emit('room:join:request', room.get('id'));
+						this.joinRoom({socket, roomId: room.get('id')});
 					});
 				});
 		});
 
 		socket.on('room:join', roomId => {
-			socket.join(`room:${roomId}`);
-			this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(room => {
-				socket.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
-			});
+			this.joinRoom({socket, roomId})
 		});
 
 		socket.on('user:current', () => {
