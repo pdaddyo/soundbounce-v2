@@ -53,8 +53,10 @@ export default class Connections {
 
 	joinRoom({socket, roomId}) {
 		socket.join(`room:${roomId}`);
-		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(room => {
-			this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
+		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(activeRoom => {
+			// on first join send back a full room sync
+			const fullSync = activeRoom.getFullSync();
+			this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', fullSync);
 		});
 	}
 
@@ -63,8 +65,8 @@ export default class Connections {
 			this.app.rooms.createRoom(roomOptions)
 				.then(room => {
 					room.setCreator(socket.authenticatedUser);
-					room.save().then(() => {
-						socket.emit('room:create:ok', room.get({plain: true}));
+					room.save().then((room) => {
+						socket.emit('room:create:ok', {roomId: room.get('id')});
 						this.joinRoom({socket, roomId: room.get('id')});
 					});
 				});

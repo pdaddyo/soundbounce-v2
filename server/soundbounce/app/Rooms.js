@@ -47,6 +47,7 @@ export default class Rooms {
 					this.activeRooms.push(activeRoom);
 				}
 
+				debug(activeRoom.room.get('state'));
 				// log this join
 				RoomActivity.create({
 					type: RoomActivities.userJoin,
@@ -58,7 +59,7 @@ export default class Rooms {
 				return Promise.all([
 					user.save(),
 					room.save()
-				]).then(() => room.get({plain: true}));
+				]).then(() => activeRoom);
 			}).catch(roomNotFoundError => {
 				return Promise.reject(
 					new Error(`joinRoom error - room (${roomId}) not  found. ` + roomNotFoundError)

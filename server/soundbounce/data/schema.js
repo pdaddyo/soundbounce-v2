@@ -53,7 +53,8 @@ export const UserActivities = {
 export const Room = sequelize.define('room', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
-	state: {type: Sequelize.JSON}
+	state: {type: Sequelize.JSONB},
+	config: {type: Sequelize.JSONB}
 });
 
 Room.belongsTo(User, {as: 'Creator', foreignKey: 'creatorId'});
