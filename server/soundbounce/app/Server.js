@@ -6,6 +6,7 @@ import socket from '../socket';
 import Connections from './Connections';
 import Rooms from './Rooms';
 import Users from './Users';
+import Tracks from './Tracks';
 import {syncDatabaseSchema} from '../data/schema';
 
 import _debug from 'debug';
@@ -26,6 +27,7 @@ export default class Server {
 		syncDatabaseSchema(() => {
 			app.rooms = new Rooms(app);
 			app.users = new Users();
+			app.tracks = new Tracks();
 			app.connections = new Connections(app);
 			app.ready();
 			debug('Server init OK');
