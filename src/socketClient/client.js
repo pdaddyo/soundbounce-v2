@@ -49,7 +49,7 @@ class SocketClient {
 			socket.emit('room:join', roomId);
 		});
 		socket.on('room:join:ok', (room) => {
-			//todo: handle room join
+			// todo: handle room join
 			console.log('room join ok!');
 		});
 	}
