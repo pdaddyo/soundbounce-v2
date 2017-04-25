@@ -8,7 +8,9 @@ export default function configureStore(initialState = {}) {
 	// Compose final middleware and use devtools in debug environment
 	const sagaMiddleware = createSagaMiddleware();
 	let middleware = applyMiddleware(sagaMiddleware);
-	if (__DEBUG__) {
+
+	// todo: disable login for production once stable
+	if (true) { // __DEBUG__) {
 		const createLogger = require('redux-logger');
 		const logger = createLogger({collapsed: true});
 		middleware = applyMiddleware(sagaMiddleware, logger);
