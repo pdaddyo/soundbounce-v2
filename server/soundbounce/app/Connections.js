@@ -7,10 +7,10 @@ export default class Connections {
 		this.connectedSockets = [];
 	}
 
+	// a user may have multiple sockets, but we just want the unique users
+	// we could in theory query this from db but that would end up slow / bottlenecking
 	getConnectedUsersForRoom(roomId) {
 		const users = [];
-		// a user may have multiple sockets, but we just want the unique users
-		// we could in theory query this from db but that would end up slow / bottlenecking
 		for (let socket of this.connectedSockets) {
 			if (socket.authenticatedUser.get('currentRoomId') === roomId) {
 				if (!users.find(u => u.get('id') === socket.authenticatedUser.get('id'))) {
@@ -60,6 +60,22 @@ export default class Connections {
 		});
 	}
 
+	removeClient(socket) {
+		// remove from the connectedSockets list
+		this.connectedSockets = this.connectedSockets.filter(sock => sock !== socket);
+		debug(`${socket.debugUserName} disconnected, ${this.connectedSockets.length} clients connected.`);
+
+		const userHasOtherSocketsOpen = this.connectedSockets.filter(sock => sock.authenticatedUser.get('id') === socket.authenticatedUser.get('id')).length > 0;
+
+		if (!userHasOtherSocketsOpen) {
+			// this was the last socket closed by this user, so leave any room they might be in
+			const roomId = socket.authenticatedUser.get('currentRoomId');
+			if (roomId) {
+				this.app.rooms.leaveRoom(roomId, socket.authenticatedUser);
+			}
+		}
+	}
+
 	addSocketEventListeners(socket) {
 		socket.on('room:create', (roomOptions) => {
 			this.app.rooms.createRoom(roomOptions)
@@ -88,21 +104,5 @@ export default class Connections {
 			}
 			activeRoom.handleRoomEventMessage({sender: socket.authenticatedUser, event});
 		});
-	}
-
-	removeClient(socket) {
-		// remove from the connectedSockets list
-		this.connectedSockets = this.connectedSockets.filter(sock => sock !== socket);
-		debug(`${socket.debugUserName} disconnected, ${this.connectedSockets.length} clients connected.`);
-
-		const userHasOtherSocketsOpen = this.connectedSockets.filter(sock => sock.authenticatedUser.get('id') === socket.authenticatedUser.get('id')).length > 0;
-
-		if (!userHasOtherSocketsOpen) {
-			// this was the last socket closed by this user, so leave any room they might be in
-			const roomId = socket.authenticatedUser.get('currentRoomId');
-			if (roomId) {
-				this.app.rooms.leaveRoom(roomId, socket.authenticatedUser);
-			}
-		}
 	}
 }
