@@ -56,14 +56,11 @@ export default class Connections {
 			this.app.rooms.createRoom(roomOptions)
 				.then(room => {
 					room.setCreator(socket.authenticatedUser);
-					socket.emit('room:create:ok', room.get({plain: true}));
-					socket.join(`room:${room.get('id')}`);
-					// join the room we just created
-					this.app.rooms.joinRoom(room.get('id'), socket.authenticatedUser)
-						.then(room => {
-							// notify all connections from this user (via allUserConnections)
-							socket.to(socket.allSocketsForThisUser).emit('room:join:ok', {room});
-						});
+					room.save().then(() => {
+						socket.emit('room:create:ok', room.get({plain: true}));
+						socket.to(socket.allSocketsForThisUser)
+							.emit('room:join:request', room.get('id'));
+					});
 				});
 		});
 

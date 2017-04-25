@@ -7,7 +7,8 @@ import {
 	socketRoomCreateOk,
 	socketConnectOk,
 	socketConnectError,
-	socketAuthOk
+	socketAuthOk,
+	socketRoomJoinRequest
 } from 'redux/modules/socket';
 
 class SocketClient {
@@ -37,11 +38,15 @@ class SocketClient {
 	setupMessageHandlers() {
 		const {socket} = this;
 		const {dispatch} = this.store;
+		socket.on('user:auth:ok', (user) => {
+			dispatch(socketAuthOk(user));
+		});
 		socket.on('room:create:ok', (room) => {
 			dispatch(socketRoomCreateOk(room));
 		});
-		socket.on('user:auth:ok', (user) => {
-			dispatch(socketAuthOk(user));
+		socket.on('room:join:request', (roomId) => {
+			dispatch(socketRoomJoinRequest(roomId));
+			socket.emit('room:join', roomId);
 		});
 	}
 
