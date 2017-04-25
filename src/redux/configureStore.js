@@ -9,7 +9,7 @@ export default function configureStore(initialState = {}) {
 	const sagaMiddleware = createSagaMiddleware();
 	let middleware = applyMiddleware(sagaMiddleware);
 
-	// todo: disable login for production once stable
+	// todo: disable logging for production once stable
 	if (true) { // __DEBUG__) {
 		const createLogger = require('redux-logger');
 		const logger = createLogger({collapsed: true});
