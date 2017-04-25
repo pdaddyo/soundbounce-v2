@@ -7,6 +7,20 @@ export default class Connections {
 		this.connectedSockets = [];
 	}
 
+	getUsersForRoom(roomId) {
+		const users = [];
+		// a user may have multiple sockets, but we just want the unique users
+		// we could in theory query this from db but that would end up slow / bottlenecking
+		for (let socket of this.connectedSockets) {
+			if (socket.authenticatedUser.get('currentRoomId') === roomId) {
+				if (!users.find(u => u.get('id') === socket.authenticatedUser.get('id'))) {
+					users.push(socket.authenticatedUser);
+				}
+			}
+		}
+		return users;
+	}
+
 	addAuthenticatedSocket({socket, authenticatedUser}) {
 		const plainUserObject = authenticatedUser.get({plain: true});
 		// send the current user info back to the client

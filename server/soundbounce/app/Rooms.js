@@ -2,8 +2,13 @@ import shortid from 'shortid';
 import _debug from 'debug';
 const debug = _debug('soundbounce:rooms');
 import {Room, RoomActivity, RoomActivities} from '../data/schema';
+import ActiveRoom from './ActiveRoom';
 
 export default class Rooms {
+	constructor(app) {
+		this.app = app;
+	}
+
 	activeRooms = [];
 
 	createRoom(roomOptions) {
@@ -12,6 +17,10 @@ export default class Rooms {
 			id: shortid.generate(),
 			name: roomOptions.name,
 		});
+	}
+
+	findActiveRoom(roomId) {
+		return this.activeRooms.find(activeRoom => activeRoom.id === roomId);
 	}
 
 	joinRoom(roomId, user) {
@@ -25,8 +34,16 @@ export default class Rooms {
 			return Room.findOne({where: {id: roomId}}).then(room => {
 				debug(`${user.get('nickname')} joined ${room.get('name')}`);
 
-				room.set('active', true); // todo: decide if we're using this active thing
-				user.set('currentRoomId', room.id);
+				let activeRoom = this.findActiveRoom(roomId);
+				debug('activeRoom', activeRoom);
+				if (!activeRoom) {
+
+					activeRoom = new ActiveRoom(room);
+					activeRoom.startup();
+					this.activeRooms.push(activeRoom);
+				}
+
+				user.set('currentRoomId', roomId);
 
 				// log this join
 				RoomActivity.create({
@@ -52,8 +69,6 @@ export default class Rooms {
 		return Room.findOne({where: {id: roomId}}).then(room => {
 			debug(`${user.get('nickname')} left ${room.name}`);
 
-			// todo: work out if room is still active....
-
 			user.set('currentRoomId', null);
 
 			// log this leave
@@ -67,10 +82,15 @@ export default class Rooms {
 			return Promise.all([
 				user.save(),
 				room.save()
-			]).then(() => ({
-					success: true
-				})
-			);
+			]).then(() => {
+				// now the user is saved, check if the room is still active
+				const activeRoom = this.findActiveRoom(roomId);
+				if (activeRoom && this.app.connections.getUsersForRoom(roomId).length === 0) {
+					debug(`No more users left in room '${room.get('name')}', shutting down`);
+					activeRoom.shutdown();
+				}
+				return {success: true};
+			})
 		});
 	}
 }

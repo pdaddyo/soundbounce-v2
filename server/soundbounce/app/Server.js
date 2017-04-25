@@ -24,7 +24,7 @@ export default class Server {
 		socket(app);
 		auth(app);
 		syncDatabaseSchema(() => {
-			app.rooms = new Rooms();
+			app.rooms = new Rooms(app);
 			app.users = new Users();
 			app.connections = new Connections(app);
 			app.ready();
