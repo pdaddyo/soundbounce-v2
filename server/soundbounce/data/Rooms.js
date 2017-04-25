@@ -13,8 +13,8 @@ export default class Rooms {
 	}
 
 	joinRoom(roomId, user) {
-		const currentRoomId = user.get('currentRoomId');
 		// leave a room if we're in a different room before we join this one.
+		const currentRoomId = user.get('currentRoomId');
 		const leaveFirst = (currentRoomId && currentRoomId !== roomId)
 			? this.leaveRoom(user.get('currentRoomId'), user)
 			: Promise.resolve({success: true});
@@ -38,6 +38,10 @@ export default class Rooms {
 					user.save(),
 					room.save()
 				]).then(() => room.get({plain: true}));
+			}).catch(roomNotFoundError => {
+				return Promise.reject(
+					new Error(`joinRoom error - room (${roomId}) not  found. ` + roomNotFoundError)
+				);
 			});
 		});
 	}
