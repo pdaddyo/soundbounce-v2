@@ -13,8 +13,9 @@ export default class Rooms {
 	}
 
 	joinRoom(roomId, user) {
-		// leave a room if we're in one before we join another one.
-		const leaveFirst = user.get('currentRoomId')
+		const currentRoomId = user.get('currentRoomId');
+		// leave a room if we're in a different room before we join this one.
+		const leaveFirst = (currentRoomId && currentRoomId !== roomId)
 			? this.leaveRoom(user.get('currentRoomId'), user)
 			: Promise.resolve({success: true});
 
