@@ -3,7 +3,11 @@
  */
 import _debug from 'debug';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
-import roomReducer, {roomSetFullState} from '../../../src/redux/modules/shared/room';
+import roomReducer, {
+	roomSetFullState,
+	roomTrackAddOrVote,
+	actions as roomActions
+} from '../../../src/redux/modules/shared/room';
 
 const debug = _debug('soundbounce:rooms:active');
 
@@ -32,7 +36,8 @@ export default class ActiveRoom {
 		return this.room.save();
 	}
 
-	// create a redux store on server that will match that on client
+	// create a redux store on server that will match that on client, so we
+	// can pass action messages around and know the state is in sync
 	createReduxStore() {
 		const reducer = roomReducer;
 		this.reduxStore = createStore(reducer);
@@ -64,8 +69,18 @@ export default class ActiveRoom {
 	// client sending a message to this room
 	handleRoomEventMessage({sender, message}) {
 		debug(`handleRoomEventMessage()`);
+		// todo: handl
+
+		const {trackIds} = message;
+		if (message.type === 'addOrVote') {
+			// ensure they're in our database
+			this.app.tracks.findOrQueryApi(trackIds).then(tracks => {
+				this.reduxStore.dispatch(roomTrackAddOrVote({who: sender.get('id'), trackIds}));
+			});
+		}
 	}
 
+	// emit an event over the network to every client that is in this room
 	emit(eventName, args) {
 		this.app.io.to(`room:${this.id}`).emit(eventName, args);
 	}
