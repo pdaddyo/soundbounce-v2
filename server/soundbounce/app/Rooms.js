@@ -1,9 +1,11 @@
 import shortid from 'shortid';
 import _debug from 'debug';
-const debug = _debug('app:data:rooms');
-import {Room, RoomActivity, RoomActivities} from './schema';
+const debug = _debug('app:server:rooms');
+import {Room, RoomActivity, RoomActivities} from '../data/schema';
 
 export default class Rooms {
+	activeRooms = [];
+
 	createRoom(roomOptions) {
 		debug(`Creating room "${roomOptions.name}"`);
 		return Room.create({

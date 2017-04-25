@@ -5,7 +5,7 @@ import _debug from 'debug';
 import config from '../config';
 import cookieParser from 'cookie-parser';
 
-import SoundbounceServer from './soundbounce/soundbounce-server';
+import SoundbounceServer from './soundbounce/app/Server';
 import compress from 'compression';
 import path from 'path';
 

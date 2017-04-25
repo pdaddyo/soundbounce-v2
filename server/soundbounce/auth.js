@@ -89,7 +89,7 @@ export default (app) => {
 						request.get(profileOptions, (error, response, profile) => {
 
 							// create the user if it doesn't exist
-							app.data.users
+							app.users
 								.loginUser({profile, accessToken, refreshToken})
 								.then(user => {
 									// pass the token to the browser to make requests from there
