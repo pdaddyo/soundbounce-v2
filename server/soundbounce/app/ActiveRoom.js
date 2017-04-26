@@ -4,7 +4,7 @@
 import _debug from 'debug';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import roomReducer, {
-	roomSetFullState,
+	roomFullSync,
 	roomTrackAddOrVote,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
@@ -46,7 +46,7 @@ export default class ActiveRoom {
 		const existingState = this.room.get('state');
 		if (existingState !== null) {
 			debug('Found state in db, applying to redux');
-			this.reduxStore.dispatch(roomSetFullState(existingState));
+			this.reduxStore.dispatch(roomFullSync({room: existingState}));
 		}
 	}
 
