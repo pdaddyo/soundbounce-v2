@@ -3,6 +3,7 @@
  */
 import _debug from 'debug';
 const debug = _debug('soundbounce:tracks');
+import {Track, TrackArtist, Artist} from '../data/schema';
 
 export default class Tracks {
 	constructor(app) {
@@ -11,8 +12,15 @@ export default class Tracks {
 
 	findOrQueryApi(trackIds) {
 		debug(`findOrQueryApi(${trackIds})`);
-		//todo: implement this
 
-		return Promise.resolve({tracks: []});
+		// search our db for these tracks first
+		return Track.findAll({
+			where: {
+				id: {$in: trackIds}
+			},
+			include: [Artist]
+		}).then(tracks => {
+			debug(tracks);
+		});
 	}
 }

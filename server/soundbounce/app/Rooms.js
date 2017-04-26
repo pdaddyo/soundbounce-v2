@@ -47,7 +47,6 @@ export default class Rooms {
 					this.activeRooms.push(activeRoom);
 				}
 
-				debug(activeRoom.room.get('state'));
 				// log this join
 				RoomActivity.create({
 					type: RoomActivities.userJoin,

@@ -35,6 +35,16 @@ function * watchForSocketEmitRoomCreate() {
 		socketClient.emit('room:create', payload.room);
 	}
 }
+function * watchForSocketEmitRoomEvent() {
+	while (true) {
+		if (!socketClient.socket) {
+			// wait for the socket if it's not ready
+			yield take(socketActions.SOCKET_CONNECT_OK);
+		}
+		const {payload} = yield take(socketActions.SOCKET_EMIT_ROOM_EVENT);
+		socketClient.emit('room:event', payload);
+	}
+}
 
 function * watchForSocketOnRoomCreateOk() {
 	while (true) {
@@ -50,6 +60,7 @@ export default function * socketInit() {
 			watchForSocketConnectOk(),
 			watchForSocketAuthOk(),
 			watchForSocketEmitRoomCreate(),
+			watchForSocketEmitRoomEvent(),
 			watchForSocketOnRoomCreateOk()
 		];
 	} catch (err) {

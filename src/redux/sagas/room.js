@@ -8,7 +8,7 @@ function * watchForSocketRoomJoinOk() {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_JOIN_OK);
 		const {roomId} = payload;
 		// now navigate to the room
-		yield put(push(`/rooms/${roomId}`));
+		yield put(push(`/room/${roomId}`));
 	}
 }
 

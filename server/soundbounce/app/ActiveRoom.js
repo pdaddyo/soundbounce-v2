@@ -67,12 +67,9 @@ export default class ActiveRoom {
 	}
 
 	// client sending a message to this room
-	handleRoomEventMessage({sender, message}) {
-		debug(`handleRoomEventMessage()`);
-		// todo: handl
-
-		const {trackIds} = message;
-		if (message.type === 'addOrVote') {
+	handleRoomEventMessage({sender, event}) {
+		if (event.type === 'addOrVote') {
+			const {trackIds} = event;
 			// ensure they're in our database
 			this.app.tracks.findOrQueryApi(trackIds).then(tracks => {
 				this.reduxStore.dispatch(roomTrackAddOrVote({who: sender.get('id'), trackIds}));
