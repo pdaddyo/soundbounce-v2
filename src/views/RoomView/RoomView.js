@@ -44,6 +44,8 @@ class RoomView extends Component {
 			emitRoomJoin();
 		}
 
+		// add the drag drop listeners to the document so you can drop anywhere, not just this
+		// component.
 		document.addEventListener('drop', this.onDrop);
 		document.addEventListener('dragover', this.onDragOver);
 	}

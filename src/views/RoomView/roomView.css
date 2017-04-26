@@ -2,3 +2,9 @@
 	composes: clearfix from 'shared/css/layout.css';
 	padding: 2rem;
 }
+
+.room {
+	background-color: #151518;
+	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+	padding: 2rem;
+}
