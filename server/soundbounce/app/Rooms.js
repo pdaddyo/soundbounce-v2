@@ -43,6 +43,9 @@ export default class Rooms {
 				let activeRoom = this.findActiveRoom(roomId);
 				if (!activeRoom) {
 					activeRoom = new ActiveRoom({room, app: this.app});
+					activeRoom.removeFromList = () => {
+						this.activeRooms = this.activeRooms.filter(activeRoom => activeRoom.id !== roomId);
+					};
 					activeRoom.startup();
 					this.activeRooms.push(activeRoom);
 				}

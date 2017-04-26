@@ -31,6 +31,8 @@ export default class ActiveRoom {
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
 	shutdown() {
 		debug(`Active room shutdown for '${this.name}'`);
+		// remove from the rooms list
+		this.removeFromList();
 		// store the state in the db
 		this.room.set('state', this.reduxStore.getState());
 		return this.room.save();
