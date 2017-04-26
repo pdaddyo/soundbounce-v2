@@ -209,3 +209,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# VS Code Settings 
+\.vscode/
