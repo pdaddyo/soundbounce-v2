@@ -87,6 +87,7 @@
 		"event-source-polyfill": "0.0.7",
 		"exports-loader": "^0.6.3",
 		"express": "^4.15.2",
+		"fs": "^0.0.1-security",
 		"gregorian-calendar": "^4.1.6",
 		"history": "^2.0.0",
 		"http": "^0.0.0",
