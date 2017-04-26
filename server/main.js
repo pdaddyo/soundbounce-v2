@@ -4,6 +4,7 @@ import webpackConfig from '../build/webpack.config';
 import _debug from 'debug';
 import config from '../config';
 import cookieParser from 'cookie-parser';
+import fs from 'fs';
 
 import SoundbounceServer from './soundbounce/app/Server';
 import compress from 'compression';
@@ -55,7 +56,8 @@ app.use(express.static(paths.base(config.dir_dist)));
 // rendering, you'll want to remove this middleware.
 app.use('*', function (req, res, next) {
 	const filename = path.join(compiler.outputPath, 'index.html');
-	compiler.outputFileSystem.readFile(filename, (err, result) => {
+	const fs = compiler.outputFileSystem || fs;
+	fs.readFile(filename, (err, result) => {
 		if (err) {
 			return next(err);
 		}
@@ -63,6 +65,7 @@ app.use('*', function (req, res, next) {
 		res.send(result);
 		res.end();
 	});
+
 });
 
 export default app;
