@@ -35,6 +35,14 @@ function * watchForSocketEmitRoomCreate() {
 		socketClient.emit('room:create', payload.room);
 	}
 }
+
+function * watchForSocketEmitRoomJoin() {
+	while (true) {
+		const {payload} = yield take(socketActions.SOCKET_EMIT_ROOM_JOIN);
+		socketClient.emit('room:join', payload.roomId);
+	}
+}
+
 function * watchForSocketEmitRoomEvent() {
 	while (true) {
 		if (!socketClient.socket) {
@@ -60,6 +68,7 @@ export default function * socketInit() {
 			watchForSocketConnectOk(),
 			watchForSocketAuthOk(),
 			watchForSocketEmitRoomCreate(),
+			watchForSocketEmitRoomJoin(),
 			watchForSocketEmitRoomEvent(),
 			watchForSocketOnRoomCreateOk()
 		];

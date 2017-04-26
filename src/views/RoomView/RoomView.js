@@ -2,13 +2,14 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
-import {socketEmitRoomEvent} from 'redux/modules/socket';
+import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 
 import classes from './roomView.css';
 
 class RoomView extends Component {
 	static propTypes = {
 		emitRoomEvent: PropTypes.func.isRequired,
+		emitRoomJoin: PropTypes.func,
 		currentUser: PropTypes.object,
 		params: PropTypes.object,
 		room: PropTypes.object
@@ -37,6 +38,12 @@ class RoomView extends Component {
 	};
 
 	componentWillMount() {
+		const {room, params, emitRoomJoin} = this.props;
+		// if we're not in this room but component just mounted, we'd better join it
+		if (room.id !== params.roomId) {
+			emitRoomJoin();
+		}
+
 		document.addEventListener('drop', this.onDrop);
 		document.addEventListener('dragover', this.onDragOver);
 	}
@@ -48,9 +55,12 @@ class RoomView extends Component {
 
 	render() {
 		const {room, params} = this.props;
+
 		if (room.id !== params.roomId) {
-			// todo: negotiate connection to correct room since our url doesn't match state
-			return <div>Room id mismatch</div>;
+			// on mount we emitted a room join, so shouldn't be long now
+			return <div className={classes.container}>
+				Looking for room...
+			</div>;
 		}
 
 		return (
@@ -73,6 +83,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	emitRoomEvent: (event) => {
 		dispatch(socketEmitRoomEvent({roomId: ownProps.params.roomId, event}));
+	},
+	emitRoomJoin: () => {
+		dispatch(socketEmitRoomJoin(ownProps.params.roomId));
 	}
 });
 
