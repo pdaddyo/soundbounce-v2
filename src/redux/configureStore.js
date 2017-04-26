@@ -3,17 +3,19 @@ import rootReducer from './rootReducer';
 import createSagaMiddleware, {END} from 'redux-saga';
 import rootSaga from './sagas/root';
 import socketClient from '../socketClient/client';
+import {routerMiddleware} from 'react-router-redux';
+import {browserHistory} from 'react-router';
 
 export default function configureStore(initialState = {}) {
 	// Compose final middleware and use devtools in debug environment
 	const sagaMiddleware = createSagaMiddleware();
-	let middleware = applyMiddleware(sagaMiddleware);
+	let middleware = applyMiddleware(sagaMiddleware, routerMiddleware(browserHistory));
 
 	// todo: disable logging for production once stable
 	if (true) { // __DEBUG__) {
 		const createLogger = require('redux-logger');
 		const logger = createLogger({collapsed: true});
-		middleware = applyMiddleware(sagaMiddleware, logger);
+		middleware = applyMiddleware(sagaMiddleware, logger, routerMiddleware(browserHistory));
 	}
 
 	// Create final store and subscribe router in debug env ie. for devtools

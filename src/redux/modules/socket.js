@@ -7,6 +7,7 @@ export const SOCKET_CONNECT_ERROR = 'SOCKET_CONNECT_ERROR';
 export const SOCKET_EMIT_ROOM_CREATE = 'SOCKET_EMIT_ROOM_CREATE';
 export const SOCKET_ROOM_CREATE_OK = 'SOCKET_ON_ROOM_CREATE_OK';
 export const SOCKET_ROOM_JOIN_REQUEST = 'SOCKET_ROOM_JOIN_REQUEST';
+export const SOCKET_ROOM_JOIN_OK = 'SOCKET_ROOM_JOIN_OK';
 export const SOCKET_AUTH_OK = 'SOCKET_ON_AUTH_OK';
 
 export const actions = {
@@ -16,6 +17,7 @@ export const actions = {
 	SOCKET_EMIT_ROOM_CREATE,
 	SOCKET_ROOM_CREATE_OK,
 	SOCKET_ROOM_JOIN_REQUEST,
+	SOCKET_ROOM_JOIN_OK,
 	SOCKET_AUTH_OK
 };
 
@@ -62,6 +64,11 @@ export const socketRoomJoinRequest = (roomId) => ({
 export const socketAuthOk = (user) => ({
 	type: SOCKET_AUTH_OK,
 	payload: {user}
+});
+
+export const socketRoomJoinOk = (roomId) => ({
+	type: SOCKET_ROOM_JOIN_OK,
+	payload: {roomId}
 });
 
 // ------------------------------------

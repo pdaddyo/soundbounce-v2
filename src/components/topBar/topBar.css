@@ -1,7 +1,7 @@
 .topBar {
 	background-color: #151518;
 	width: 100%;
-	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
+	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
 	position: fixed;
 }
 

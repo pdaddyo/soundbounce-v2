@@ -29,7 +29,6 @@ function * beginLogin() {
 			// this will throw if there's a problem.
 			const profile = yield call(getMyProfile);
 			yield put(spotifyAuthOK(profile));
-
 			// ok we have a successful auth, let's open a socket
 			yield put(socketConnectBegin());
 			// strip the hash so we don't share it accidentally

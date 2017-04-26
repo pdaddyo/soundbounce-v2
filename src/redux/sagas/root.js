@@ -3,10 +3,12 @@
  */
 import spotifyInit from './spotify';
 import socketInit from './socket';
+import roomInit from './room';
 
 export default function * rootSaga() {
 	yield [
 		spotifyInit(),
-		socketInit()
+		socketInit(),
+		roomInit()
 	];
 }

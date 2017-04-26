@@ -8,8 +8,11 @@ import {
 	socketConnectOk,
 	socketConnectError,
 	socketAuthOk,
-	socketRoomJoinRequest
+	socketRoomJoinRequest,
+	socketRoomJoinOk
 } from 'redux/modules/socket';
+
+import {roomFullSync} from 'redux/modules/shared/room';
 
 class SocketClient {
 	setStore(store) {
@@ -48,9 +51,12 @@ class SocketClient {
 			dispatch(socketRoomJoinRequest(roomId));
 			socket.emit('room:join', roomId);
 		});
-		socket.on('room:join:ok', (room) => {
-			// todo: handle room join
-			console.log('room join ok!');
+		socket.on('room:join:ok', (fullSync) => {
+			dispatch(socketRoomJoinOk(fullSync.room.id));
+			dispatch(roomFullSync(fullSync));
+		});
+		socket.on('room:sync', (fullSync) => {
+			dispatch(roomFullSync(fullSync));
 		});
 	}
 
