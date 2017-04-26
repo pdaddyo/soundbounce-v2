@@ -56,8 +56,8 @@ app.use(express.static(paths.base(config.dir_dist)));
 // rendering, you'll want to remove this middleware.
 app.use('*', function (req, res, next) {
 	const filename = path.join(compiler.outputPath, 'index.html');
-	const fs = compiler.outputFileSystem || fs;
-	fs.readFile(filename, (err, result) => {
+	const fileSystem = fs;
+	fileSystem.readFile(filename, (err, result) => {
 		if (err) {
 			return next(err);
 		}
