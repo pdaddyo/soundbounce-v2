@@ -61,7 +61,6 @@ class SocketClient {
 	}
 
 	emit(eventName, param) {
-		//	console.log(`emit [${eventName}] -->`, param);
 		this.socket.emit(eventName, param);
 	}
 }

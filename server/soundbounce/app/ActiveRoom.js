@@ -56,7 +56,16 @@ export default class ActiveRoom {
 	getFullSync() {
 		const room = this.room.get({plain: true});
 		return {
-			room,
+			room: {
+				...room,
+				listeners: this.app.connections
+					.getConnectedUsersForRoom(this.id)
+					.map(user => ({
+						id: user.get('id'),
+						nickname: user.get('name'),
+						avatar: user.get('avatar')
+					}))
+			},
 			// todo: parse the room state and pull out this info from db
 			tracks: {
 				'2sZoykkHTyTbK4cc3cK5iE': {
