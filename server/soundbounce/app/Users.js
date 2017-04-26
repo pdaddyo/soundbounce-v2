@@ -41,5 +41,16 @@ export default class Users {
 			return user.save();
 		});
 	}
+
+	getUsersForRoomSync(userIds, roomId) {
+		// todo: also get room status such as creator, admin based on roomId
+		return User
+			.findAll({where: {id: {$in: userIds}}, attributes: ['id', 'nickname', 'avatar']})
+			.then(users =>
+				users ? users.map(user => ({
+					...user.get({plain: true}),
+					tags: ['listener']
+				})) : []);
+	}
 }
 

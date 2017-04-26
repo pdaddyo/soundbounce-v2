@@ -74,7 +74,7 @@ class RoomView extends Component {
 					<div className={classes.listeners}>
 						Listeners:
 						{room.listeners && room.listeners.map(user => (
-							<div>- <img src={user.avatar}/> {user.nickname}</div>
+							<div>- {user}</div>
 						))}
 					</div>
 				</div>

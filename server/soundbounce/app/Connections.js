@@ -55,8 +55,9 @@ export default class Connections {
 		socket.join(`room:${roomId}`);
 		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(activeRoom => {
 			// on first join send back a full room sync
-			const fullSync = activeRoom.getFullSync();
-			this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', fullSync);
+			activeRoom.getFullSync().then(fullSync => {
+				this.app.io.to(socket.allSocketsForThisUser).emit('room:join:ok', fullSync);
+			});
 		});
 	}
 

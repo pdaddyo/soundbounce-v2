@@ -54,18 +54,20 @@ export default class ActiveRoom {
 	// any further immediate api calls.
 	// so room state, plus short form for tracks, artists and users mentioned
 	getFullSync() {
-		const room = this.room.get({plain: true});
-		return {
-			room: {
-				...room,
-				listeners: this.app.connections
-					.getConnectedUsersForRoom(this.id)
-					.map(user => ({
-						id: user.get('id'),
-						nickname: user.get('name'),
-						avatar: user.get('avatar')
-					}))
-			},
+		const roomPlain = this.room.get({plain: true});
+		const room = {
+			...roomPlain,
+			listeners: this.app.connections
+				.getConnectedUsersForRoom(this.id)
+				.map(user => user.get('id'))
+		};
+
+		/* todo: users from room events, track votes, listeners, creator */
+
+		const users = this.app.users.getUsersForRoomSync(room.listeners, room.id);
+
+		return Promise.all([users]).then(([users]) => ({
+			room,
 			// todo: parse the room state and pull out this info from db
 			tracks: {
 				'2sZoykkHTyTbK4cc3cK5iE': {
@@ -73,8 +75,10 @@ export default class ActiveRoom {
 				}
 			},
 			artists: {},
-			users: {}
-		}
+			users
+		})).catch(err => {
+			debug('Error in getFullSync: ', err);
+		});
 	}
 
 	// client sending a message to this room

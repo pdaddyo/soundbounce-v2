@@ -1,5 +1,7 @@
 import update from 'react-addons-update';
 
+import {ROOM_FULL_SYNC} from './shared/room';
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -44,6 +46,24 @@ const ACTION_HANDLERS = {
 			users: update(state.users, {[user.id]: {$set: user}})
 		};
 		return newState;
+	},
+	[ROOM_FULL_SYNC]: (state, {payload}) => {
+		let {users} = payload.fullSync;
+		let existingUsers = state.users;
+		const updateCommand = {};
+
+		// don't want to overwrite users if already have more info
+		for (let user of users) {
+			if (existingUsers[user.id]) {
+				user = {...existingUsers[user.id], ...user};
+			}
+			updateCommand[user.id] = {$set: user};
+		}
+
+		return {
+			...state,
+			users: update(state.users, updateCommand)
+		};
 	}
 };
 
