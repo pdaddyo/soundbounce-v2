@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 
-// import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
+import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
 import classes from './topBar.css';
 
@@ -21,7 +21,7 @@ class TopBar extends Component {
 					Soundbounce
 				</div>
 				<div className={classes.right}>
-					{/* <SpotifyPlayerStatus/> */}
+					<SpotifyPlayerStatus/>
 
 					<div className={classes.user}>
 
