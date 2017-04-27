@@ -1,7 +1,7 @@
 /* @flow */
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {selectCurrentUser, selectUsers} from 'redux/modules/users';
+import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 
 import Listeners from 'components/room/listeners/Listeners';
