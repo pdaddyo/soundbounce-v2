@@ -31,7 +31,15 @@ export const setCurrentUser = (user) => ({
 // Selectors
 // ------------------------------------
 export const selectCurrentUser = (state) => (
-	state.users.currentUserId ? state.users.users[state.users.currentUserId] : null
+	selectUser(state, state.users.currentUserId)
+);
+
+export const selectUser = (state, userid) => (
+	userid ? state.users.users[userid] : null
+);
+
+export const selectUsers = (state, userIds) => (
+	userIds.map(userId => selectUser(state, userId))
 );
 
 // ------------------------------------

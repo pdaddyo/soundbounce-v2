@@ -1,0 +1,12 @@
+
+.avatar {
+	display: inline-block;
+	background-size: cover;
+	position: relative;
+	top: -0.5rem;
+	margin-left: 0.7rem;
+	width: 1.7rem;
+	height: 1.7rem;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 50%;
+}

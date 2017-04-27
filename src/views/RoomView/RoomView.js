@@ -1,8 +1,10 @@
 /* @flow */
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {selectCurrentUser} from 'redux/modules/users';
+import {selectCurrentUser, selectUsers} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
+
+import Listeners from 'components/room/listeners/Listeners';
 
 import classes from './roomView.css';
 
@@ -73,9 +75,7 @@ class RoomView extends Component {
 					</div>
 					<div className={classes.listeners}>
 						Listeners:
-						{room.listeners && room.listeners.map(user => (
-							<div>- {user}</div>
-						))}
+						<Listeners userIds={room.listeners}/>
 					</div>
 				</div>
 			</div>

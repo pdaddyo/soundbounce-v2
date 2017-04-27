@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
+import Avatar from 'components/user/avatar/Avatar';
 
 import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
@@ -34,8 +35,8 @@ class TopBar extends Component {
 								<span className={classes.dropdownArrow}> ▼ </span>
 							</div>
 						</div>
-						<div className={classes.avatar}
-							 style={{backgroundImage: `url(${currentUser.avatar})`}}/>
+						<Avatar src={currentUser.avatar}/>
+
 					</div>
 
 				</div>

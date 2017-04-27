@@ -1,0 +1,16 @@
+.listeners {
+	padding-top: 0.5rem;
+}
+
+.listener {
+	padding: 0.2rem;
+	line-height: 0rem;
+}
+
+.name {
+	display: inline-block;
+	position: relative;
+	top: -1.1rem;
+	margin-left: 0.4rem;
+	font-size: 0.8rem;
+}
