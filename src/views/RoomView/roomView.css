@@ -1,10 +1,28 @@
 .container {
 	composes: clearfix from 'shared/css/layout.css';
-	padding: 2rem;
 }
 
 .room {
 	background-color: #151518;
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
 	padding: 2rem;
+	width: calc(70% - 9rem);
+	margin: 2rem;
+	float: left;
+}
+
+.name {
+	font-weight: lighter;
+	font-size: 1.8rem;
+	color: rgba(255, 255, 255, 0.6);
+	margin-bottom: 1.5rem;
+}
+
+.chat {
+	position: fixed;
+	right: 0;
+	height: 100%;
+	background-color: #151518;
+	width: 30%;
+	padding: 0.5rem;
 }

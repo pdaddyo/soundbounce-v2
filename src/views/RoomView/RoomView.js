@@ -6,7 +6,7 @@ import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 
 import Listeners from 'components/room/listeners/Listeners';
 
-import classes from './roomView.css';
+import theme from './roomView.css';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -62,19 +62,22 @@ class RoomView extends Component {
 
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
-			return <div className={classes.container}>
+			return <div className={theme.container}>
 				Looking for room...
 			</div>;
 		}
 
 		return (
-			<div className={classes.container}>
-				<div className={classes.room}>
-					<div className={classes.name}>
+			<div className={theme.container}>
+				<div className={theme.room}>
+					<div className={theme.name}>
 						{room.name}
 					</div>
-					<div className={classes.listeners}>
-						Listeners:
+
+				</div>
+				<div className={theme.chat}>
+					<div className={theme.listeners}>
+
 						<Listeners userIds={room.listeners}/>
 					</div>
 				</div>

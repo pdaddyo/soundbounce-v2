@@ -95,6 +95,7 @@
 		"imports-loader": "^0.6.5",
 		"isomorphic-fetch": "^2.2.1",
 		"lodash": "latest",
+		"mdi": "^1.9.33",
 		"moment": "^2.7.0",
 		"object-assign": "^4.0.1",
 		"pg": "^6.1.5",

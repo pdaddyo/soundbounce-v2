@@ -68,3 +68,17 @@
 	top: -0.1rem;
 	color: rgba(255, 255, 255, 0.5);
 }
+
+.settings {
+	display: inline-block;
+	padding: 1rem;
+	position: relative;
+	top: -1rem;
+	margin-right: -1rem;
+	margin-left: 0.5rem;
+	cursor: pointer;
+}
+
+.settings:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+}

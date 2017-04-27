@@ -2,10 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 import Avatar from 'components/user/avatar/Avatar';
+import {Link} from 'react-router';
+import SettingsIcon from 'components/svg/icons/Settings';
 
 import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
-import classes from './topBar.css';
+import theme from './topBar.css';
 
 class TopBar extends Component {
 	static propTypes = {
@@ -17,26 +19,28 @@ class TopBar extends Component {
 		const {currentUser, player} = this.props;
 
 		return (
-			<div className={classes.topBar}>
-				<div className={classes.soundbounce}>
-					Soundbounce
+			<div className={theme.topBar}>
+				<div className={theme.soundbounce}>
+					<Link to='/'>Soundbounce</Link>
 				</div>
-				<div className={classes.right}>
+				<div className={theme.right}>
 					<SpotifyPlayerStatus/>
 
-					<div className={classes.user}>
+					<div className={theme.user}>
 
-						<div className={classes.text}>
-							<div className={classes.profileName}>
-								Bouncing <span className={classes.room}>Boomtown</span>
+						<div className={theme.text}>
+							<div className={theme.profileName}>
+								Bouncing <span className={theme.room}>Boomtown</span>
 							</div>
-							<div className={classes.device}>
+							<div className={theme.device}>
 								to {player && player.device.name}
-								<span className={classes.dropdownArrow}> ▼ </span>
+								<span className={theme.dropdownArrow}> ▼ </span>
 							</div>
 						</div>
 						<Avatar src={currentUser.avatar}/>
-
+						<div className={theme.settings}>
+							<SettingsIcon />
+						</div>
 					</div>
 
 				</div>

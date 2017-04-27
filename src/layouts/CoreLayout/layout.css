@@ -6,6 +6,18 @@ html, body {
 	color: rgba(255, 255, 255, 0.8);
 }
 
+a {
+	color: rgba(255, 255, 255, 0.8);
+	cursor: pointer;
+	text-decoration: none;
+	outline: none;
+}
+
+a:hover {
+	color: rgba(255, 255, 255, 0.9);
+
+}
+
 .app {
 	composes: helvetica from 'shared/css/helvetica.css';
 	width: 100%;
