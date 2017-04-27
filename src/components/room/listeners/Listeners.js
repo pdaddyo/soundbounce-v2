@@ -21,9 +21,9 @@ class Listeners extends Component {
 					<div key={listener.id}
 						 className={theme.listener}>
 						<Avatar src={listener.avatar}/>
-						<div className={theme.name}>
-							{listener.nickname}
-						</div>
+						{/* <div className={theme.name}>
+						 {listener.nickname}
+						 </div> */}
 					</div>
 				))}
 			</div>

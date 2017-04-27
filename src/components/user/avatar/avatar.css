@@ -1,5 +1,5 @@
-
 .avatar {
+	filter: grayscale(50%);
 	display: inline-block;
 	background-size: cover;
 	position: relative;
@@ -9,4 +9,9 @@
 	height: 1.7rem;
 	border: 1px solid rgba(255, 255, 255, 0.15);
 	border-radius: 50%;
+	cursor: pointer;
+}
+
+.avatar:hover {
+	filter: grayscale(0%);
 }
