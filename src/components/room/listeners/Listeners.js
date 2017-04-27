@@ -31,7 +31,7 @@ class Listeners extends Component {
 	}
 }
 
-// get the artists from the
+// select the users from the redux state
 const mapStateToProps = (state, ownProps) => ({
 	listeners: selectUsers(state, ownProps.userIds)
 });

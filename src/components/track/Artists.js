@@ -15,7 +15,7 @@ class Artists extends Component {
 	}
 }
 
-// get the artists from the
+// select the artists from the redux state based on track
 const mapStateToProps = (state, ownProps) => ({
 	artists: state.spotify.tracks[ownProps.trackId]
 		? state.spotify.tracks[ownProps.trackId].artists.map(a => ({
