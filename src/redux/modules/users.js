@@ -5,10 +5,10 @@ import {ROOM_FULL_SYNC} from './shared/room';
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const USER_SET_CURRENT = 'USER_SET_CURRENT';
 
 export const actions = {
-	SET_CURRENT_USER
+	USER_SET_CURRENT
 };
 
 // ------------------------------------
@@ -23,7 +23,7 @@ const defaultState = {
 // Action Creators
 // ------------------------------------
 export const setCurrentUser = (user) => ({
-	type: SET_CURRENT_USER,
+	type: USER_SET_CURRENT,
 	payload: {user}
 });
 
@@ -38,7 +38,7 @@ export const selectCurrentUser = (state) => (
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-	[SET_CURRENT_USER]: (state, {payload}) => {
+	[USER_SET_CURRENT]: (state, {payload}) => {
 		const {user} = payload;
 		const newState = {
 			...state,
