@@ -54,6 +54,17 @@ function * watchForSocketEmitRoomEvent() {
 	}
 }
 
+function * watchForSocketRequestHomeData() {
+	while (true) {
+		if (!socketClient.socket) {
+			// wait for the socket if it's not ready
+			yield take(socketActions.SOCKET_CONNECT_OK);
+		}
+		yield take(socketActions.SOCKET_REQUEST_HOME_DATA);
+		socketClient.emit('home:data');
+	}
+}
+
 function * watchForSocketOnRoomCreateOk() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_CREATE_OK);
@@ -70,7 +81,8 @@ export default function * socketInit() {
 			watchForSocketEmitRoomCreate(),
 			watchForSocketEmitRoomJoin(),
 			watchForSocketEmitRoomEvent(),
-			watchForSocketOnRoomCreateOk()
+			watchForSocketOnRoomCreateOk(),
+			watchForSocketRequestHomeData()
 		];
 	} catch (err) {
 		console.log('unhandled socket saga error: ' + err);

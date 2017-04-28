@@ -1,7 +1,8 @@
 /* @flow */
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {socketEmitRoomCreate} from 'redux/modules/socket';
+import {Link} from 'react-router';
+import {socketEmitRoomCreate, socketRequestHomeData} from 'redux/modules/socket';
 import {selectCurrentUser} from 'redux/modules/users';
 
 import classes from './homeView.css';
@@ -9,7 +10,9 @@ import classes from './homeView.css';
 class HomeView extends Component {
 	static propTypes = {
 		createRoom: PropTypes.func.isRequired,
-		currentUser: PropTypes.object
+		currentUser: PropTypes.object,
+		requestHomeData: PropTypes.func,
+		home: PropTypes.object
 	};
 
 	clickCreateRoom = (evt) => {
@@ -23,9 +26,17 @@ class HomeView extends Component {
 		});
 	};
 
+	componentWillMount() {
+		this.props.requestHomeData();
+	}
+
 	render() {
+		const {home} = this.props;
 		return (
 			<div className={classes.container}>
+				{home.activeRooms.map(room => (
+					<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
+				))}
 				<button onClick={this.clickCreateRoom}>Create room</button>
 				<br/>
 			</div>
@@ -34,12 +45,16 @@ class HomeView extends Component {
 }
 
 const mapStateToProps = state => ({
-	currentUser: selectCurrentUser(state)
+	currentUser: selectCurrentUser(state),
+	home: state.home
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	createRoom: (room) => {
 		dispatch(socketEmitRoomCreate(room));
+	},
+	requestHomeData: () => {
+		dispatch(socketRequestHomeData());
 	}
 });
 

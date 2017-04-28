@@ -7,10 +7,13 @@ export const SOCKET_CONNECT_ERROR = 'SOCKET_CONNECT_ERROR';
 export const SOCKET_EMIT_ROOM_CREATE = 'SOCKET_EMIT_ROOM_CREATE';
 export const SOCKET_EMIT_ROOM_JOIN = 'SOCKET_EMIT_ROOM_JOIN';
 export const SOCKET_EMIT_ROOM_EVENT = 'SOCKET_EMIT_ROOM_EVENT';
+export const SOCKET_ROOM_EVENT = 'SOCKET_ROOM_EVENT';
 export const SOCKET_ROOM_CREATE_OK = 'SOCKET_ON_ROOM_CREATE_OK';
 export const SOCKET_ROOM_JOIN_REQUEST = 'SOCKET_ROOM_JOIN_REQUEST';
 export const SOCKET_ROOM_JOIN_OK = 'SOCKET_ROOM_JOIN_OK';
 export const SOCKET_AUTH_OK = 'SOCKET_ON_AUTH_OK';
+export const SOCKET_REQUEST_HOME_DATA = 'SOCKET_REQUEST_HOME_DATA';
+export const SOCKET_HOME_DATA_OK = 'SOCKET_HOME_DATA_OK';
 
 export const actions = {
 	SOCKET_CONNECT_BEGIN,
@@ -19,10 +22,13 @@ export const actions = {
 	SOCKET_EMIT_ROOM_CREATE,
 	SOCKET_EMIT_ROOM_JOIN,
 	SOCKET_EMIT_ROOM_EVENT,
+	SOCKET_ROOM_EVENT,
 	SOCKET_ROOM_CREATE_OK,
 	SOCKET_ROOM_JOIN_REQUEST,
 	SOCKET_ROOM_JOIN_OK,
-	SOCKET_AUTH_OK
+	SOCKET_AUTH_OK,
+	SOCKET_REQUEST_HOME_DATA,
+	SOCKET_HOME_DATA_OK
 };
 
 // ------------------------------------
@@ -65,6 +71,11 @@ export const socketEmitRoomEvent = ({roomId, event}) => ({
 	payload: {roomId, event}
 });
 
+export const socketRoomEvent = ({roomId, event}) => ({
+	type: SOCKET_ROOM_EVENT,
+	payload: {roomId, event}
+});
+
 export const socketRoomCreateOk = (room) => ({
 	type: SOCKET_ROOM_CREATE_OK,
 	payload: {room}
@@ -83,6 +94,15 @@ export const socketAuthOk = (user) => ({
 export const socketRoomJoinOk = (roomId) => ({
 	type: SOCKET_ROOM_JOIN_OK,
 	payload: {roomId}
+});
+
+export const socketRequestHomeData = () => ({
+	type: SOCKET_REQUEST_HOME_DATA
+});
+
+export const socketHomeDataOk = (home) => ({
+	type: SOCKET_HOME_DATA_OK,
+	payload: {home}
 });
 
 // ------------------------------------

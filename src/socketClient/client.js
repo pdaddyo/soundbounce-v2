@@ -9,9 +9,11 @@ import {
 	socketConnectError,
 	socketAuthOk,
 	socketRoomJoinRequest,
-	socketRoomJoinOk
+	socketRoomJoinOk,
+	socketRoomEvent,
+	socketHomeDataOk
 } from 'redux/modules/socket';
-
+import {homeSetData} from 'redux/modules/home';
 import {roomFullSync} from 'redux/modules/shared/room';
 
 class SocketClient {
@@ -57,6 +59,13 @@ class SocketClient {
 		});
 		socket.on('room:sync', (fullSync) => {
 			dispatch(roomFullSync(fullSync));
+		});
+		socket.on('room:event', ({roomId, event}) => {
+			dispatch(socketRoomEvent({roomId, event}));
+		});
+		socket.on('home:data:ok', (home) => {
+			dispatch(socketHomeDataOk(home));
+			dispatch(homeSetData(home));
 		});
 	}
 

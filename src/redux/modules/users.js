@@ -48,12 +48,11 @@ export const selectUsers = (state, userIds) => (
 const ACTION_HANDLERS = {
 	[USER_SET_CURRENT]: (state, {payload}) => {
 		const {user} = payload;
-		const newState = {
+		return {
 			...state,
 			currentUserId: user.id,
 			users: update(state.users, {[user.id]: {$set: user}})
 		};
-		return newState;
 	},
 	[ROOM_FULL_SYNC]: (state, {payload}) => {
 		let {users} = payload.fullSync;

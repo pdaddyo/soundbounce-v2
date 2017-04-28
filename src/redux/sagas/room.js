@@ -12,10 +12,19 @@ function * watchForSocketRoomJoinOk() {
 	}
 }
 
+function * watchForSocketRoomEvent() {
+	while (true) {
+		const {payload} = yield take(socketActions.SOCKET_ROOM_EVENT);
+		const {event} = payload;
+		console.log('room event ', event);
+	}
+}
+
 export default function * socketInit() {
 	try {
 		yield [
-			watchForSocketRoomJoinOk()
+			watchForSocketRoomJoinOk(),
+			watchForSocketRoomEvent()
 		];
 	} catch (err) {
 		console.log('unhandled room saga error: ' + err);

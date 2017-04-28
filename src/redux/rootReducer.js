@@ -5,11 +5,13 @@ import spotify from './modules/spotify';
 import socket from './modules/socket';
 import users from './modules/users';
 import room from './modules/shared/room';
+import home from './modules/home';
 
 export default combineReducers({
 	router,
 	spotify,
 	socket,
 	users,
-	room
+	room,
+	home
 });

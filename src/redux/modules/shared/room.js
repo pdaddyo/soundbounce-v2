@@ -22,7 +22,7 @@ export const actions = {
 // Default state
 // ------------------------------------
 const defaultState = {
-	playlist: [],
+	tracks: [],
 	events: []
 };
 
@@ -34,9 +34,9 @@ export const roomFullSync = (fullSync) => ({
 	payload: {fullSync}
 });
 
-export const roomTrackAddOrVote = ({who, trackIds}) => ({
+export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spotify'}) => ({
 	type: ROOM_TRACK_ADD_OR_VOTE,
-	payload: {who, trackIds}
+	payload: {userId, trackIds, reason}
 });
 
 // ------------------------------------
