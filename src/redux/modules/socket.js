@@ -71,9 +71,9 @@ export const socketEmitRoomEvent = ({roomId, event}) => ({
 	payload: {roomId, event}
 });
 
-export const socketRoomEvent = ({roomId, event}) => ({
+export const socketRoomEvent = (payload) => ({
 	type: SOCKET_ROOM_EVENT,
-	payload: {roomId, event}
+	payload
 });
 
 export const socketRoomCreateOk = (room) => ({

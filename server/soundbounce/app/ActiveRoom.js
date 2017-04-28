@@ -97,12 +97,14 @@ export default class ActiveRoom {
 
 	emitUserJoin = ({userId}) => {
 		const {emit, app, id} = this;
-		emit('room:event', {
-			event: {
-				type: 'userJoin',
-				userId
-			},
-			users: app.users.getUsersToSendWithRoomSync([userId], id)
+		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
+			emit('room:event', {
+				event: {
+					type: 'userJoin',
+					userId
+				},
+				users
+			});
 		});
 	};
 

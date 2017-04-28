@@ -60,8 +60,8 @@ class SocketClient {
 		socket.on('room:sync', (fullSync) => {
 			dispatch(roomFullSync(fullSync));
 		});
-		socket.on('room:event', ({roomId, event}) => {
-			dispatch(socketRoomEvent({roomId, event}));
+		socket.on('room:event', (payload) => {
+			dispatch(socketRoomEvent(payload));
 		});
 		socket.on('home:data:ok', (home) => {
 			dispatch(socketHomeDataOk(home));
