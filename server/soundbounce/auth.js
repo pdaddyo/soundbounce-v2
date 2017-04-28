@@ -52,7 +52,8 @@ export default (app) => {
 		const {code, state} = req.query;
 		const storedState = req.cookies ? req.cookies[stateKey] : null;
 		if (state === null || state !== storedState) {
-			res.redirect('/error/invalid-oauth-state');
+			res.redirect('/error/invalid-oauth-state?state=' + encodeURIComponent(state) +
+				'&storedState=' + encodeURIComponent(storedState));
 		} else {
 			res.clearCookie(stateKey);
 			const authOptions = {
