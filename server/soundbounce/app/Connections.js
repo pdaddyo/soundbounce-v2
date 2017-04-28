@@ -78,8 +78,9 @@ export default class Connections {
 	}
 
 	addSocketEventListeners(socket) {
+		const {app} = this;
 		socket.on('room:create', (roomOptions) => {
-			this.app.rooms.createRoom(roomOptions)
+			app.rooms.createRoom(roomOptions)
 				.then(room => {
 					room.setCreator(socket.authenticatedUser);
 					room.save().then((room) => {
@@ -98,12 +99,22 @@ export default class Connections {
 		});
 
 		socket.on('room:event', ({roomId, event}) => {
-			const activeRoom = this.app.rooms.findActiveRoom(roomId);
+			const activeRoom = app.rooms.findActiveRoom(roomId);
 			if (!activeRoom) {
 				debug('Unable to process room message for inactive room ' + roomId);
 				return;
 			}
 			activeRoom.handleRoomEventMessage({sender: socket.authenticatedUser, event});
+		});
+
+		socket.on('home:data', () => {
+			// todo a proper room list, just active rooms for now
+			app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
+				activeRooms: app.rooms.activeRooms.map(activeRoom => ({
+					name: activeRoom.name,
+					id: activeRoom.id
+				}))
+			});
 		});
 	}
 }

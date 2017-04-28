@@ -42,8 +42,9 @@ export default class Users {
 		});
 	}
 
-	getUsersForRoomSync(userIds, roomId) {
+	getUsersToSendWithRoomSync(userIds, roomId) {
 		// todo: also get room status such as creator, admin based on roomId
+		// currently getting listeners only
 		return User
 			.findAll({where: {id: {$in: userIds}}, attributes: ['id', 'nickname', 'avatar']})
 			.then(users =>

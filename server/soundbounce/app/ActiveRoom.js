@@ -64,7 +64,7 @@ export default class ActiveRoom {
 
 		/* todo: users from room events, track votes, listeners, creator */
 
-		const users = this.app.users.getUsersForRoomSync(room.listeners, room.id);
+		const users = this.app.users.getUsersToSendWithRoomSync(room.listeners, room.id);
 
 		return Promise.all([users]).then(([users]) => ({
 			room,
@@ -87,13 +87,27 @@ export default class ActiveRoom {
 			const {trackIds} = event;
 			// ensure they're in our database
 			this.app.tracks.findOrQueryApi(trackIds).then(tracks => {
-				this.reduxStore.dispatch(roomTrackAddOrVote({who: sender.get('id'), trackIds}));
+				this.reduxStore.dispatch(roomTrackAddOrVote({
+					userId: sender.get('id'),
+					trackIds
+				}));
 			});
 		}
 	}
 
+	emitUserJoin = ({userId}) => {
+		const {emit, app, id} = this;
+		emit('room:event', {
+			event: {
+				type: 'userJoin',
+				userId
+			},
+			users: app.users.getUsersToSendWithRoomSync([userId], id)
+		});
+	};
+
 	// emit an event over the network to every client that is in this room
-	emit(eventName, args) {
+	emit = (eventName, args) => {
 		this.app.io.to(`room:${this.id}`).emit(eventName, args);
-	}
+	};
 }

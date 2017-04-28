@@ -57,6 +57,8 @@ export default class Rooms {
 					roomId
 				});
 
+				activeRoom.emitUserJoin({userId: user.get('id')});
+
 				// save both user and room then return
 				return Promise.all([
 					user.save(),
