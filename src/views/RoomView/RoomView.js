@@ -73,13 +73,13 @@ class RoomView extends Component {
 					<div className={theme.name}>
 						{room.name}
 					</div>
-
-				</div>
-				<div className={theme.chat}>
 					<div className={theme.listeners}>
 
 						<Listeners userIds={room.listeners}/>
 					</div>
+				</div>
+				<div className={theme.chat}>
+
 				</div>
 			</div>
 		);

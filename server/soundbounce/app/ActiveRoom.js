@@ -95,18 +95,21 @@ export default class ActiveRoom {
 		}
 	}
 
-	emitUserJoin = ({userId}) => {
+	emitSimpleUserEvent = ({userId, type}) => {
 		const {emit, app, id} = this;
 		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
 			emit('room:event', {
 				event: {
-					type: 'userJoin',
+					type,
 					userId
 				},
 				users
 			});
 		});
 	};
+
+	emitUserJoin = ({userId}) => (this.emitSimpleUserEvent({userId, type: 'userJoin'}));
+	emitUserLeave = ({userId}) => (this.emitSimpleUserEvent({userId, type: 'userLeave'}));
 
 	// emit an event over the network to every client that is in this room
 	emit = (eventName, args) => {

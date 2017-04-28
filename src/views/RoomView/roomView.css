@@ -16,6 +16,7 @@
 	font-size: 1.8rem;
 	color: rgba(255, 255, 255, 0.6);
 	margin-bottom: 1.5rem;
+	display: inline-block;
 }
 
 .chat {
@@ -25,4 +26,8 @@
 	background-color: #151518;
 	width: 30%;
 	padding: 0.5rem;
+}
+
+.listeners {
+	float: right;
 }

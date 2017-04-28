@@ -1,5 +1,5 @@
 import {take, put} from 'redux-saga/effects';
-// import {actions as roomActions} from '../modules/shared/room';
+import {roomUserJoin, roomUserLeave} from '../modules/shared/room';
 import {actions as socketActions} from '../modules/socket';
 import {push} from 'react-router-redux';
 
@@ -16,7 +16,14 @@ function * watchForSocketRoomEvent() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_EVENT);
 		const {event} = payload;
-		console.log('room event ', event);
+		switch (event.type) {
+			case 'userJoin':
+				yield put(roomUserJoin(event.userId));
+				break;
+			case 'userLeave':
+				yield put(roomUserLeave(event.userId));
+				break;
+		}
 	}
 }
 

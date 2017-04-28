@@ -1,6 +1,7 @@
 import update from 'react-addons-update';
 
 import {ROOM_FULL_SYNC} from './shared/room';
+import {SOCKET_ROOM_EVENT} from './socket';
 
 // ------------------------------------
 // Constants
@@ -45,6 +46,24 @@ export const selectUsers = (state, userIds) => (
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
+const mergeUsers = ({state, users}) => {
+	let existingUsers = state.users;
+	const updateCommand = {};
+
+	// don't want to overwrite users if already have more info
+	for (let user of users) {
+		if (existingUsers[user.id]) {
+			user = {...existingUsers[user.id], ...user};
+		}
+		updateCommand[user.id] = {$set: user};
+	}
+
+	return {
+		...state,
+		users: update(state.users, updateCommand)
+	};
+};
+
 const ACTION_HANDLERS = {
 	[USER_SET_CURRENT]: (state, {payload}) => {
 		const {user} = payload;
@@ -56,21 +75,11 @@ const ACTION_HANDLERS = {
 	},
 	[ROOM_FULL_SYNC]: (state, {payload}) => {
 		let {users} = payload.fullSync;
-		let existingUsers = state.users;
-		const updateCommand = {};
-
-		// don't want to overwrite users if already have more info
-		for (let user of users) {
-			if (existingUsers[user.id]) {
-				user = {...existingUsers[user.id], ...user};
-			}
-			updateCommand[user.id] = {$set: user};
-		}
-
-		return {
-			...state,
-			users: update(state.users, updateCommand)
-		};
+		return mergeUsers({state, users});
+	},
+	[SOCKET_ROOM_EVENT]: (state, {payload}) => {
+		let {users} = payload;
+		return users ? mergeUsers({state, users}) : state;
 	}
 };
 
