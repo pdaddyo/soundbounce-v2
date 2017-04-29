@@ -15,15 +15,8 @@ function * watchForSocketRoomJoinOk() {
 function * watchForSocketRoomEvent() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_EVENT);
-		const {event} = payload;
-		switch (event.type) {
-			case 'userJoin':
-				yield put(roomUserJoin(event.userId));
-				break;
-			case 'userLeave':
-				yield put(roomUserLeave(event.userId));
-				break;
-		}
+		// dispatch this redux action that we received over the socket
+		yield put(payload.reduxAction);
 	}
 }
 
