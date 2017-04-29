@@ -27,8 +27,10 @@ export const actions = {
 // Default state
 // ------------------------------------
 const defaultState = {
-	tracks: [],
-	events: [],
+	id: null,
+	name: '????',
+	config: {},
+	actionLog: [],
 	listeners: []
 };
 
@@ -60,12 +62,31 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spoti
 // ------------------------------------
 const ACTION_HANDLERS = {
 	[ROOM_FULL_SYNC]: (state, {payload}) => ({
-		...payload.fullSync.room
+		/*
+		 flatten out any db fields like name and id into the reduxState so we don't have
+		 nested state object.  this could probably be refactored to be easier to understand, but means
+		 the client sees a single room object, but the database has reduxState separated.
+		 */
+		...state,
+		...payload.fullSync.room.reduxState,
+		listeners: payload.fullSync.room.listeners,
+		name: payload.fullSync.room.name,
+		id: payload.fullSync.room.id,
+		config: payload.fullSync.room.config
 	}),
 	[ROOM_USER_JOIN]: (state, {payload}) => {
 		const {userId} = payload;
 		if (state.listeners.indexOf(userId) === -1) {
-			return {...state, listeners: update(state.listeners, {$push: [userId]})};
+			return {
+				...state,
+				listeners: update(state.listeners, {$push: [userId]}),
+				actionLog: update(state.actionLog, {
+					$push: [{
+						type: ROOM_USER_JOIN,
+						payload
+					}]
+				})
+			};
 		}
 		return state;
 	},
@@ -73,7 +94,16 @@ const ACTION_HANDLERS = {
 		const {userId} = payload;
 		const arrayIndex = state.listeners.indexOf(userId);
 		if (arrayIndex > -1) {
-			return {...state, listeners: update(state.listeners, {$splice: [[arrayIndex, 1]]})};
+			return {
+				...state,
+				listeners: update(state.listeners, {$splice: [[arrayIndex, 1]]}),
+				actionLog: update(state.actionLog, {
+					$push: [{
+						type: ROOM_USER_LEAVE,
+						payload
+					}]
+				})
+			};
 		}
 		return state;
 	}

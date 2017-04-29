@@ -27,7 +27,7 @@ export default class ActiveRoom {
 		debug(`Active room startup for '${this.name}'`);
 		this.createReduxStore();
 		// save default state so it's sent to first client
-		this.room.set('state', this.reduxStore.getState());
+		this.room.set('reduxState', this.reduxStore.getState());
 	}
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
@@ -36,7 +36,7 @@ export default class ActiveRoom {
 		// remove from the rooms list
 		this.removeFromList();
 		// store the state in the db
-		this.room.set('state', this.reduxStore.getState());
+		this.room.set('reduxState', this.reduxStore.getState());
 		return this.room.save();
 	}
 
@@ -45,10 +45,23 @@ export default class ActiveRoom {
 	createReduxStore() {
 		const reducer = roomReducer;
 		this.reduxStore = createStore(reducer);
-		const existingState = this.room.get('state');
+		const existingState = this.room.get('reduxState');
 		if (existingState !== null) {
 			debug('Found state in db, applying to redux');
-			this.reduxStore.dispatch(roomFullSync({room: existingState}));
+			this.reduxStore.dispatch(roomFullSync({
+				room: {
+					reduxState: existingState,
+					listeners: []
+				}
+			}));
+		} else {
+			// sync with default state
+			this.reduxStore.dispatch(roomFullSync({
+				room: {
+					reduxState: this.reduxStore.getState(),
+					listeners: []
+				}
+			}));
 		}
 	}
 
@@ -100,12 +113,15 @@ export default class ActiveRoom {
 	emitSimpleUserEvent = (reduxAction) => {
 		const {emit, app, id} = this;
 		const {userId} = reduxAction.payload;
+		// tell client to dispatch action
 		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
 			emit('room:event', {
 				reduxAction,
 				users
 			});
 		});
+		// dispatch the same action on server too
+		this.reduxStore.dispatch(reduxAction);
 	};
 
 	emitUserJoin = ({userId}) => (this.emitSimpleUserEvent(roomUserJoin(userId)));

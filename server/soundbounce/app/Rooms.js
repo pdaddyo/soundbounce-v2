@@ -17,7 +17,6 @@ export default class Rooms {
 		return Room.create({
 			id: shortid.generate(),
 			name: roomOptions.name,
-			state: null,
 			nowPlayingStartedAt: null,
 			nowPlayingTrackId: null
 		});

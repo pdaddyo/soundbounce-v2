@@ -53,7 +53,7 @@ export const UserActivities = {
 export const Room = sequelize.define('room', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
-	state: {type: Sequelize.JSONB},
+	reduxState: {type: Sequelize.JSONB},
 	config: {type: Sequelize.JSONB}
 });
 
