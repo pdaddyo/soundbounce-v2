@@ -11,7 +11,8 @@ export const actions = {
 // Default state
 // ------------------------------------
 const defaultState = {
-	activeRooms: []
+	activeRooms: [],
+	popularRooms: []
 };
 
 // ------------------------------------
