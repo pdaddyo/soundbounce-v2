@@ -7,7 +7,7 @@ import SettingsIcon from 'components/svg/icons/Settings';
 
 import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
-import theme from './topBar.css';
+import theme from './mainNavigation.css';
 
 class TopBar extends Component {
 	static propTypes = {
