@@ -132,14 +132,30 @@ export default class ActiveRoom {
 
 		// add timestamp (on server only, clients don't generate timestamps)
 		const actionWithTimestamp = update(reduxAction, {timestamp: {$set: new Date()}});
+		const socketsForUser = app.connections.getAllSocketsForUserId(userId)
+		let getUserInfoPromise = null;
+		if (socketsForUser.length > 0) {
+			// we have a socket connected for this user
+			// so get user data from there instead of db hit
+			const user = socketsForUser[0].authenticatedUser.get({plain: true});
+			getUserInfoPromise = Promise.resolve([{
+				id: user.id,
+				nickname: user.nickname,
+				avatar: user.avatar
+			}]);
+		} else {
+			// couldn't find this user connected, so fetch from db
+			getUserInfoPromise = app.users.getUsersToSendWithRoomSync([userId], id);
+		}
 
-		// tell client to dispatch action
-		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
+		getUserInfoPromise.then(users => {
+			// tell client to dispatch action
 			emit('room:event', {
 				reduxAction: actionWithTimestamp,
 				users
 			});
 		});
+
 		// dispatch the same action on server too
 		this.reduxStore.dispatch(actionWithTimestamp);
 	};
