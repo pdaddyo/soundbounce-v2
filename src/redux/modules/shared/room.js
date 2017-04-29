@@ -2,6 +2,7 @@
 // so the same messages (shared via socket.io) can keep state in sync
 import update from 'react-addons-update';
 import config from '../../../../config/server';
+import {orderBy, take} from 'lodash';
 
 // ------------------------------------
 // Constants
@@ -63,7 +64,12 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spoti
 // ------------------------------------
 const appendToActionLog = ({actionLog, action}) => {
 	if (actionLog.length >= config.actionLogMaxLength) {
-		// todo - remove old messages
+		// remove old messages if at limit
+		return update(take(
+			orderBy(actionLog, ['timestamp'], ['desc']),
+			config.actionLogMaxLength - 1), {
+			$push: [action]
+		});
 	}
 
 	return update(actionLog, {

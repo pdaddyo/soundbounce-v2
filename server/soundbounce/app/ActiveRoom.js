@@ -117,7 +117,7 @@ export default class ActiveRoom {
 		const {userId} = reduxAction.payload;
 
 		// add timestamp (on server only, clients don't generate timestamps)
-		const actionWithTimestamp = update(reduxAction, {payload: {timestamp: {$set: new Date()}}});
+		const actionWithTimestamp = update(reduxAction, {timestamp: {$set: new Date()}});
 
 		// tell client to dispatch action
 		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
