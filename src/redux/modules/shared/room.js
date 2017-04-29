@@ -75,7 +75,8 @@ const ACTION_HANDLERS = {
 	[ROOM_FULL_SYNC]: (state, {payload}) => ({
 		/*
 		 flatten out any db fields like name and id into the reduxState so we don't have
-		 nested state object.  this could probably be refactored to be easier to understand, but means
+		 nested state object (like we do in the db).
+		 this could probably be refactored to be easier to understand, but means
 		 the client sees a single room object, but the database has reduxState separated.
 		 */
 		...state,

@@ -60,6 +60,13 @@ export const Room = sequelize.define('room', {
 Room.belongsTo(User, {as: 'Creator', foreignKey: 'creatorId'});
 Room.belongsTo(Track, {as: 'NowPlaying', foreignKey: 'nowPlayingTrackId'});
 
+export const RoomUser = sequelize.define('roomUser', {
+	details: {type: Sequelize.JSONB}
+});
+
+Room.belongsToMany(User, {through: RoomUser});
+User.belongsToMany(Room, {through: RoomUser});
+
 export const TrackArtist = sequelize.define('trackArtist', {});
 Track.belongsToMany(Artist, {through: TrackArtist});
 Artist.belongsToMany(Track, {through: TrackArtist});
