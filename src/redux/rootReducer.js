@@ -6,6 +6,7 @@ import socket from './modules/socket';
 import users from './modules/users';
 import room from './modules/shared/room';
 import home from './modules/home';
+import ui from './modules/ui';
 
 export default combineReducers({
 	router,
@@ -13,5 +14,6 @@ export default combineReducers({
 	socket,
 	users,
 	room,
-	home
+	home,
+	ui
 });
