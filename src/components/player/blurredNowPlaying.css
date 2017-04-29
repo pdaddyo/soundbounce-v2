@@ -1,0 +1,13 @@
+
+.artwork {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-size: cover;
+	width: calc(100% + 6rem);
+	height: calc(100% + 6rem);
+	margin: -3rem;
+	filter: blur(30px) grayscale(30%);
+	overflow: hidden;
+}
+

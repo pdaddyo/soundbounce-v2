@@ -5,11 +5,11 @@ import Avatar from 'components/user/avatar/Avatar';
 import {Link} from 'react-router';
 import SettingsIcon from 'components/svg/icons/Settings';
 
-import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
+// import SpotifyPlayerStatus from 'components/player/SpotifyPlayerStatus';
 
 import theme from './mainNavigation.css';
 
-class TopBar extends Component {
+class MainNavigation extends Component {
 	static propTypes = {
 		currentUser: PropTypes.object,
 		player: PropTypes.object
@@ -24,7 +24,7 @@ class TopBar extends Component {
 					<Link to='/'>Soundbounce</Link>
 				</div>
 				<div className={theme.right}>
-					<SpotifyPlayerStatus/>
+					{/* <SpotifyPlayerStatus/> */}
 
 					<div className={theme.user}>
 
@@ -57,5 +57,5 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopBar);
+export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);
 

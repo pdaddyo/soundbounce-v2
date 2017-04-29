@@ -35,7 +35,7 @@ const defaultState = {
 	accessToken: null,
 	refreshToken: null,
 	isLoggedIn: false,
-	player: null,
+	player: {},
 	tracks: {}  // tracks stored by key object key 'id'
 };
 

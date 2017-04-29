@@ -1,0 +1,19 @@
+.enter, .appear {
+	opacity: 0.01;
+	transition: all 800ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+}
+
+.enterActive, .appearActive {
+	transition: all 800ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+	opacity: 1;
+}
+
+.leave {
+	transition: all 800ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+	opacity: 1;
+}
+
+.leaveActive {
+	transition: all 800ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+	opacity: 0.01;
+}

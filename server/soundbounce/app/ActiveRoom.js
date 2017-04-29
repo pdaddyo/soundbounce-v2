@@ -132,7 +132,7 @@ export default class ActiveRoom {
 
 		// add timestamp (on server only, clients don't generate timestamps)
 		const actionWithTimestamp = update(reduxAction, {timestamp: {$set: new Date()}});
-		const socketsForUser = app.connections.getAllSocketsForUserId(userId)
+		const socketsForUser = app.connections.getAllSocketsForUserId(userId);
 		let getUserInfoPromise = null;
 		if (socketsForUser.length > 0) {
 			// we have a socket connected for this user

@@ -103,6 +103,7 @@
 		"querystring": "^0.2.0",
 		"rc-calendar": "^7.2.0",
 		"react": "^0.14.0",
+		"react-addons-css-transition-group": "^15.5.2",
 		"react-addons-update": "^15.3.2",
 		"react-dom": "^0.14.0",
 		"react-progress-bar-plus": "^1.0.0",

@@ -2,6 +2,8 @@ import React, {PropTypes, Component} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 import MainNavigation from 'components/navigation/MainNavigation';
+import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
+
 import classes from './layout.css';
 
 class CoreLayout extends Component {
@@ -17,6 +19,9 @@ class CoreLayout extends Component {
 		}
 		return (
 			<div className={classes.app}>
+				<div className={classes.bg}>
+					<BlurredNowPlaying/>
+				</div>
 				<MainNavigation/>
 				<div className={classes.children}>
 					{children}
