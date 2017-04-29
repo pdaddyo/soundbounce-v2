@@ -134,7 +134,10 @@ function * watchForAuthRequired() {
 		// for now we'll redirect to the login page on the server which will bring us back
 		// auth'd with a token in the url hash
 		// todo: use refresh token instead of redirect if available
-		window.location = `/login?redirectUrl=${escape(window.location.pathname)}`;
+		if (window.location.pathname.indexOf('/error/') === 0) {
+			return;
+		}
+		window.location = `/login?redirectUrl=${escape(window.location.pathname)}&d=${new Date().getTime()}`;
 	}
 }
 
