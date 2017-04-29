@@ -1,5 +1,4 @@
 import {take, put} from 'redux-saga/effects';
-import {roomUserJoin, roomUserLeave} from '../modules/shared/room';
 import {actions as socketActions} from '../modules/socket';
 import {push} from 'react-router-redux';
 
