@@ -34,7 +34,14 @@ class HomeView extends Component {
 		const {home} = this.props;
 		return (
 			<div className={classes.container}>
+
 				{home.activeRooms.map(room => (
+					<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link>
+						(currently active)
+					</div>
+				))}
+				<hr/>
+				{home.popularRooms.map(room => (
 					<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
 				))}
 				<button onClick={this.clickCreateRoom}>Create room</button>

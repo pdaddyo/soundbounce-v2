@@ -1,6 +1,6 @@
 import _debug from 'debug';
 const debug = _debug('soundbounce:connections');
-
+import {Room, RoomActivities} from '../data/schema';
 export default class Connections {
 	constructor(app) {
 		this.app = app;
@@ -109,12 +109,26 @@ export default class Connections {
 
 		socket.on('home:data', () => {
 			// todo a proper room list, just active rooms for now
-			app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
-				activeRooms: app.rooms.activeRooms.map(activeRoom => ({
-					name: activeRoom.name,
-					id: activeRoom.id
-				}))
-			});
+
+			Room
+				.findAll({
+					limit: 20,
+					order: [['updatedAt', 'DESC']],
+					where: {id: {$notIn: app.rooms.activeRooms.map(ar => ar.id)}}
+				})
+				.then(rooms => rooms.map(room => ({
+					name: room.get('name'),
+					id: room.get('id')
+				})))
+				.then(popularRooms => {
+					app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
+						activeRooms: app.rooms.activeRooms.map(activeRoom => ({
+							name: activeRoom.name,
+							id: activeRoom.id
+						})),
+						popularRooms
+					});
+				});
 		});
 	}
 }
