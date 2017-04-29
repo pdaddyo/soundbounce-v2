@@ -34,6 +34,8 @@ export default class Rooms {
 			? this.leaveRoom(user.get('currentRoomId'), user)
 			: Promise.resolve({success: true});
 
+		const userId = user.get('id');
+
 		return leaveFirst.then(() => {
 			return Room.findOne({where: {id: roomId}}).then(room => {
 				debug(`${user.get('nickname')} joined ${room.get('name')}`);
@@ -53,11 +55,15 @@ export default class Rooms {
 				// log this join
 				RoomActivity.create({
 					type: RoomActivities.userJoin,
-					userId: user.get('id'),
+					userId,
 					roomId
 				});
 
-				activeRoom.emitUserJoin({userId: user.get('id')});
+				this.app.connections.getAllSocketsForUserId(userId).forEach(socket => {
+					socket.join(`room:${roomId}`);
+				});
+
+				activeRoom.emitUserJoin({userId});
 
 				// save both user and room then return
 				return Promise.all([
@@ -73,6 +79,8 @@ export default class Rooms {
 	}
 
 	leaveRoom(roomId, user) {
+		const userId = user.get('id');
+
 		return Room.findOne({where: {id: roomId}}).then(room => {
 			debug(`${user.get('nickname')} left ${room.name}`);
 
@@ -81,8 +89,12 @@ export default class Rooms {
 			// log this leave
 			RoomActivity.create({
 				type: RoomActivities.userLeave,
-				userId: user.get('id'),
+				userId,
 				roomId
+			});
+
+			this.app.connections.getAllSocketsForUserId(userId).forEach(socket => {
+				socket.leave(`room:${roomId}`);
 			});
 
 			// save both user and room then return

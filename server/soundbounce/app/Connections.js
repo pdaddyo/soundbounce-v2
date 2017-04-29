@@ -21,6 +21,10 @@ export default class Connections {
 		return users;
 	}
 
+	getAllSocketsForUserId(userId) {
+		return this.connectedSockets.filter(socket => socket.authenticatedUser.get('id') === userId);
+	}
+
 	addAuthenticatedSocket({socket, authenticatedUser}) {
 		const plainUserObject = authenticatedUser.get({plain: true});
 		// send the current user info back to the client
@@ -52,7 +56,6 @@ export default class Connections {
 	}
 
 	joinRoom({socket, roomId}) {
-		socket.join(`room:${roomId}`);
 		this.app.rooms.joinRoom(roomId, socket.authenticatedUser).then(activeRoom => {
 			// on first join send back a full room sync
 			activeRoom.getFullSync().then(fullSync => {
