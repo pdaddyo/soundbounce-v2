@@ -111,17 +111,20 @@ export default class Connections {
 		});
 
 		socket.on('home:data', () => {
+			const {activeRooms} = app.rooms;
 			// find all rooms with recent activity, and any active rooms
 			Room
 				.findAll({
 					limit: 20,
 					order: [['updatedAt', 'DESC']],
-					where: {id: {$notIn: app.rooms.activeRooms.map(ar => ar.id)}},
+					where: activeRooms.length > 0
+						? {id: {$notIn: activeRooms.map(ar => ar.id)}}
+						: null,
 					attributes: ['id', 'name']
 				})
 				.then(popularRooms => {
 					app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
-						activeRooms: app.rooms.activeRooms.map(activeRoom => ({
+						activeRooms: activeRooms.map(activeRoom => ({
 							name: activeRoom.name,
 							id: activeRoom.id
 						})),
