@@ -1,6 +1,7 @@
 // This redux module is shared between client and server,
 // so the same messages (shared via socket.io) can keep state in sync
 import update from 'react-addons-update';
+import config from '../../../../config/server';
 
 // ------------------------------------
 // Constants
@@ -60,6 +61,16 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spoti
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
+const appendToActionLog = ({actionLog, action}) => {
+	if (actionLog.length >= config.actionLogMaxLength) {
+		// todo - remove old messages
+	}
+
+	return update(actionLog, {
+		$push: [action]
+	});
+};
+
 const ACTION_HANDLERS = {
 	[ROOM_FULL_SYNC]: (state, {payload}) => ({
 		/*
@@ -74,35 +85,27 @@ const ACTION_HANDLERS = {
 		id: payload.fullSync.room.id,
 		config: payload.fullSync.room.config
 	}),
-	[ROOM_USER_JOIN]: (state, {payload}) => {
-		const {userId} = payload;
-		if (state.listeners.indexOf(userId) === -1) {
+	[ROOM_USER_JOIN]: (state, action) => {
+		const {userId} = action.payload;
+		const {listeners, actionLog} = state;
+		if (listeners.indexOf(userId) === -1) {
 			return {
 				...state,
-				listeners: update(state.listeners, {$push: [userId]}),
-				actionLog: update(state.actionLog, {
-					$push: [{
-						type: ROOM_USER_JOIN,
-						payload
-					}]
-				})
+				listeners: update(listeners, {$push: [userId]}),
+				actionLog: appendToActionLog({actionLog, action})
 			};
 		}
 		return state;
 	},
-	[ROOM_USER_LEAVE]: (state, {payload}) => {
-		const {userId} = payload;
-		const arrayIndex = state.listeners.indexOf(userId);
+	[ROOM_USER_LEAVE]: (state, action) => {
+		const {userId} = action.payload;
+		const {listeners, actionLog} = state;
+		const arrayIndex = listeners.indexOf(userId);
 		if (arrayIndex > -1) {
 			return {
 				...state,
-				listeners: update(state.listeners, {$splice: [[arrayIndex, 1]]}),
-				actionLog: update(state.actionLog, {
-					$push: [{
-						type: ROOM_USER_LEAVE,
-						payload
-					}]
-				})
+				listeners: update(listeners, {$splice: [[arrayIndex, 1]]}),
+				actionLog: appendToActionLog({actionLog, action})
 			};
 		}
 		return state;

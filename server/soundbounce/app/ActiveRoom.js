@@ -71,6 +71,7 @@ export default class ActiveRoom {
 	// so room state, plus short form for tracks, artists and users mentioned
 	getFullSync() {
 		const roomPlain = this.room.get({plain: true});
+		// send back the plain sequelize object which includes the jsonb for the 'reduxState'
 		const room = {
 			...roomPlain,
 			listeners: this.app.connections
