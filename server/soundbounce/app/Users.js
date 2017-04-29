@@ -3,7 +3,9 @@ import _debug from 'debug';
 const debug = _debug('soundbounce:users');
 import {User, UserActivity, UserActivities} from '../data/schema';
 
-const emptyAvatar = 'http://www.teequilla.com/images/tq/empty-avatar.png';
+// transparent for now
+// todo: use initials or similar
+const emptyAvatar = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 export default class Users {
 	loginUser({profile, accessToken, refreshToken}) {
