@@ -2,6 +2,7 @@
  * Created by paulbarrass on 25/04/2017.
  */
 import _debug from 'debug';
+import update from 'react-addons-update';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import roomReducer, {
 	roomFullSync,
@@ -113,15 +114,19 @@ export default class ActiveRoom {
 	emitSimpleUserEvent = (reduxAction) => {
 		const {emit, app, id} = this;
 		const {userId} = reduxAction.payload;
+
+		// add timestamp (on server only, clients don't generate timestamps)
+		const actionWithTimestamp = update(reduxAction, {payload: {timestamp: {$set: new Date()}}});
+
 		// tell client to dispatch action
 		app.users.getUsersToSendWithRoomSync([userId], id).then(users => {
 			emit('room:event', {
-				reduxAction,
+				reduxAction: actionWithTimestamp,
 				users
 			});
 		});
 		// dispatch the same action on server too
-		this.reduxStore.dispatch(reduxAction);
+		this.reduxStore.dispatch(actionWithTimestamp);
 	};
 
 	emitUserJoin = ({userId}) => (this.emitSimpleUserEvent(roomUserJoin(userId)));
