@@ -3,7 +3,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
-
+import ChatPanel from 'components/room/chat/ChatPanel';
 import Listeners from 'components/room/listeners/Listeners';
 
 import theme from './roomView.css';
@@ -57,6 +57,13 @@ class RoomView extends Component {
 		document.removeEventListener('dragover', this.onDragOver);
 	}
 
+	onChatSend = (text) => {
+		this.props.emitRoomEvent({
+			type: 'chat',
+			text
+		});
+	};
+
 	render() {
 		const {room, params} = this.props;
 
@@ -79,7 +86,7 @@ class RoomView extends Component {
 					</div>
 				</div>
 				<div className={theme.chat}>
-
+					<ChatPanel onChatSend={this.onChatSend}/>
 				</div>
 			</div>
 		);

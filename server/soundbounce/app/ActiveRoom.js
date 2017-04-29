@@ -9,8 +9,10 @@ import roomReducer, {
 	roomTrackAddOrVote,
 	roomUserJoin,
 	roomUserLeave,
+	roomChat,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
+import {uniq} from 'lodash';
 
 const debug = _debug('soundbounce:rooms:active');
 
@@ -70,6 +72,10 @@ export default class ActiveRoom {
 	// any further immediate api calls.
 	// so room state, plus short form for tracks, artists and users mentioned
 	getFullSync() {
+		const reduxState = this.reduxStore.getState();
+
+		this.room.set('reduxState', reduxState);
+
 		const roomPlain = this.room.get({plain: true});
 		// send back the plain sequelize object which includes the jsonb for the 'reduxState'
 		const room = {
@@ -79,9 +85,13 @@ export default class ActiveRoom {
 				.map(user => user.get('id'))
 		};
 
-		/* todo: users from room events, track votes, listeners, creator */
+		const userIdsInActionLog = reduxState.actionLog
+			.filter(al => al.payload['userId'])
+			.map(al => al.payload.userId);
 
-		const users = this.app.users.getUsersToSendWithRoomSync(room.listeners, room.id);
+		const users = this.app.users.getUsersToSendWithRoomSync(
+			uniq([...room.listeners, ...userIdsInActionLog], room.id)
+		);
 
 		return Promise.all([users]).then(([users]) => ({
 			room,
@@ -109,6 +119,10 @@ export default class ActiveRoom {
 					trackIds
 				}));
 			});
+		}
+		if (event.type === 'chat') {
+			const {text} = event;
+			this.emitSimpleUserEvent(roomChat({userId: sender.get('id'), text}));
 		}
 	}
 

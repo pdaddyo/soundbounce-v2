@@ -59,6 +59,11 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spoti
 	payload: {userId, trackIds, reason}
 });
 
+export const roomChat = ({userId, text}) => ({
+	type: ROOM_CHAT,
+	payload: {userId, text}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -116,7 +121,11 @@ const ACTION_HANDLERS = {
 			};
 		}
 		return state;
-	}
+	},
+	[ROOM_CHAT]: (state, action) => ({
+		...state,
+		actionLog: appendToActionLog({actionLog: state.actionLog, action})
+	})
 };
 // ------------------------------------
 // Reducer
