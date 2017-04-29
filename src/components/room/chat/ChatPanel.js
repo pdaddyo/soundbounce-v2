@@ -25,8 +25,8 @@ class ChatPanel extends Component {
 		return (
 			<div className={theme.panel}>
 				<div className={theme.chats}>
-					{chats.map(chat => (
-						<div>{chat.payload.text}</div>
+					{chats.map((chat, index) => (
+						<div key={index}>{chat.payload.userId}: {chat.payload.text}</div>
 					))}
 				</div>
 				<TextInput uiKey='roomChat' onEnterPressed={this.chatEnterPressed}/>
