@@ -5,9 +5,8 @@
 .search {
 	composes: surround from 'shared/css/input.css';
 	position: relative;
-	top: 2rem;
+	top: 1.9rem;
 	margin-left: 2rem;
-
 	width: 30%;
 	max-width: 20rem;
 }
@@ -15,7 +14,6 @@
 .input {
 	composes: input from 'shared/css/input.css';
 }
-
 
 .searchIcon {
 	position: absolute;
