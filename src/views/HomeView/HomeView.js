@@ -46,15 +46,15 @@ class HomeView extends Component {
 				<div className={theme.home}>
 					{home.activeRooms.map(room => (
 						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link>
-							(currently active)
+							[<span
+								style={{color: room.config.colors.primary}}>ACTIVE</span>]
 						</div>
 					))}
-					<hr/>
 					{home.popularRooms.map(room => (
 						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
 					))}
-					<button onClick={this.clickCreateRoom}>Create room</button>
 					<br/>
+					<button onClick={this.clickCreateRoom}>Create new room</button>
 				</div>
 			</div>
 		);

@@ -124,10 +124,9 @@ export default class Connections {
 				})
 				.then(popularRooms => {
 					app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
-						activeRooms: activeRooms.map(activeRoom => ({
-							name: activeRoom.name,
-							id: activeRoom.id
-						})),
+						activeRooms: activeRooms.map(activeRoom =>
+							(activeRoom.room.get({plain: true}))
+						),
 						popularRooms: popularRooms.map(room => (room.get({plain: true})))
 					});
 				});
