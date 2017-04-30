@@ -76,8 +76,8 @@ class RoomView extends Component {
 
 		return (
 			<div className={theme.container}>
-				<TopBar room={room}/>
 				<Dots />
+				<TopBar room={room}/>
 				<div className={theme.room}>
 
 

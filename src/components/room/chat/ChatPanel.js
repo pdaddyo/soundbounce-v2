@@ -9,6 +9,7 @@ import {ROOM_CHAT} from 'redux/modules/shared/room';
 import TextInput from 'components/ui/textInput/TextInput';
 
 import theme from './chatPanel.css';
+import ArrowRight from '../../svg/icons/ArrowRight';
 
 class ChatPanel extends Component {
 	static propTypes = {
@@ -29,7 +30,15 @@ class ChatPanel extends Component {
 						<div key={index}>{chat.payload.userId}: {chat.payload.text}</div>
 					))}
 				</div>
-				<TextInput uiKey='roomChat' onEnterPressed={this.chatEnterPressed}/>
+				<div className={theme.chatBox}>
+					<TextInput uiKey='roomChat'
+							   className={theme.input}
+							   placeholder='Type message'
+							   onEnterPressed={this.chatEnterPressed}/>
+					<div className={theme.sendIcon}>
+						<ArrowRight/>
+					</div>
+				</div>
 			</div>
 		);
 	}

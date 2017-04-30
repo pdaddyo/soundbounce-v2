@@ -1,4 +1,26 @@
 .panel {
-
+	height: calc(100%);
 }
 
+.chatBox {
+	composes: surround from 'shared/css/input.css';
+	position: absolute;
+	bottom: 0.5rem;
+	width: calc(100% - 4.2rem);
+}
+
+.input {
+	composes: input from 'shared/css/input.css';
+}
+
+.sendIcon {
+	position: absolute;
+	right: 0.3rem;
+	top: 0.3rem;
+	cursor: pointer;
+	opacity: 0.6;
+}
+
+.sendIcon:hover {
+	opacity: 0.8;
+}

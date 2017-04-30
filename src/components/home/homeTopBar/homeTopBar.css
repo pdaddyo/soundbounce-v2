@@ -3,31 +3,19 @@
 }
 
 .search {
+	composes: surround from 'shared/css/input.css';
 	position: relative;
 	top: 2rem;
 	margin-left: 2rem;
-	padding: 0.5rem 2.5rem 0.5rem 1rem;
-	border: 0.05rem solid rgba(255, 255, 255, 0.4);
-	border-radius: 0.3rem;
+
 	width: 30%;
 	max-width: 20rem;
 }
 
 .input {
-	background-color: transparent;
-	border: none;
-	outline: none;
-	color: rgba(255, 255, 255, 0.6);
-	font-size: 1rem;
-	font-weight: 200;
-	width: 100%;
+	composes: input from 'shared/css/input.css';
 }
 
-.input::placeholder {
-	color: rgba(255, 255, 255, 0.2);
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
 
 .searchIcon {
 	position: absolute;
