@@ -22,12 +22,10 @@ class CoreLayout extends Component {
 				<div className={theme.bg}>
 					<BlurredNowPlaying/>
 				</div>
-
-				<div className={theme.children}>
-
+				<MainNavigation/>
+				<div className={theme.container}>
 					{children}
 				</div>
-				<MainNavigation/>
 			</div>
 		);
 	}

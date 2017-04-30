@@ -1,4 +1,3 @@
-
 .artwork {
 	position: absolute;
 	top: 0;
@@ -10,4 +9,3 @@
 	filter: blur(2rem) brightness(.3);
 	overflow: hidden;
 }
-

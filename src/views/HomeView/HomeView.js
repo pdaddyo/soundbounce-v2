@@ -17,12 +17,18 @@ class HomeView extends Component {
 
 	clickCreateRoom = (evt) => {
 		const {createRoom, currentUser} = this.props;
-
+		// todo: better ui here!
 		const roomName = prompt('Enter your room name (this will be nice ui later!)',
 			`${currentUser.nickname}'s room`);
+		const color = prompt('Enter your color', '#ad009f');
 
 		createRoom({
-			name: roomName
+			name: roomName,
+			config: {
+				colors: {
+					primary: color
+				}
+			}
 		});
 	};
 

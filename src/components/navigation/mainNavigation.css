@@ -1,6 +1,6 @@
 .nav {
 	background-color: #151518;
-	width: 5rem;
+	width: 6rem;
 	height: 100%;
 	/* background-color: rgba(125, 125, 125, 0.3); */
 	background-color: rgba(255, 255, 255, 0.1);
@@ -42,10 +42,8 @@
 
 .avatarContainer {
 	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 5rem;
-	height: 5rem;
+	bottom: 2rem;
+	left: 2rem;
 	cursor: pointer;
 }
 
@@ -54,16 +52,16 @@
 	top: 0;
 	cursor: pointer;
 	text-align: center;
-	line-height: 5rem;
+	line-height: 6rem;
 	left: 0;
-	width: 5rem;
-	height: 5rem;
+	width: 6rem;
+	height: 6rem;
 	font-size: 2rem;
-	background-color: rgba(255, 255, 255, 0.1);
 	letter-spacing: -0.1rem;
+	background-color: rgba(0, 0, 0, 0.4);
 }
 
 .soundbounce:hover {
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: rgba(255, 255, 255, 0.05);
 	cursor: pointer;
 }

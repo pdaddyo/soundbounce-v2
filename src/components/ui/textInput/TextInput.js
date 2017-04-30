@@ -10,7 +10,9 @@ class TextInput extends Component {
 		uiKey: PropTypes.string.isRequired,
 		onEnterPressed: PropTypes.func,
 		updateText: PropTypes.func,
-		text: PropTypes.string
+		text: PropTypes.string,
+		className: PropTypes.string,
+		placeholder: PropTypes.string
 	};
 
 	onChange = (evt) => {
@@ -27,11 +29,13 @@ class TextInput extends Component {
 	};
 
 	render() {
-		const {text} = this.props;
+		const {text, className, placeholder} = this.props;
 		return (
 			<input type='text'
+				   className={className}
 				   value={text || ''}
 				   onChange={this.onChange}
+				   placeholder={placeholder}
 				   onKeyDown={this.onKeyDown}/>
 		);
 	}

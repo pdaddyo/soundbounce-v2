@@ -12,11 +12,10 @@ export default class Rooms {
 	activeRooms = [];
 
 	createRoom(roomOptions) {
-		debug(`Creating room "${roomOptions.name}"`);
-
+		debug(`Creating new room "${roomOptions.name}"`);
 		return Room.create({
 			id: shortid.generate(),
-			name: roomOptions.name,
+			...roomOptions,
 			nowPlayingStartedAt: null,
 			nowPlayingTrackId: null
 		});
