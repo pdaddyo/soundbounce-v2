@@ -5,7 +5,9 @@ import {Link} from 'react-router';
 import {socketEmitRoomCreate, socketRequestHomeData} from 'redux/modules/socket';
 import {selectCurrentUser} from 'redux/modules/users';
 
-import classes from './homeView.css';
+import TopBar from 'components/home/homeTopBar/HomeTopBar';
+
+import theme from './homeView.css';
 
 class HomeView extends Component {
 	static propTypes = {
@@ -39,19 +41,21 @@ class HomeView extends Component {
 	render() {
 		const {home} = this.props;
 		return (
-			<div className={classes.container}>
-
-				{home.activeRooms.map(room => (
-					<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link>
-						(currently active)
-					</div>
-				))}
-				<hr/>
-				{home.popularRooms.map(room => (
-					<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
-				))}
-				<button onClick={this.clickCreateRoom}>Create room</button>
-				<br/>
+			<div className={theme.container}>
+				<TopBar/>
+				<div className={theme.home}>
+					{home.activeRooms.map(room => (
+						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link>
+							(currently active)
+						</div>
+					))}
+					<hr/>
+					{home.popularRooms.map(room => (
+						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
+					))}
+					<button onClick={this.clickCreateRoom}>Create room</button>
+					<br/>
+				</div>
 			</div>
 		);
 	}

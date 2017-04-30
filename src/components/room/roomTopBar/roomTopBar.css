@@ -1,0 +1,71 @@
+.topBar {
+	height: 6rem;
+}
+
+.search {
+	position: relative;
+	top: 2rem;
+	margin-left: 2rem;
+	padding: 0.5rem 2.5rem 0.5rem 1rem;
+	border: 0.05rem solid rgba(255, 255, 255, 0.4);
+	border-radius: 0.3rem;
+	width: 30%;
+	max-width: 20rem;
+}
+
+.input {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 1rem;
+	font-weight: 200;
+	width: 100%;
+}
+
+.input::placeholder {
+	color: rgba(255, 255, 255, 0.2);
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.searchIcon {
+	position: absolute;
+	right: 0.3rem;
+	top: 0.3rem;
+	cursor: pointer;
+	opacity: 0.6;
+}
+
+.searchIcon:hover {
+	opacity: 0.8;
+}
+
+.topBarRight {
+	position: absolute;
+	top: 0;
+	right: 0;
+	max-width: 50%;
+	height: 6rem;
+	white-space: nowrap;
+}
+
+.roomName {
+	position: relative;
+	bottom: 1rem;
+	display: inline-block;
+	font-size: 1.8rem;
+	font-weight: 500;
+	margin-right: 0.2rem;
+	max-width: 20rem;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.3);
+}
+
+.roomLeave {
+	display: inline-block;
+	cursor: pointer;
+	padding: 1rem 2rem 1rem 1rem;
+}

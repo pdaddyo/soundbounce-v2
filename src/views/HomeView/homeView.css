@@ -1,4 +1,7 @@
 .container {
-	composes: clearfix from 'shared/css/layout.css';
-	padding: 2rem;
+
+}
+
+.home {
+	padding-left: 2rem;
 }

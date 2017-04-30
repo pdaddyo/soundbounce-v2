@@ -4,13 +4,9 @@ import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
-import Listeners from 'components/room/listeners/Listeners';
-import TextInput from 'components/ui/textInput/TextInput';
-import SearchIcon from 'components/svg/icons/Search';
-import RoomLeave from 'components/svg/icons/RoomLeave';
-import {Link} from 'react-router';
 
 import theme from './roomView.css';
+import TopBar from 'components/room/roomTopBar/RoomTopBar';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -77,30 +73,9 @@ class RoomView extends Component {
 			</div>;
 		}
 
-		const {primary} = room.config.colors;
-
 		return (
 			<div className={theme.container}>
-				<div className={theme.topBar}>
-					<div className={theme.search}>
-						<TextInput className={theme.input}
-								   uiKey='inRoomSearch'
-								   placeholder='Contribute track to room'/>
-						<div className={theme.searchIcon}>
-							<SearchIcon/>
-						</div>
-					</div>
-					<div className={theme.topBarRight} style={{color: primary}}>
-						<div className={theme.roomName}>
-							{room.name}
-						</div>
-						<Link to='/home'>
-							<div className={theme.roomLeave}>
-								<RoomLeave color={primary} size={4}/>
-							</div>
-						</Link>
-					</div>
-				</div>
+				<TopBar room={room}/>
 				<div className={theme.room}>
 
 				</div>
