@@ -1,9 +1,5 @@
 
-
 .room {
-	background-color: #151518;
-	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
-	padding: 2rem;
 	float: left;
 }
 
@@ -11,7 +7,6 @@
 	position: fixed;
 	right: 0;
 	height: 100%;
-	background-color: #151518;
 	width: 30%;
 	padding: 0.5rem;
 }

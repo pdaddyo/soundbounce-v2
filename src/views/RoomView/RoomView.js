@@ -7,6 +7,7 @@ import ChatPanel from 'components/room/chat/ChatPanel';
 
 import theme from './roomView.css';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
+import Dots from '../../components/room/backgrounds/Dots';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -76,7 +77,9 @@ class RoomView extends Component {
 		return (
 			<div className={theme.container}>
 				<TopBar room={room}/>
+				<Dots />
 				<div className={theme.room}>
+
 
 				</div>
 				<div className={theme.chat}>

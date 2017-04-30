@@ -8,6 +8,7 @@ html, body, .app {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	min-width: 960px;
 	font-size: 100%;
 	color: rgba(255, 255, 255, 0.8);
 	overflow: hidden;
