@@ -5,9 +5,12 @@ import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
 import Listeners from 'components/room/listeners/Listeners';
+import TextInput from 'components/ui/textInput/TextInput';
+import SearchIcon from 'components/svg/icons/Search';
+import RoomLeave from 'components/svg/icons/RoomLeave';
+import {Link} from 'react-router';
+
 import theme from './roomView.css';
-import TextInput from '../../components/ui/textInput/TextInput';
-import SearchIcon from '../../components/svg/icons/Search';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -67,13 +70,14 @@ class RoomView extends Component {
 
 	render() {
 		const {room, params} = this.props;
-
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
 			return <div className={theme.container}>
 				Connecting to room...
 			</div>;
 		}
+
+		const {primary} = room.config.colors;
 
 		return (
 			<div className={theme.container}>
@@ -86,14 +90,19 @@ class RoomView extends Component {
 							<SearchIcon/>
 						</div>
 					</div>
+					<div className={theme.topBarRight} style={{color: primary}}>
+						<div className={theme.roomName}>
+							{room.name}
+						</div>
+						<Link to='/home'>
+							<div className={theme.roomLeave}>
+								<RoomLeave color={primary} size={4}/>
+							</div>
+						</Link>
+					</div>
 				</div>
 				<div className={theme.room}>
-					<div className={theme.name}>
-						{room.name}
-					</div>
-					<div className={theme.listeners}>
-						<Listeners userIds={room.listeners}/>
-					</div>
+
 				</div>
 				<div className={theme.chat}>
 					<ChatPanel onChatSend={this.onChatSend}/>

@@ -16,7 +16,7 @@ class MainNavigation extends Component {
 		const {currentUser} = this.props;
 		return (
 			<div className={theme.nav}>
-				<Link to='/'>
+				<Link to='/home'>
 					<div className={theme.soundbounce}>
 						SB
 					</div>

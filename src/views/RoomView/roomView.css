@@ -69,3 +69,26 @@
 	opacity: 0.8;
 }
 
+.topBarRight {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 6rem;
+}
+
+.roomName {
+	position: relative;
+	bottom: 1.3rem;
+	display: inline-block;
+	font-size: 1.8rem;
+	font-weight: 500;
+	margin-right: 0.2rem;
+}
+
+.roomLeave {
+	display: inline-block;
+	cursor: pointer;
+
+	padding: 1rem 2rem 1rem 1rem;
+}
+
