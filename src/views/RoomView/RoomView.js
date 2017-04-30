@@ -8,6 +8,7 @@ import ChatPanel from 'components/room/chat/ChatPanel';
 import theme from './roomView.css';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
 import Dots from '../../components/room/backgrounds/Dots';
+import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -76,10 +77,10 @@ class RoomView extends Component {
 
 		return (
 			<div className={theme.container}>
+				<ScrollStyle color={room.config.colors.primary} size={0.45}/>
 				<Dots />
 				<TopBar room={room}/>
 				<div className={theme.room}>
-
 
 				</div>
 				<div className={theme.chat}>

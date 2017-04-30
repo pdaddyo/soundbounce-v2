@@ -13,6 +13,7 @@ import roomReducer, {
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
 import {uniq} from 'lodash';
+import shortid from 'shortid';
 
 const debug = _debug('soundbounce:rooms:active');
 
@@ -130,8 +131,12 @@ export default class ActiveRoom {
 		const {emit, app, id} = this;
 		const {userId} = reduxAction.payload;
 
-		// add timestamp (on server only, clients don't generate timestamps)
-		const actionWithTimestamp = update(reduxAction, {timestamp: {$set: new Date()}});
+		// add timestamp and id (on server only, clients don't generate timestamps)
+		const actionWithTimestamp = update(reduxAction, {
+			timestamp: {$set: new Date()},
+			id: {$set: shortid.generate()}
+		});
+		
 		const socketsForUser = app.connections.getAllSocketsForUserId(userId);
 		let getUserInfoPromise = null;
 		if (socketsForUser.length > 0) {

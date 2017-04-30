@@ -24,3 +24,11 @@
 .sendIcon:hover {
 	opacity: 0.8;
 }
+
+.chatScroll {
+	height: calc(100% - 2.9rem);
+	overflow-y: scroll;
+}
+
+.chats {
+}
