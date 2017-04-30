@@ -27,15 +27,12 @@ class BlurredNowPlaying extends Component {
 	render() {
 		const {player} = this.props;
 		// no player state so return nothing
-		if (!player || !player.item || !player.is_playing) {
-			return <div/>;
-		}
 
-		const {images} = player.item.album;
+		const images = player['item'] ? player.item.album.images : null;
 		const artwork = images ? `url(${images[images.length > 1 ? 1 : 0].url})` : 'none';
 		return (
 			<div>
-				<Transition style={fade}>
+				<Transition style={fade} duration={1200}>
 					{[
 						<div key={hashCode(artwork)}
 							 className={theme.artwork}

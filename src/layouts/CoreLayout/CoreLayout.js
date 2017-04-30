@@ -4,7 +4,7 @@ import {selectCurrentUser} from 'redux/modules/users';
 import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
 
-import classes from './layout.css';
+import theme from './layout.css';
 
 class CoreLayout extends Component {
 	static propTypes = {
@@ -18,14 +18,16 @@ class CoreLayout extends Component {
 			return null;
 		}
 		return (
-			<div className={classes.app}>
-				<div className={classes.bg}>
+			<div className={theme.app}>
+				<div className={theme.bg}>
 					<BlurredNowPlaying/>
 				</div>
-				<MainNavigation/>
-				<div className={classes.children}>
+
+				<div className={theme.children}>
+
 					{children}
 				</div>
+				<MainNavigation/>
 			</div>
 		);
 	}

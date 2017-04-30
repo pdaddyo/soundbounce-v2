@@ -1,41 +1,12 @@
-.topBar {
+.nav {
 	background-color: #151518;
-	width: 100%;
-	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+	width: 5rem;
+	height: 100%;
+	/* background-color: rgba(125, 125, 125, 0.3); */
+	background-color: rgba(255, 255, 255, 0.1);
 	position: fixed;
-}
-
-.soundbounce {
-	display: inline-block;
-	float: left;
-	padding: 1rem;
-	text-indent: 1rem;
-	font-size: 1.2rem;
-}
-
-.right {
-	float: right;
-}
-
-.user {
-	float: right;
-	display: inline-block;
-	height: 1.5rem;
-	position: relative;
-	margin-right: 1rem;
-	top: 1rem;
-}
-
-.avatar {
-	display: inline-block;
-	background-size: cover;
-	position: relative;
-	top: -0.5rem;
-	margin-left: 0.7rem;
-	width: 1.7rem;
-	height: 1.7rem;
-	border: 1px solid rgba(255, 255, 255, 0.15);
-	border-radius: 50%;
+	top: 0;
+	z-index: 3;
 }
 
 .text {
@@ -69,16 +40,30 @@
 	color: rgba(255, 255, 255, 0.5);
 }
 
-.settings {
-	display: inline-block;
-	padding: 1rem;
-	position: relative;
-	top: -1rem;
-	margin-right: -1rem;
-	margin-left: 0.5rem;
+.avatarContainer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 5rem;
+	height: 5rem;
 	cursor: pointer;
 }
 
-.settings:hover {
-	background-color: rgba(255, 255, 255, 0.3);
+.soundbounce {
+	position: relative;
+	top: 0;
+	cursor: pointer;
+	text-align: center;
+	line-height: 5rem;
+	left: 0;
+	width: 5rem;
+	height: 5rem;
+	font-size: 2rem;
+	background-color: rgba(255, 255, 255, 0.1);
+	letter-spacing: -0.1rem;
+}
+
+.soundbounce:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	cursor: pointer;
 }
