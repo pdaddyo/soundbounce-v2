@@ -1,20 +1,32 @@
 .container {
 	margin-top: 0.5rem;
 	padding-right: 1rem;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.containerOtherUser {
+	composes: container;
+	justify-content: flex-start;
 }
 
 .bubble {
 	position: relative;
-	display: inline-block;
 	border-radius: 0.3rem;
-	padding: 0.5rem 1rem 0.3rem 1rem;
+	padding: 0.7rem 1rem 0.5rem 1rem;
 	background-color: rgba(255, 255, 255, 0.1);
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.8rem;
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.6);
-	width: calc(100% - 6rem);
 	margin-right: 0.5rem;
 	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+	z-index: 2;
+	order: 2;
+}
+
+.bubbleOtherUser {
+	composes: bubble;
+	margin-left: 1.6rem;
 }
 
 .bubble:after {
@@ -24,19 +36,43 @@
 	height: 0;
 	left: auto;
 	right: -0.5rem;
-	bottom: 0rem;
+	bottom: 0;
 	border: 0.5rem solid;
 	transform: rotate(45deg);
 	border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
+	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.bubbleOtherUser:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	right: auto;
+	left: -0.5rem;
+	bottom: 0;
+	border: 0.5rem solid;
+	transform: rotate(225deg);
+	border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
+	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
 }
 
 .avatar {
-	display: inline-block;
+	align-self: flex-end;
 	position: relative;
-	right: 0;
+	top: 0.8rem;
+	left: 0.5rem;
+	z-index: 1;
+	order: 3;
+	width: 2rem;
+}
 
+.avatarOtherUser {
+	composes: avatar;
+	order: 1;
 }
 
 .text {
 	margin-bottom: 0.2rem;
 }
+

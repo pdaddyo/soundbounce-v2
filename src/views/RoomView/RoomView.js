@@ -111,6 +111,9 @@ const mapStateToProps = state => ({
 	actionLogForChatPanel: state.room.actionLog.filter(al => al.type === ROOM_CHAT)
 		.map(chatWithUserId => ({
 			...chatWithUserId,
+			payload: {
+				...chatWithUserId.payload,
+			},
 			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
 			user: state.users.users[chatWithUserId.payload.userId]
 		})),

@@ -64,10 +64,8 @@ export default class ChatPanel extends Component {
 
 			// ok now we've grouped a bunch of payloads (potentially, we defo have at least one)
 			groupedActionLog.push({
-				id: actionLog[actionIndex].id,
-				type: actionLog[actionIndex].type,
-				user: actionLog[actionIndex].user,
-				timestamp: actionLog[actionIndex].timestamp,
+				...actionLog[actionIndex],
+				payload: null,
 				payloads: groupedPayloads
 			});
 		}

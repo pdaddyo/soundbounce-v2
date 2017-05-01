@@ -13,14 +13,19 @@ export default class ChatBubble extends Component {
 
 	render() {
 		const {chat} = this.props;
+		const {sentByCurrentUser} = chat;
+
+		const userTheme = (className) =>
+			theme[sentByCurrentUser ? className : className + 'OtherUser'];
+
 		return (
-			<div className={theme.container}>
-				<div className={theme.bubble}>
-					{chat.payloads.map(chat => (
-						<div className={theme.text}>{chat.text}</div>
+			<div className={userTheme('container')}>
+				<div className={userTheme('bubble')}>
+					{chat.payloads.map((chat, index) => (
+						<div className={theme.text} key={index}>{chat.text}</div>
 					))}
 				</div>
-				<div className={theme.avatar}>
+				<div className={userTheme('avatar')}>
 					<Avatar user={chat.user}/>
 				</div>
 			</div>
