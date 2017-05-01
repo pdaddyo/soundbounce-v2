@@ -56,7 +56,7 @@ export default class ChatPanel extends Component {
 										<ChatBubble chat={loggedAction}/>
 										<div ref={`chat-${loggedAction.id}`}/>
 									</div>
-								)
+								);
 							}
 						})}
 					</div>
