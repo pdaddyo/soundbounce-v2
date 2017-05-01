@@ -52,7 +52,8 @@ class ChatPanel extends Component {
 					<div className={theme.chats}>
 						{chats.map((chat, index) => (
 							<div key={chat.id}>
-								<ChatBubble chat={chat}/>
+								<ChatBubble chat={chat}/>+
+
 								<div ref={`chat-${chat.id}`}/>
 							</div>
 						))}
