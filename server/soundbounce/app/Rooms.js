@@ -57,10 +57,12 @@ export default class Rooms {
 					roomId
 				});
 
+				// tell any all sockets from this user to go to this room
 				this.app.connections.getAllSocketsForUserId(userId).forEach(socket => {
 					socket.join(`room:${roomId}`);
 				});
 
+				// notify users in the room
 				activeRoom.emitUserJoin({userId});
 
 				// save both user and room then return

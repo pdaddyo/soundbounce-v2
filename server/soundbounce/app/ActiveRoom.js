@@ -32,6 +32,8 @@ export default class ActiveRoom {
 		this.createReduxStore();
 		// save default state so it's sent to first client
 		this.room.set('reduxState', this.reduxStore.getState());
+		this.room.set('isActive', true);
+		return this.room.save();
 	}
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
@@ -41,6 +43,7 @@ export default class ActiveRoom {
 		this.removeFromList();
 		// store the state in the db
 		this.room.set('reduxState', this.reduxStore.getState());
+		this.room.set('isActive', false);
 		return this.room.save();
 	}
 
@@ -136,7 +139,7 @@ export default class ActiveRoom {
 			timestamp: {$set: new Date()},
 			id: {$set: shortid.generate()}
 		});
-		
+
 		const socketsForUser = app.connections.getAllSocketsForUserId(userId);
 		let getUserInfoPromise = null;
 		if (socketsForUser.length > 0) {

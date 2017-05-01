@@ -54,7 +54,9 @@ export const Room = sequelize.define('room', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
 	reduxState: {type: Sequelize.JSONB},
-	config: {type: Sequelize.JSONB}
+	config: {type: Sequelize.JSONB},
+	shutdownAt: {type: Sequelize.DATE},
+	isActive: {type: Sequelize.BOOLEAN}
 });
 
 Room.belongsTo(User, {as: 'Creator', foreignKey: 'creatorId'});

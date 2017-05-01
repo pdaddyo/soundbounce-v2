@@ -58,6 +58,7 @@ export default class ChatPanel extends Component {
 									</div>
 								);
 							}
+							// todo: add track, vote, like etc etc
 						})}
 					</div>
 				</div>
