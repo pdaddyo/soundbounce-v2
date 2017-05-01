@@ -12,6 +12,7 @@
 
 .bubble {
 	position: relative;
+	min-width: 2.5rem;
 	border-radius: 0.3rem;
 	padding: 0.7rem 1rem 0.5rem 1rem;
 	background-color: rgba(255, 255, 255, 0.1);
@@ -22,6 +23,7 @@
 	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
 	z-index: 2;
 	order: 2;
+	margin-bottom: 0.4rem;
 }
 
 .bubbleOtherUser {
@@ -76,3 +78,16 @@
 	margin-bottom: 0.2rem;
 }
 
+.timestamp {
+	position: absolute;
+	bottom: -1rem;
+	right: 0.1rem;
+	font-size: 0.55rem;
+	color: rgba(255, 255, 255, 0.3);
+}
+
+.timestampOtherUser {
+	composes: timestamp;
+	right: auto;
+	left: 0.1rem;
+}

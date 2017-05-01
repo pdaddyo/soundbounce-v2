@@ -58,7 +58,7 @@ export default class ChatPanel extends Component {
 			actionLog[actionIndex + 1].type === action.type &&
 			actionLog[actionIndex + 1].payload.userId === action.payload.userId &&
 			((new Date(actionLog[actionIndex + 1].timestamp)).getTime() -
-			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 120) {
+			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 240) {
 				groupedPayloads.push(actionLog[++actionIndex].payload);
 			}
 
