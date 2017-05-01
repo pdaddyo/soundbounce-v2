@@ -16,7 +16,9 @@ export default class ChatBubble extends Component {
 		return (
 			<div className={theme.container}>
 				<div className={theme.bubble}>
-					{chat.payload.text}
+					{chat.payloads.map(chat => (
+						<div className={theme.text}>{chat.text}</div>
+					))}
 				</div>
 				<div className={theme.avatar}>
 					<Avatar user={chat.user}/>

@@ -6,7 +6,6 @@ import {ROOM_CHAT} from 'redux/modules/shared/room';
 import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
-
 import theme from './chatPanel.css';
 
 export default class ChatPanel extends Component {
@@ -43,8 +42,40 @@ export default class ChatPanel extends Component {
 		}
 	}
 
+	// this is to make items of same type (vote, chat etc), from same user, in a certain time span
+	// group together so we don't have a million chat bubbles when someone (me?) is ranting ;)
+	// or 20 tracks are dropped at once etc
+	static groupSimilarActionLogItems(actionLog) {
+		const groupedActionLog = [];
+		for (let actionIndex = 0; actionIndex < actionLog.length; actionIndex++) {
+			const action = actionLog[actionIndex];
+			const groupedPayloads = [];
+			groupedPayloads.push(action.payload); // add this payload
+
+			// now look ahead and see if we should consume future actions, to group together into
+			// a single bubble / message
+			while (actionIndex + 1 < actionLog.length &&
+			actionLog[actionIndex + 1].type === action.type &&
+			actionLog[actionIndex + 1].payload.userId === action.payload.userId &&
+			((new Date(actionLog[actionIndex + 1].timestamp)).getTime() -
+			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 120) {
+				groupedPayloads.push(actionLog[++actionIndex].payload);
+			}
+
+			// ok now we've grouped a bunch of payloads (potentially, we defo have at least one)
+			groupedActionLog.push({
+				id: actionLog[actionIndex].id,
+				type: actionLog[actionIndex].type,
+				user: actionLog[actionIndex].user,
+				timestamp: actionLog[actionIndex].timestamp,
+				payloads: groupedPayloads
+			});
+		}
+		return groupedActionLog;
+	}
+
 	render() {
-		const {actionLog} = this.props;
+		const actionLog = ChatPanel.groupSimilarActionLogItems(this.props.actionLog);
 		return (
 			<div className={theme.panel}>
 				<div className={theme.chatScroll} ref='scroll'>

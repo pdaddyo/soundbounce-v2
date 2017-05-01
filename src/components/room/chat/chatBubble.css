@@ -10,6 +10,7 @@
 	background-color: rgba(255, 255, 255, 0.1);
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.8rem;
+	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.5);
 	width: calc(100% - 6rem);
 	margin-right: 0.5rem;
 }
@@ -18,4 +19,8 @@
 	position: relative;
 	display: inline-block;
 	top: 0.8rem;
+}
+
+.text {
+	margin-bottom: 0.2rem;
 }
