@@ -1,0 +1,21 @@
+.container {
+	composes: clearfix from 'shared/css/layout.css';
+	padding: 0.5rem 2rem 2rem 2rem;
+}
+
+.text {
+	color: #333;
+	text-align: center;
+	width: 100%;
+}
+
+.title {
+	composes: text;
+	font-size: 28px;
+}
+
+.message {
+	composes: text;
+	margin-top: 20px;
+	font-size: 18px;
+}

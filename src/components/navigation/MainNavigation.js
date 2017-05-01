@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
 import Avatar from 'components/user/avatar/Avatar';
 import {Link} from 'react-router';
+import HelpIcon from 'components/svg/icons/Help';
 
 import theme from './mainNavigation.css';
 
@@ -21,9 +22,16 @@ class MainNavigation extends Component {
 						SB
 					</div>
 				</Link>
-				<div className={theme.avatarContainer}>
-					<Avatar src={currentUser.avatar}/>
-				</div>
+				<Link to='/help'>
+					<div className={theme.helpContainer}>
+						<HelpIcon />
+					</div>
+				</Link>
+				<Link to='/profile'>
+					<div className={theme.avatarContainer}>
+						<Avatar src={currentUser.avatar}/>
+					</div>
+				</Link>
 			</div>
 		);
 	}
