@@ -26,9 +26,11 @@ class ChatPanel extends Component {
 
 	scrollLastChatIntoView() {
 		const {chats} = this.props;
-		const lastChatElement = this.refs[`chat-${chats[chats.length - 1].id}`];
-		if (lastChatElement) {
-			lastChatElement.scrollIntoView();
+		if (chats.length > 0) {
+			const lastChatElement = this.refs[`chat-${chats[chats.length - 1].id}`];
+			if (lastChatElement) {
+				lastChatElement.scrollIntoView();
+			}
 		}
 	}
 

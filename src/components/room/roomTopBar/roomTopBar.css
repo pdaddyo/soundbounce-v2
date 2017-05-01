@@ -39,7 +39,7 @@
 
 .roomName {
 	position: relative;
-	bottom: 1rem;
+	bottom: 0.5rem;
 	display: inline-block;
 	font-size: 1.8rem;
 	font-weight: 500;
@@ -48,11 +48,17 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+	opcacity: 0.9;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.3);
 }
 
 .roomLeave {
 	display: inline-block;
 	cursor: pointer;
-	padding: 1rem 2rem 1rem 1rem;
+	opacity: 0.9;
+	padding: 1.5rem 2rem 1rem 1rem;
+}
+
+.roomLeave:hover {
+	opacity: 1;
 }

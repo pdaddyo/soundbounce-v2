@@ -77,7 +77,7 @@ class RoomView extends Component {
 
 		return (
 			<div className={theme.container}>
-				<ScrollStyle color={room.config.colors.primary} size={0.45}/>
+				<ScrollStyle color={room.config.colors.primary} />
 				<Dots />
 				<TopBar room={room}/>
 				<div className={theme.room}>

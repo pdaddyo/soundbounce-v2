@@ -34,7 +34,7 @@ export default class RoomTopBar extends Component {
 					</div>
 					<Link to='/home'>
 						<div className={theme.roomLeave}>
-							<RoomLeave color={primary} size={4}/>
+							<RoomLeave color={primary} size={3}/>
 						</div>
 					</Link>
 				</div>
