@@ -15,8 +15,8 @@ export default class ChatPanel extends Component {
 		actionLog: PropTypes.array
 	};
 
-	chatEnterPressed = (text) => {
-		this.props.onChatSend(text);
+	chatEnterPressed = () => {
+		this.props.onChatSend();
 	};
 
 	componentDidMount() {
@@ -66,7 +66,7 @@ export default class ChatPanel extends Component {
 							   className={theme.input}
 							   placeholder='Type message'
 							   onEnterPressed={this.chatEnterPressed}/>
-					<div className={theme.sendIcon}>
+					<div className={theme.sendIcon} onClick={this.chatEnterPressed}>
 						<ArrowRight/>
 					</div>
 				</div>

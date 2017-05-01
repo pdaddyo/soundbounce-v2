@@ -2,7 +2,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {ROOM_CHAT} from 'redux/modules/shared/room';
-
+import {uiUpdate} from 'redux/modules/ui';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
@@ -20,7 +20,9 @@ class RoomView extends Component {
 		currentUser: PropTypes.object,
 		params: PropTypes.object,
 		room: PropTypes.object,
-		actionLogForChatPanel: PropTypes.array
+		actionLogForChatPanel: PropTypes.array,
+		roomChatText: PropTypes.string,
+		clearChatText: PropTypes.func
 	};
 
 	// try to pull spotify track Ids from drop text
@@ -63,12 +65,17 @@ class RoomView extends Component {
 		document.removeEventListener('dragover', this.onDragOver);
 	}
 
-	onChatSend = (text) => {
-		this.props.emitRoomEvent({
+	onChatSend() {
+		const {roomChatText, clearChatText, emitRoomEvent} = this.props;
+		if (roomChatText === '') {
+			return;
+		}
+		emitRoomEvent({
 			type: 'chat',
-			text
+			text: roomChatText
 		});
-	};
+		clearChatText();
+	}
 
 	render() {
 		const {room, params, actionLogForChatPanel} = this.props;
@@ -82,14 +89,14 @@ class RoomView extends Component {
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<div className={theme.container}>
-					<ScrollStyle size={0.6} alpha={0.4}/>
+					<ScrollStyle size={0.6} alpha={0.45}/>
 					<Dots />
 					<TopBar room={room}/>
 					<div className={theme.room}>
 
 					</div>
 					<div className={theme.chat}>
-						<ChatPanel onChatSend={this.onChatSend}
+						<ChatPanel onChatSend={this.onChatSend.bind(this)}
 								   actionLog={actionLogForChatPanel}/>
 					</div>
 				</div>
@@ -104,8 +111,10 @@ const mapStateToProps = state => ({
 	actionLogForChatPanel: state.room.actionLog.filter(al => al.type === ROOM_CHAT)
 		.map(chatWithUserId => ({
 			...chatWithUserId,
+			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
 			user: state.users.users[chatWithUserId.payload.userId]
-		}))
+		})),
+	roomChatText: state.ui['roomChat']
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -114,6 +123,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	emitRoomJoin: () => {
 		dispatch(socketEmitRoomJoin(ownProps.params.roomId));
+	},
+	clearChatText: () => {
+		dispatch(uiUpdate({key: 'roomChat', newState: ''}));
 	}
 });
 

@@ -14,9 +14,14 @@ export default class RoomTopBar extends Component {
 		room: PropTypes.object
 	};
 
+	static contextTypes = {
+		colors: PropTypes.object
+	};
+
 	render() {
 		const {room} = this.props;
-		const {primary} = room.config.colors;
+		const {colors} = this.context;
+		const {rgba, primary} = colors;
 
 		return (
 			<div className={theme.topBar}>
@@ -28,13 +33,13 @@ export default class RoomTopBar extends Component {
 						<SearchIcon/>
 					</div>
 				</div>
-				<div className={theme.topBarRight} style={{color: primary}}>
+				<div className={theme.topBarRight} style={{color: rgba(primary, 0.8)}}>
 					<div className={theme.roomName}>
 						{room.name}
 					</div>
 					<Link to='/home'>
 						<div className={theme.roomLeave}>
-							<RoomLeave color={primary} size={3}/>
+							<RoomLeave color={rgba(primary, 0.8)} size={3}/>
 						</div>
 					</Link>
 				</div>
