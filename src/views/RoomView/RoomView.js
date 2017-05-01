@@ -1,9 +1,12 @@
 /* @flow */
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {ROOM_CHAT} from 'redux/modules/shared/room';
+
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
+import ColorContextProvider from 'components/context/color/ColorContextProvider';
 
 import theme from './roomView.css';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
@@ -16,7 +19,8 @@ class RoomView extends Component {
 		emitRoomJoin: PropTypes.func,
 		currentUser: PropTypes.object,
 		params: PropTypes.object,
-		room: PropTypes.object
+		room: PropTypes.object,
+		actionLogForChatPanel: PropTypes.array
 	};
 
 	// try to pull spotify track Ids from drop text
@@ -67,7 +71,7 @@ class RoomView extends Component {
 	};
 
 	render() {
-		const {room, params} = this.props;
+		const {room, params, actionLogForChatPanel} = this.props;
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
 			return <div className={theme.container}>
@@ -76,24 +80,32 @@ class RoomView extends Component {
 		}
 
 		return (
-			<div className={theme.container}>
-				<ScrollStyle color={room.config.colors.primary} />
-				<Dots />
-				<TopBar room={room}/>
-				<div className={theme.room}>
+			<ColorContextProvider colors={room.config.colors}>
+				<div className={theme.container}>
+					<ScrollStyle size={0.6} alpha={0.4}/>
+					<Dots />
+					<TopBar room={room}/>
+					<div className={theme.room}>
 
+					</div>
+					<div className={theme.chat}>
+						<ChatPanel onChatSend={this.onChatSend}
+								   actionLog={actionLogForChatPanel}/>
+					</div>
 				</div>
-				<div className={theme.chat}>
-					<ChatPanel onChatSend={this.onChatSend}/>
-				</div>
-			</div>
+			</ColorContextProvider>
 		);
 	}
 }
 
 const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
-	room: state.room
+	room: state.room,
+	actionLogForChatPanel: state.room.actionLog.filter(al => al.type === ROOM_CHAT)
+		.map(chatWithUserId => ({
+			...chatWithUserId,
+			user: state.users.users[chatWithUserId.payload.userId]
+		}))
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

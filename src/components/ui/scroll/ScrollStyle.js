@@ -5,17 +5,29 @@ import React, {Component, PropTypes} from 'react';
 
 export default class ScrollStyle extends Component {
 	static propTypes = {
-		color: PropTypes.string,
+		colorConfigName: PropTypes.string,
+		alpha: PropTypes.number,
 		size: PropTypes.number
 	};
 
+	static contextTypes = {
+		colors: PropTypes.object
+	};
+
 	static defaultProps = {
-		color: 'rgba(255, 255, 255, 0.6)',
+		colorConfigName: 'primary',
+		alpha: 0.2,
 		size: 0.4
 	};
 
 	render() {
-		const {size, color} = this.props;
+		const {size, colorConfigName, alpha} = this.props;
+
+		const {colors} = this.context; // gets these from the <ColorContextProvider> up the tree
+		if (!colors || !colors[colorConfigName]) {
+			return null;
+		}
+		const color = colors.rgba(colors[colorConfigName], alpha);
 		return (
 			<style type="text/css">{`
 			::-webkit-scrollbar {
