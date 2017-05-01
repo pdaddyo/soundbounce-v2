@@ -3,6 +3,7 @@
 	padding-right: 1rem;
 	display: flex;
 	justify-content: flex-end;
+	margin-bottom: 1.8rem;
 }
 
 .containerOtherUser {
@@ -23,7 +24,7 @@
 	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
 	z-index: 2;
 	order: 2;
-	margin-bottom: 0.4rem;
+	margin-bottom: 0;
 }
 
 .bubbleOtherUser {
@@ -76,6 +77,9 @@
 
 .text {
 	margin-bottom: 0.2rem;
+	overflow: hidden;
+	width: 100%;
+	text-overflow: ellipsis;
 }
 
 .timestamp {
