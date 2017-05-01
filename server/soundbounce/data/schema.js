@@ -30,7 +30,7 @@ export const User = sequelize.define('user', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
 	nickname: {type: Sequelize.STRING, allowNull: false},
-	avatar: {type: Sequelize.STRING, allowNulls: false},
+	avatar: {type: Sequelize.STRING},
 	email: {type: Sequelize.STRING},
 	profile: {type: Sequelize.JSONB},
 	prefs: {type: Sequelize.JSONB},

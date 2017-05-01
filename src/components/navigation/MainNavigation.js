@@ -29,7 +29,7 @@ class MainNavigation extends Component {
 				</Link>
 				<Link to='/profile'>
 					<div className={theme.avatarContainer}>
-						<Avatar src={currentUser.avatar}/>
+						<Avatar user={currentUser}/>
 					</div>
 				</Link>
 			</div>

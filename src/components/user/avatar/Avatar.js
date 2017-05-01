@@ -4,15 +4,21 @@ import theme from './avatar.css';
 
 class Avatar extends Component {
 	static propTypes = {
-		src: PropTypes.string
+		user: PropTypes.object.isRequired
 	};
 
 	render() {
-		const {src} = this.props;
-		return (
-			<div className={theme.avatar}
-				 style={{backgroundImage: `url(${src})`}}/>
-		);
+		const {user} = this.props;
+		if (user.avatar) {
+			return (
+				<div className={theme.avatar}
+					 style={{backgroundImage: `url(${user.avatar})`}}/>
+			);
+		}
+
+		return <div className={theme.avatarInitial}>
+			<div className={theme.initial}>{user.nickname.toUpperCase()[0]}</div>
+		</div>
 	}
 }
 

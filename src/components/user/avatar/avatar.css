@@ -13,3 +13,20 @@
 .avatar:hover {
 	filter: grayscale(20%);
 }
+
+.avatarInitial {
+	composes: avatar;
+	background-color: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.initial {
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.9);
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.8);
+	width: 100%;
+	text-align: center;
+	position: relative;
+	top: 0.4rem;
+
+}

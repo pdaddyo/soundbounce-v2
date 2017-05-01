@@ -19,7 +19,7 @@ export default class ChatBubble extends Component {
 					{chat.payload.text}
 				</div>
 				<div className={theme.avatar}>
-					<Avatar src={chat.user.avatar}/>
+					<Avatar user={chat.user}/>
 				</div>
 			</div>
 		);

@@ -3,10 +3,6 @@ import _debug from 'debug';
 const debug = _debug('soundbounce:users');
 import {User, UserActivity, UserActivities} from '../data/schema';
 
-// transparent for now
-// todo: use initials or similar
-const emptyAvatar = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
 export default class Users {
 	loginUser({profile, accessToken, refreshToken}) {
 		let {display_name} = profile;
@@ -18,12 +14,16 @@ export default class Users {
 
 		debug(`${display_name} (${id}) has authorized with spotify.`);
 
+		const avatarUrl = (images && images.length) > 0
+			? `${images[0].url}`
+			: null;
+
 		return User.findOrCreate({
 			where: {id},
 			defaults: {
 				name: display_name,
 				nickname: display_name,
-				avatar: images.length > 0 ? images[0].url : emptyAvatar,
+				avatar: avatarUrl,
 				email,
 				profile
 			}
@@ -38,7 +38,7 @@ export default class Users {
 			user.set('accessToken', accessToken);
 			user.set('refreshToken', refreshToken);
 			user.set('profile', profile);
-			user.set('avatar', (images && images.length) > 0 ? images[0].url : emptyAvatar);
+			user.set('avatar', avatarUrl);
 
 			return user.save();
 		});

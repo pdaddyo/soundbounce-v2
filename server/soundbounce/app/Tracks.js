@@ -3,7 +3,7 @@
  */
 import _debug from 'debug';
 const debug = _debug('soundbounce:tracks');
-import {Track, TrackArtist, Artist} from '../data/schema';
+import {Track, Artist} from '../data/schema';
 
 export default class Tracks {
 	constructor(app) {
