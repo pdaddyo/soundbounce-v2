@@ -4,21 +4,37 @@
 }
 
 .bubble {
+	position: relative;
 	display: inline-block;
-	border-radius: 0.5rem;
-	padding: 0.5rem 1rem;
+	border-radius: 0.3rem;
+	padding: 0.5rem 1rem 0.3rem 1rem;
 	background-color: rgba(255, 255, 255, 0.1);
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.8rem;
-	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.5);
+	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.6);
 	width: calc(100% - 6rem);
 	margin-right: 0.5rem;
+	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.bubble:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: auto;
+	right: -0.5rem;
+	bottom: 0rem;
+	border: 0.5rem solid;
+	transform: rotate(45deg);
+	border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
 }
 
 .avatar {
-	position: relative;
 	display: inline-block;
-	top: 0.8rem;
+	position: relative;
+	right: 0;
+
 }
 
 .text {

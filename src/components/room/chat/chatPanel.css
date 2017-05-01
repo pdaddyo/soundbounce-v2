@@ -31,6 +31,6 @@
 	-webkit-mask-image: -webkit-gradient(linear, left 10%, left top, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))
 }
 
-.chats {
-	padding-top: 2rem;
+.actionLog {
+	padding-top: 2.2rem;
 }

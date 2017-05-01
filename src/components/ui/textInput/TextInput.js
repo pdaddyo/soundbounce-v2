@@ -36,6 +36,7 @@ class TextInput extends Component {
 				   value={text || ''}
 				   onChange={this.onChange}
 				   placeholder={placeholder}
+				   maxLength={255}
 				   onKeyDown={this.onKeyDown}/>
 		);
 	}
