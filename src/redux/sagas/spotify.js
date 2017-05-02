@@ -1,4 +1,5 @@
 import {delay} from 'redux-saga';
+import config from '../../../config/app';
 import {select, put, call, take} from 'redux-saga/effects';
 import {
 	spotifyAuthRequired,
@@ -11,11 +12,8 @@ import {
 } from '../modules/spotify';
 import {socketConnectBegin} from '../modules/socket';
 
-const webApiBaseUrl = 'https://api.spotify.com',
-	pollPlayerDelay = 2000,
-	apiRetryDelay = 2000,
-	maxRetry = 5,
-	error401 = '401-unauthorized';
+const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
+const error401 = '401-unauthorized';
 
 function * beginLogin() {
 	const {hash, href} = window.location;
