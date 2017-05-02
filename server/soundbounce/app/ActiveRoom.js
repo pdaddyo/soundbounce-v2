@@ -117,7 +117,7 @@ export default class ActiveRoom {
 		if (event.type === 'addOrVote') {
 			const {trackIds} = event;
 			// ensure they're in our database
-			this.app.tracks.findOrQueryApi(trackIds).then(tracks => {
+			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
 				this.reduxStore.dispatch(roomTrackAddOrVote({
 					userId: sender.get('id'),
 					trackIds
