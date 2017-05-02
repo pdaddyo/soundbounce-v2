@@ -34,5 +34,6 @@
 }
 
 .actionLog {
+	/* this is to push the first items ever posted in a room beneath the fade out */
 	padding-top: 3rem;
 }
