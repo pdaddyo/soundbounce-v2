@@ -1,5 +1,8 @@
 import update from 'react-addons-update';
 
+import {ROOM_FULL_SYNC} from './shared/room';
+import {SOCKET_ROOM_EVENT} from './socket';
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -72,6 +75,22 @@ export const spotifyPlayerStateUpdate = (playerState) => ({
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
+const mergeTracks = ({state, tracks}) => {
+	let existingTracks = state.tracks;
+	const updateCommand = {};
+	// don't want to overwrite tracks if already have more info
+	for (let track of tracks) {
+		if (existingTracks[track.id]) {
+			track = {...existingTracks[track.id], ...track};
+		}
+		updateCommand[track.id] = {$set: track};
+	}
+	return {
+		...state,
+		tracks: update(state.tracks, updateCommand)
+	};
+};
+
 const ACTION_HANDLERS = {
 	[SPOTIFY_AUTH_INIT]: (state, {payload}) => ({
 		...state,
@@ -105,6 +124,17 @@ const ACTION_HANDLERS = {
 			newState.tracks[item.id] = {...newState.tracks[item.id], ...item};
 		}
 		return newState;
+	},
+	[ROOM_FULL_SYNC]: (state, {payload}) => {
+		// merge any track data from room sync
+		return mergeTracks({state, tracks: payload.fullSync.tracks});
+	},
+	[SOCKET_ROOM_EVENT]: (state, {payload}) => {
+		// merge any track data from adds / votes if present
+		if (payload.tracks) {
+			return mergeTracks({state, tracks: payload.tracks});
+		}
+		return state;
 	}
 };
 

@@ -33,7 +33,10 @@ const defaultState = {
 	name: '????',
 	config: {},
 	actionLog: [],
-	listeners: []
+	listeners: [],
+	playlist: [],
+	recentlyPlayed: [],
+	nowPlayingStartedAt: null
 };
 
 // ------------------------------------
@@ -125,7 +128,17 @@ const ACTION_HANDLERS = {
 	[ROOM_CHAT]: (state, action) => ({
 		...state,
 		actionLog: appendToActionLog({actionLog: state.actionLog, action})
-	})
+	}),
+	[ROOM_TRACK_ADD_OR_VOTE]: (state, action) => {
+		const {userId, trackIds, reason, emote} = action.payload;
+		const {actionLog} = state;
+		return {
+			...state,
+			/* todo: update playlist properly instead of overwriting it! */
+			playlist: trackIds.map(id => ({id, votes: [{userId, emote, reason}]})),
+			actionLog: appendToActionLog({actionLog, action})
+		};
+	}
 };
 // ------------------------------------
 // Reducer
