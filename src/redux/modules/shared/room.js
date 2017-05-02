@@ -11,7 +11,7 @@ export const ROOM_FULL_SYNC = 'ROOM_FULL_SYNC';
 export const ROOM_USER_JOIN = 'ROOM_USER_JOIN';
 export const ROOM_USER_LEAVE = 'ROOM_USER_LEAVE';
 export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
-export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACK_ADD_OR_VOTE';
+export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
 
@@ -54,7 +54,7 @@ export const roomUserLeave = (userId) => ({
 	payload: {userId}
 });
 
-export const roomTrackAddOrVote = ({userId, trackIds, reason = 'added from Spotify'}) => ({
+export const roomTrackAddOrVote = ({userId, trackIds, reason = 'Added manually by user', emote = ''}) => ({
 	type: ROOM_TRACK_ADD_OR_VOTE,
 	payload: {userId, trackIds, reason}
 });

@@ -12,7 +12,7 @@ import roomReducer, {
 	roomChat,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
-import {uniq} from 'lodash';
+import {uniq, flatten} from 'lodash';
 import shortid from 'shortid';
 
 const debug = _debug('soundbounce:rooms:active');
@@ -97,16 +97,18 @@ export default class ActiveRoom {
 			uniq([...room.listeners, ...userIdsInActionLog], room.id)
 		);
 
-		return Promise.all([users]).then(([users]) => ({
+		const trackIdsInActionLog = reduxState.actionLog
+			.filter(al => al.payload['trackIds'])
+			.map(al => al.payload.trackIds);
+
+		const tracks = this.app.tracks.findTracksInDb(
+			uniq([...flatten(trackIdsInActionLog)])
+		);
+
+		return Promise.all([users, tracks]).then(([users, tracks]) => ({
 			room,
-			// todo: parse the room state and pull out this info from db
-			tracks: {
-				'2sZoykkHTyTbK4cc3cK5iE': {
-					name: 'Blah'
-				}
-			},
-			artists: {},
-			users
+			users,
+			tracks
 		})).catch(err => {
 			debug('Error in getFullSync: ', err);
 		});
@@ -118,19 +120,21 @@ export default class ActiveRoom {
 			const {trackIds} = event;
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
-				this.reduxStore.dispatch(roomTrackAddOrVote({
+				this.emitUserEvent(roomTrackAddOrVote({
 					userId: sender.get('id'),
-					trackIds
-				}));
+					trackIds,
+				}), {
+					tracks: tracks.map(t => t.get({plain: true}))
+				});
 			});
 		}
 		if (event.type === 'chat') {
 			const {text} = event;
-			this.emitSimpleUserEvent(roomChat({userId: sender.get('id'), text}));
+			this.emitUserEvent(roomChat({userId: sender.get('id'), text}));
 		}
 	}
 
-	emitSimpleUserEvent = (reduxAction) => {
+	emitUserEvent = (reduxAction, supplementaryData = {}) => {
 		const {emit, app, id} = this;
 		const {userId} = reduxAction.payload;
 
@@ -160,7 +164,8 @@ export default class ActiveRoom {
 			// tell client to dispatch action
 			emit('room:event', {
 				reduxAction: actionWithTimestamp,
-				users
+				users,
+				...supplementaryData
 			});
 		});
 
@@ -168,8 +173,8 @@ export default class ActiveRoom {
 		this.reduxStore.dispatch(actionWithTimestamp);
 	};
 
-	emitUserJoin = ({userId}) => (this.emitSimpleUserEvent(roomUserJoin(userId)));
-	emitUserLeave = ({userId}) => (this.emitSimpleUserEvent(roomUserLeave(userId)));
+	emitUserJoin = ({userId}) => (this.emitUserEvent(roomUserJoin(userId)));
+	emitUserLeave = ({userId}) => (this.emitUserEvent(roomUserLeave(userId)));
 
 	// emit an event over the network to every client that is in this room
 	emit = (eventName, args) => {

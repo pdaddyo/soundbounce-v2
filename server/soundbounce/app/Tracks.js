@@ -32,7 +32,7 @@ export default class Tracks {
 				const trackIdsToFetch = without(trackIds,
 					...tracksInDb.map(t => t.get('id')));
 				if (trackIdsToFetch.length > 0) {
-					spotifyApi
+					return spotifyApi
 						.getTracks(take(trackIdsToFetch, 50))
 						.then(response => {
 							if (response.statusCode === 200) {
@@ -49,7 +49,7 @@ export default class Tracks {
 								const artistIds = uniq(artists.map(a => a.id));
 
 								// ok see if we have any of these artists in our system already
-								Artist.findAll({
+								return Artist.findAll({
 									where: {
 										id: {$in: artistIds}
 									},
@@ -92,7 +92,7 @@ export default class Tracks {
 										})));
 
 									// wait until we have inserted all the artists and the tracks
-									Promise.all([artistsInsertPromise, trackInsertPromise])
+									return Promise.all([artistsInsertPromise, trackInsertPromise])
 										.then(() => {
 											// now associate the saved tracks with the saved artists
 											const trackArtistsToInsert =
@@ -105,7 +105,7 @@ export default class Tracks {
 														)
 													)
 												);
-											TrackArtist.bulkCreate(
+											return TrackArtist.bulkCreate(
 												trackArtistsToInsert
 											).then(() => {
 												return this.findTracksInDb(trackIds);
@@ -120,7 +120,7 @@ export default class Tracks {
 						});
 				} else {
 					// we didn't need to insert any tracks, so the db result have it all
-					return tracksInDb;
+					return Promise.resolve(tracksInDb);
 				}
 			});
 	}
