@@ -25,7 +25,7 @@ export default class ChatPanel extends Component {
 	scrollLastChatIntoView() {
 		const {actionLog} = this.props;
 		if (actionLog.length > 0) {
-			const lastChatElement = this.refs[`chat-${actionLog[actionLog.length - 1].id}`];
+			const lastChatElement = this.refs[`logItem-${actionLog[actionLog.length - 1].id}`];
 			if (lastChatElement) {
 				lastChatElement.scrollIntoView();
 			}
@@ -79,15 +79,20 @@ export default class ChatPanel extends Component {
 				<div className={theme.chatScroll} ref='scroll'>
 					<div className={theme.actionLog}>
 						{actionLog.map((loggedAction) => {
-							if (loggedAction.type === ROOM_CHAT) {
-								return (
-									<div key={loggedAction.id}>
-										<ChatBubble chat={loggedAction}/>
-										<div ref={`chat-${loggedAction.id}`}/>
-									</div>
-								);
+							let item = <div>SB ERROR: Unknown actionLog item type?</div>;
+							switch (loggedAction.type) {
+								case ROOM_CHAT:
+									item = <ChatBubble chat={loggedAction}/>;
+									break;
+								// todo: add track, vote, like etc etc
+
 							}
-							// todo: add track, vote, like etc etc
+							return (
+								<div key={loggedAction.id}>
+									{item}
+									<div ref={`logItem-${loggedAction.id}`}/>
+								</div>
+							);
 						})}
 					</div>
 				</div>
