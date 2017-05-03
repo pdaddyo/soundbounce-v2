@@ -33,6 +33,7 @@ export default class ActiveRoom {
 		// save default state so it's sent to first client
 		this.room.set('reduxState', this.reduxStore.getState());
 		this.room.set('isActive', true);
+		this.room.set('shutdownAt', null);
 		return this.room.save();
 	}
 
@@ -44,6 +45,7 @@ export default class ActiveRoom {
 		// store the state in the db
 		this.room.set('reduxState', this.reduxStore.getState());
 		this.room.set('isActive', false);
+		this.room.set('shutdownAt', new Date());
 		return this.room.save();
 	}
 
