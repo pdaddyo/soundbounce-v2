@@ -49,7 +49,6 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	opcacity: 0.9;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.3);
 }
 
