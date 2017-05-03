@@ -8,6 +8,7 @@ import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
 import ColorContextProvider from 'components/context/color/ColorContextProvider';
 import Track from 'components/track/Track';
+import RoomMenu from 'components/room/menu/RoomMenu.js';
 
 import theme from './roomView.css';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
@@ -101,6 +102,7 @@ class RoomView extends Component {
 									   track={track}
 									   size={index === 0 ? 'hero' : 'normal'}/>
 							))}
+							<RoomMenu room={room}/>
 						</div>
 						<div className={theme.chat}>
 							<ChatPanel onChatSend={this.onChatSend.bind(this)}
