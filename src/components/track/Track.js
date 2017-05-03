@@ -2,13 +2,15 @@
  * Created by paulbarrass on 03/05/2017.
  */
 import React, {Component, PropTypes} from 'react';
+import Avatar from '../user/avatar/Avatar';
 
 import theme from './track.css';
 
 export default class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
-		size: PropTypes.oneOf(['normal', 'hero'])
+		size: PropTypes.oneOf(['normal', 'hero']),
+		allowVote: PropTypes.bool
 	};
 
 	static defaultProps = {
@@ -16,10 +18,20 @@ export default class Track extends Component {
 	};
 
 	render() {
-		const {track, size} = this.props;
+		const {track, size, allowVote} = this.props;
 		// helper to append 'Hero' to big size track
 		const sizeTheme = (className) =>
 			theme[size === 'normal' ? className : className + 'Hero'];
+
+		const votes = (
+			<div className={sizeTheme('votes')}>
+				{track.votes.map(vote => (
+					<div className={sizeTheme('avatarContainer')}>
+						<Avatar user={vote.user}/>
+					</div>
+				))}
+			</div>
+		);
 
 		return (
 			<div className={sizeTheme('track')}>
@@ -33,9 +45,10 @@ export default class Track extends Component {
 					<div className={sizeTheme('artists')}>
 						{track.artists && track.artists.map(artist => artist.name).join(', ')}
 					</div>
-					<div className={sizeTheme('duration')}>
-					</div>
+					{size === 'hero' && votes}
 				</div>
+				{size === 'normal' && votes}
+
 			</div>
 		);
 	}

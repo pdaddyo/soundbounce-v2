@@ -2,6 +2,7 @@
 	display: flex;
 	margin-bottom: 2rem;
 	align-items: center;
+	max-width: 40rem;
 }
 
 .trackHero {
@@ -55,4 +56,24 @@
 
 .nameHero {
 	composes: name;
+}
+
+.votes {
+	margin-left: auto;
+	margin-right: 2rem;
+}
+
+.votesHero {
+	margin: 0.5rem 0 0;
+}
+
+.avatarContainer {
+	display: inline-block;
+	opacity: 0.7;
+	transform: scale(0.66);
+}
+
+.avatarContainerHero {
+	composes: avatarContainer;
+	transform: none;
 }
