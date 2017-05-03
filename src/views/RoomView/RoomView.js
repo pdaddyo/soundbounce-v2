@@ -7,6 +7,7 @@ import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import ChatPanel from 'components/room/chat/ChatPanel';
 import ColorContextProvider from 'components/context/color/ColorContextProvider';
+import Track from 'components/track/Track';
 
 import theme from './roomView.css';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
@@ -22,7 +23,8 @@ class RoomView extends Component {
 		room: PropTypes.object,
 		actionLogForChatPanel: PropTypes.array,
 		roomChatText: PropTypes.string,
-		clearChatText: PropTypes.func
+		clearChatText: PropTypes.func,
+		playlist: PropTypes.array
 	};
 
 	// try to pull spotify track Ids from drop text
@@ -78,7 +80,7 @@ class RoomView extends Component {
 	}
 
 	render() {
-		const {room, params, actionLogForChatPanel} = this.props;
+		const {room, params, actionLogForChatPanel, playlist} = this.props;
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
 			return <div className={theme.container}>
@@ -92,13 +94,20 @@ class RoomView extends Component {
 					<ScrollStyle size={0.6} alpha={0.45}/>
 					<Dots />
 					<TopBar room={room}/>
-					<div className={theme.room}>
+					<div className={theme.roomAndChat}>
+						<div className={theme.room}>
+							{playlist.map((track, index) => (
+								<Track key={track.id}
+									   track={track}
+									   size={index === 0 ? 'hero' : 'normal'}/>
+							))}
+						</div>
+						<div className={theme.chat}>
+							<ChatPanel onChatSend={this.onChatSend.bind(this)}
+									   actionLog={actionLogForChatPanel}/>
+						</div>
+					</div>
 
-					</div>
-					<div className={theme.chat}>
-						<ChatPanel onChatSend={this.onChatSend.bind(this)}
-								   actionLog={actionLogForChatPanel}/>
-					</div>
 				</div>
 			</ColorContextProvider>
 		);
@@ -114,6 +123,15 @@ const mapStateToProps = state => ({
 			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
 			user: state.users.users[chatWithUserId.payload.userId]
 		})),
+	playlist: state.room.playlist.map(playTrack => ({
+		...playTrack,
+		// map the track details and voting user's details from state
+		...state.spotify.tracks[playTrack.id],
+		votes: playTrack.votes.map(vote => ({
+			...vote,
+			user: state.users[vote.userId]
+		}))
+	})),
 	roomChatText: state.ui['roomChat']
 });
 

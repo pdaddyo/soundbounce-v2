@@ -1,0 +1,58 @@
+.track {
+	display: flex;
+	margin-bottom: 2rem;
+	align-items: center;
+}
+
+.trackHero {
+	composes: track;
+	margin-bottom: 8rem;
+}
+
+.artwork {
+	width: 4rem;
+	height: 4rem;
+	background-size: cover;
+	min-width: 4rem;
+}
+
+.artworkHero {
+	composes: artwork;
+	width: 12rem;
+	min-width: 12rem;
+	height: 12rem;
+}
+
+.artistsAndTrackName {
+	font-size: 1rem;
+	min-width: 15rem;
+	color: rgba(255, 255, 255, 0.9);
+	margin-left: 2rem;
+	letter-spacing: 0.05rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.artistsAndTrackNameHero {
+	composes: artistsAndTrackName;
+	font-size: 1.8rem;
+}
+
+.artists {
+	font-weight: 200;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.artistsHero {
+	composes: artists;
+}
+
+.name {
+	font-weight: 500;
+	margin-bottom: 0.3rem;
+}
+
+.nameHero {
+	composes: name;
+}

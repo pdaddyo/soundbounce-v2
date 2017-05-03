@@ -1,5 +1,6 @@
 .topBar {
 	height: 6rem;
+	z-index: 3;
 }
 
 .search {

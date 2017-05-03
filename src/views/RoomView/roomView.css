@@ -1,11 +1,44 @@
+.roomAndChat {
+	display: flex;
+	width: 100%;
+	z-index: 2;
+	height: 100%;
+}
+
 .room {
-	float: left;
+	position: absolute;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	left: 2rem;
+	top: 6rem;
+	bottom: 0;
+	right: 22.5rem;
+	min-height: 0;
+	flex: 1 1 auto;
+
 }
 
 .chat {
-	position: fixed;
-	right: 0;
-	height: calc(100% - 6rem);
-	width: 30%;
+	position: absolute;
+	overflow-y: scroll;
+	top: 6rem;
+	bottom: 0;
+	right: 0.5rem;
+	width: 21.5rem;
+	min-height: 0;
 }
 
+@media (max-width: 900px) {
+	/* narrower chat when narrower window
+    todo: mobile versions of this kind of thing
+     */
+	.room {
+		composes: room;
+		right: 17.5rem;
+	}
+
+	.chat {
+		composes: chat;
+		width: 17rem;
+	}
+}

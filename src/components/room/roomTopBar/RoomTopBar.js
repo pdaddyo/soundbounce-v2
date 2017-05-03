@@ -33,13 +33,13 @@ export default class RoomTopBar extends Component {
 						<SearchIcon/>
 					</div>
 				</div>
-				<div className={theme.topBarRight} style={{color: rgba(primary, 0.8)}}>
+				<div className={theme.topBarRight} style={{color: rgba(primary, 0.9)}}>
 					<div className={theme.roomName}>
 						{room.name}
 					</div>
 					<Link to='/home'>
 						<div className={theme.roomLeave}>
-							<RoomLeave color={rgba(primary, 0.8)} size={3}/>
+							<RoomLeave color={rgba(primary, 0.9)} size={3}/>
 						</div>
 					</Link>
 				</div>
