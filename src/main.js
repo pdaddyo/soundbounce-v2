@@ -12,7 +12,7 @@ es6promise.polyfill();
 import 'isomorphic-fetch';
 import 'event-source-polyfill';
 import 'babel-polyfill';
-import './components/room/backgrounds/halfTone/breathing-halftone';
+// import './components/room/backgrounds/halfTone/breathing-halftone';
 
 // Create redux store and sync with react-router-redux. We have installed the
 // react-router-redux reducer under the key "router" in src/routes/index.js,

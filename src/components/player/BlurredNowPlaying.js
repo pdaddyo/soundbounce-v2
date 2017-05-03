@@ -24,12 +24,25 @@ class BlurredNowPlaying extends Component {
 		player: PropTypes.object
 	};
 
-	render() {
-		const {player} = this.props;
-		// no player state so return nothing
-
+	getArtworkFromProps(props) {
+		const {player} = props;
 		const images = player['item'] ? player.item.album.images : null;
 		const artwork = images ? `url(${images[images.length > 1 ? 1 : 0].url})` : 'none';
+		return artwork;
+	}
+
+	/*
+	 componentDidUpdate(prevProps) {
+	 if (this.getArtworkFromProps(prevProps) !== this.getArtworkFromProps(this.props)) {
+	 // artwork has changed
+	 new BreathingHalftone(this.refs.img, {
+	 // options...
+	 });
+	 }
+	 }
+	 */
+	render() {
+		const artwork = this.getArtworkFromProps(this.props);
 		return (
 			<div>
 				<Transition style={fade} duration={1200}>
@@ -40,6 +53,9 @@ class BlurredNowPlaying extends Component {
 						</div>
 					]}
 				</Transition>
+				{/*	<img src={artwork} ref='img'
+				 key={artwork}
+				 className={theme.halfTone}/> */}
 			</div>
 		);
 	}
