@@ -6,6 +6,6 @@
 	width: calc(100% + 6rem);
 	height: calc(100% + 6rem);
 	margin: -3rem;
-	filter: blur(2rem) brightness(.3);
+	filter: blur(2rem) brightness(.2);
 	overflow: hidden;
 }

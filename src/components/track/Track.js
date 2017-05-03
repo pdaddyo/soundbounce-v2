@@ -10,7 +10,7 @@ export default class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
 		size: PropTypes.oneOf(['normal', 'hero']),
-		allowVote: PropTypes.bool
+		canVote: PropTypes.bool
 	};
 
 	static defaultProps = {
@@ -18,7 +18,7 @@ export default class Track extends Component {
 	};
 
 	render() {
-		const {track, size, allowVote} = this.props;
+		const {track, size} = this.props;
 		// helper to append 'Hero' to big size track
 		const sizeTheme = (className) =>
 			theme[size === 'normal' ? className : className + 'Hero'];
@@ -48,7 +48,6 @@ export default class Track extends Component {
 					{size === 'hero' && votes}
 				</div>
 				{size === 'normal' && votes}
-
 			</div>
 		);
 	}

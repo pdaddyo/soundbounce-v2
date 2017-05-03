@@ -7,7 +7,7 @@
 
 .trackHero {
 	composes: track;
-	margin-bottom: 8rem;
+	margin-bottom: 7rem;
 }
 
 .artwork {
@@ -19,9 +19,9 @@
 
 .artworkHero {
 	composes: artwork;
-	width: 12rem;
-	min-width: 12rem;
-	height: 12rem;
+	width: 10rem;
+	min-width: 10rem;
+	height: 10rem;
 }
 
 .artistsAndTrackName {
@@ -37,7 +37,7 @@
 
 .artistsAndTrackNameHero {
 	composes: artistsAndTrackName;
-	font-size: 1.8rem;
+	font-size: 1.4rem;
 }
 
 .artists {
