@@ -2,7 +2,7 @@
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 0;
+	top: 6rem;
 	bottom: 0;
 	z-index: 2;
 }
@@ -11,7 +11,7 @@
 	position: absolute;
 	overflow: auto;
 	left: 2rem;
-	top: 6rem;
+	top: 0;
 	bottom: 0;
 	right: 22.5rem;
 	min-height: 0;
@@ -19,7 +19,7 @@
 
 .chat {
 	position: absolute;
-	top: 6rem;
+	top: 0;
 	bottom: 0;
 	right: 0.5rem;
 	width: 21.5rem;

@@ -45,10 +45,10 @@ export default class ScrollStyle extends Component {
 				border-radius: 0;
 			}
 			::-webkit-scrollbar-thumb:hover {
-				background: ${color};
+				background: ${colors.rgba(colors[colorConfigName], 0.4)};
 			}
 				::-webkit-scrollbar-thumb:active {
-				background: ${color};
+				background: ${colors.rgba(colors[colorConfigName], 0.4)};
 			}
 				::-webkit-scrollbar-track {
 				background: transparent;

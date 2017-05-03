@@ -94,9 +94,9 @@ class RoomView extends Component {
 			<ColorContextProvider colors={room.config.colors}>
 
 
-				<ScrollStyle size={0.6} alpha={0.45}/>
-				<TopBar room={room}/>
+				<ScrollStyle size={0.6} alpha={0.25}/>
 				<Gradient />
+				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
 					<div className={theme.room}>
 						{playlist.map((track, index) => (
