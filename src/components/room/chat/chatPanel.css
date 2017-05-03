@@ -1,5 +1,4 @@
 .panel {
-	height: calc(100%);
 
 	font-size: 100%;
 }
@@ -8,7 +7,8 @@
 	composes: surround from 'shared/css/input.css';
 	position: absolute;
 	bottom: 0.5rem;
-	width: calc(100% - 4.2rem);
+	left: 0;
+	right: 1rem;
 }
 
 .input {
@@ -28,9 +28,14 @@
 }
 
 .chatScroll {
-	height: calc(100% - 2.9rem);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0.5rem;
+	bottom: 2.9rem;
 	overflow-y: scroll;
-	-webkit-mask-image: -webkit-gradient(linear, left 5%, left top, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)))
+	-webkit-mask-image: -webkit-gradient(linear, left 5%, left top, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+
 }
 
 .actionLog {

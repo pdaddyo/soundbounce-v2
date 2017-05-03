@@ -5,6 +5,7 @@ import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
 
 import theme from './layout.css';
+import Dots from '../../components/room/backgrounds/Dots';
 
 class CoreLayout extends Component {
 	static propTypes = {
@@ -21,6 +22,7 @@ class CoreLayout extends Component {
 			<div className={theme.app}>
 				<div className={theme.bg}>
 					<BlurredNowPlaying/>
+					<Dots />
 				</div>
 				<MainNavigation/>
 				<div className={theme.container}>

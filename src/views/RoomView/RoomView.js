@@ -9,11 +9,10 @@ import ChatPanel from 'components/room/chat/ChatPanel';
 import ColorContextProvider from 'components/context/color/ColorContextProvider';
 import Track from 'components/track/Track';
 import RoomMenu from 'components/room/menu/RoomMenu.js';
+import TopBar from 'components/room/roomTopBar/RoomTopBar';
+import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 
 import theme from './roomView.css';
-import TopBar from 'components/room/roomTopBar/RoomTopBar';
-import Dots from '../../components/room/backgrounds/Dots';
-import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -53,6 +52,7 @@ class RoomView extends Component {
 	componentWillMount() {
 		const {room, params, emitRoomJoin} = this.props;
 		// if we're not in this room but component just mounted, we'd better join it
+		// todo: move this to a saga not UI
 		if (room.id !== params.roomId) {
 			emitRoomJoin();
 		}
@@ -91,9 +91,9 @@ class RoomView extends Component {
 
 		return (
 			<ColorContextProvider colors={room.config.colors}>
+
 				<div className={theme.container}>
 					<ScrollStyle size={0.6} alpha={0.45}/>
-					<Dots />
 					<TopBar room={room}/>
 					<div className={theme.roomAndChat}>
 						<div className={theme.room}>

@@ -1,14 +1,15 @@
 .roomAndChat {
-	display: flex;
-	width: 100%;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
 	z-index: 2;
-	height: 100%;
 }
 
 .room {
 	position: absolute;
-	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow: auto;
 	left: 2rem;
 	top: 6rem;
 	bottom: 0;
@@ -18,7 +19,6 @@
 
 .chat {
 	position: absolute;
-	overflow-y: scroll;
 	top: 6rem;
 	bottom: 0;
 	right: 0.5rem;

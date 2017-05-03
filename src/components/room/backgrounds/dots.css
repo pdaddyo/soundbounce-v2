@@ -3,11 +3,9 @@
 	position: absolute;
 	top: 0;
 	right: 0;
+	bottom: 0;
+	left: 0;
 	background: url(./dots.png) no-repeat right top;
-	transform: translate(20px, -26px) scale(1.2);
-	transform-origin: top right;
-	width: 40rem;
-	height: 50rem;
-	opacity: 0.06;
-
+	opacity: 0.08;
+	overflow: hidden;
 }
