@@ -5,6 +5,7 @@ import React, {Component, PropTypes} from 'react';
 import Avatar from '../user/avatar/Avatar';
 
 import theme from './track.css';
+import DotsVertical from '../svg/icons/DotsVertical';
 
 export default class Track extends Component {
 	static propTypes = {
@@ -48,6 +49,11 @@ export default class Track extends Component {
 					{size === 'hero' && votes}
 				</div>
 				{size === 'normal' && votes}
+				<div className={sizeTheme('buttons')}>
+					<span className={theme.button}>
+						<DotsVertical color={'rgba(255,255,255, 0.8'}/>
+					</span>
+				</div>
 			</div>
 		);
 	}

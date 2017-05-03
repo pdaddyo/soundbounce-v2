@@ -60,11 +60,11 @@
 
 .votes {
 	margin-left: auto;
-	margin-right: 2rem;
+	margin-right: 0.5rem;
 }
 
 .votesHero {
-	margin: 0.5rem 0 0;
+	margin: 0.5rem 0 0 auto;
 }
 
 .avatarContainer {
@@ -76,4 +76,27 @@
 .avatarContainerHero {
 	composes: avatarContainer;
 	transform: none;
+}
+
+.buttons {
+	margin-right: 1rem;
+	opacity: 0;
+}
+
+.track:hover .buttons {
+	opacity: 1;
+}
+
+.buttonsHero {
+	composes: buttons;
+}
+
+.button {
+	opacity: 0.8;
+	cursor: pointer;
+	padding: 0.3rem;
+}
+
+.button:hover {
+	opacity: 0.95;
 }
