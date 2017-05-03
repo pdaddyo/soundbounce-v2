@@ -12,7 +12,7 @@ import roomReducer, {
 	roomChat,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
-import {uniq, flatten} from 'lodash';
+import {uniq, flatten, take} from 'lodash';
 import shortid from 'shortid';
 
 const debug = _debug('soundbounce:rooms:active');
@@ -119,7 +119,9 @@ export default class ActiveRoom {
 	// client sending a message to this room
 	handleRoomEventMessage({sender, event}) {
 		if (event.type === 'addOrVote') {
-			const {trackIds} = event;
+			let {trackIds} = event;
+			// limit to 50 in one hit (spotify api limit)
+			trackIds = take(trackIds, 50);
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
 				this.emitUserEvent(roomTrackAddOrVote({
