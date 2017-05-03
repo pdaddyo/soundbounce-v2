@@ -21,9 +21,11 @@ app.use(cookieParser());
 const soundbounce = new SoundbounceServer(app);
 soundbounce.init();
 
+let fileSystem = fs;
+
 if (config.env === 'development') {
 	debug('DEV MODE - Enabling webpack dev and HMR middleware');
-	app.use(require('webpack-dev-middleware')(compiler, {
+	const devMiddleware = require('webpack-dev-middleware')(compiler, {
 		publicPath: webpackConfig.output.publicPath,
 		contentBase: paths.base(config.dir_client),
 		hot: true,
@@ -36,7 +38,11 @@ if (config.env === 'development') {
 			poll: true,
 			ignored: /node_modules/
 		}
-	}));
+	});
+	app.use(devMiddleware);
+
+	// use in-memory file system for serving index.html dynamically below
+	fileSystem = devMiddleware.fileSystem;
 
 	app.use(require('webpack-hot-middleware')(compiler, {
 		path: '/__webpack_hmr'
@@ -56,7 +62,6 @@ app.use(express.static(paths.base(config.dir_dist)));
 // rendering, you'll want to remove this middleware.
 app.use('*', function (req, res, next) {
 	const filename = path.join(compiler.outputPath, 'index.html');
-	const fileSystem = fs;
 	fileSystem.readFile(filename, (err, result) => {
 		if (err) {
 			return next(err);
@@ -65,7 +70,6 @@ app.use('*', function (req, res, next) {
 		res.send(result);
 		res.end();
 	});
-
 });
 
 export default app;
