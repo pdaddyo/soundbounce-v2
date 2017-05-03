@@ -70,10 +70,10 @@
 	height: 6rem;
 	font-size: 2rem;
 	letter-spacing: -0.1rem;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: #e30059;
 }
 
 .soundbounce:hover {
-	background-color: rgba(255, 255, 255, 0.05);
+	background-color: #e30059;
 	cursor: pointer;
 }
