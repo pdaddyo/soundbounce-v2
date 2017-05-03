@@ -85,6 +85,69 @@ const appendToActionLog = ({actionLog, action}) => {
 	});
 };
 
+const applyVotes = ({playlist, payload}) => {
+	const {userId, trackIds, reason, emote} = payload;
+	/*
+	 The playlist is an array of track ids with votes, like so:
+	 [{id, votes: [{userId, emote, reason}]},...]
+	 */
+	let updatedPlaylist = playlist;
+	for (let trackId of trackIds) {
+		let isNew = false;
+		let playlistTrack = updatedPlaylist.find(t => t.id === trackId);
+		if (!playlistTrack) {
+			playlistTrack = {id: trackId, votes: []};
+			isNew = true;
+		} else {
+			const oldIndex = updatedPlaylist.indexOf(playlistTrack);
+
+			// can't vote for the now playing track
+			if (oldIndex === 0) {
+				continue;
+			}
+
+			// track was already in list - check they haven't already voted for it
+			if (playlistTrack.votes.find(v => v.userId === userId)) {
+				// user has already voted, neeeext!
+				continue;
+			}
+			// remove the existing track from the playlist
+			updatedPlaylist = update(updatedPlaylist, {$splice: [[oldIndex, 1]]});
+		}
+
+		// add the vote to the track
+		const newPlaylistTrack = update(playlistTrack, {
+			votes: {$push: [{userId, emote, reason}]}
+		});
+
+		// if this is the only track or first track, just return it as only item
+		if (updatedPlaylist.length === 0) {
+			updatedPlaylist = [newPlaylistTrack];
+			continue;
+		}
+
+		if (updatedPlaylist.length === 1) {
+			// there is a track playing which we shouldn't touch
+			updatedPlaylist = [updatedPlaylist[0], newPlaylistTrack];
+			continue;
+		}
+
+		// start from the bottom of the playlist, stopping before a track with our
+		// vote count
+		let playlistIndex = updatedPlaylist.length - 1;
+		while (playlistIndex > 0) {
+			if (updatedPlaylist[playlistIndex].votes.length >= newPlaylistTrack.votes.length) {
+				break;
+			}
+			playlistIndex--;
+		}
+		// insert at the new spot
+		updatedPlaylist = update(updatedPlaylist, {$splice: [[playlistIndex, 0, newPlaylistTrack]]});
+	}
+
+	return updatedPlaylist;
+};
+
 const ACTION_HANDLERS = {
 	[ROOM_FULL_SYNC]: (state, {payload}) => ({
 		/*
@@ -130,12 +193,11 @@ const ACTION_HANDLERS = {
 		actionLog: appendToActionLog({actionLog: state.actionLog, action})
 	}),
 	[ROOM_TRACK_ADD_OR_VOTE]: (state, action) => {
-		const {userId, trackIds, reason, emote} = action.payload;
-		const {actionLog} = state;
+		const {actionLog, playlist} = state;
+		const {payload} = action;
 		return {
 			...state,
-			/* todo: update playlist properly instead of overwriting it! */
-			playlist: trackIds.map(id => ({id, votes: [{userId, emote, reason}]})),
+			playlist: applyVotes({playlist, payload}),
 			actionLog: appendToActionLog({actionLog, action})
 		};
 	}
