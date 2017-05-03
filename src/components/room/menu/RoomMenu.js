@@ -21,8 +21,8 @@ export default class RoomMenu extends Component {
 		const MenuItem = ({children, selected}) => (
 			<div className={theme[selected ? 'itemSelected' : 'item']} style={{
 				borderBottom: selected
-					? `solid 0.3rem ${rgba(primary, 0.9)}`
-					: '0.3rem transparent'
+					? `solid 0.25rem ${rgba(primary, 0.7)}`
+					: '0.25rem transparent'
 			}}>
 				{children}
 			</div>

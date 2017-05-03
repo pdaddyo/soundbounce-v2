@@ -2,7 +2,7 @@
 	display: flex;
 	margin-bottom: 2rem;
 	align-items: center;
-	max-width: 40rem;
+	max-width: 50rem;
 }
 
 .trackHero {
@@ -89,6 +89,7 @@
 
 .buttonsHero {
 	composes: buttons;
+	margin-left: auto;
 }
 
 .button {
