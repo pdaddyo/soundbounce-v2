@@ -31,7 +31,7 @@ export default class Track extends Component {
 						{track.name}
 					</div>
 					<div className={sizeTheme('artists')}>
-						{track.artists.map(artist => artist.name).join(', ')}
+						{track.artists && track.artists.map(artist => artist.name).join(', ')}
 					</div>
 					<div className={sizeTheme('duration')}>
 					</div>
