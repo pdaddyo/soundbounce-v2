@@ -132,7 +132,7 @@ const mapStateToProps = state => ({
 		...state.spotify.tracks[playTrack.id],
 		votes: playTrack.votes.map(vote => ({
 			...vote,
-			user: state.users[vote.userId]
+			user: state.users.users[vote.userId]
 		}))
 	})),
 	roomChatText: state.ui['roomChat']
