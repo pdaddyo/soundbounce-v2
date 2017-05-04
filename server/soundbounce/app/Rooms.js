@@ -104,10 +104,12 @@ export default class Rooms {
 			]).then(() => {
 				// now the user is saved, check if the room is still active
 				const activeRoom = this.findActiveRoom(roomId);
-				activeRoom.emitUserLeave({userId: user.get('id')});
-				if (activeRoom && this.app.connections.getConnectedUsersForRoom(roomId).length === 0) {
-					debug(`No more users left in room '${room.get('name')}', shutting down`);
-					activeRoom.shutdown();
+				if (activeRoom) {
+					activeRoom.emitUserLeave({userId: user.get('id')});
+					if (this.app.connections.getConnectedUsersForRoom(roomId).length === 0) {
+						debug(`No more users left in room '${room.get('name')}', shutting down`);
+						activeRoom.shutdown();
+					}
 				}
 				return {success: true};
 			})
