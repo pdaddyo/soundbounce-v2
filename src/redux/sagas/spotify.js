@@ -8,9 +8,12 @@ import {
 	spotifyProfileRequest,
 	spotifyPlayerStateRequest,
 	spotifyPlayerStateUpdate,
+	spotifyPlayTrack,
 	actions as spotifyActions
 } from '../modules/spotify';
+import {syncStartFail, actions as syncActions} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
+import _ from 'lodash'; // importing all to avoid clash with redux saga 'take'
 
 const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
 const error401 = '401-unauthorized';
@@ -41,12 +44,12 @@ function * beginLogin() {
 
 function * getMyProfile() {
 	yield put(spotifyProfileRequest());
-	return yield call(spotifyApiCall, '/v1/me');
+	return yield call(spotifyApiCall, {url: '/v1/me'});
 }
 
 function * getPlayerState() {
 	yield put(spotifyPlayerStateRequest());
-	return yield call(spotifyApiCall, '/v1/me/player');
+	return yield call(spotifyApiCall, {url: '/v1/me/player'});
 }
 
 function * updatePlayerState() {
@@ -65,12 +68,58 @@ function * pollSpotifyPlayerStatus() {
 		if (!isLoggedIn) {
 			yield take(spotifyActions.SPOTIFY_AUTH_OK);
 		}
-		yield call(updatePlayerState);
+		try {
+			yield call(updatePlayerState);
+		} catch (playerStateError) {
+			// todo: this is a sync failure if we can't get playerstate (this is after retries)
+		}
+
+		// todo: check sync status here
 		yield delay(pollPlayerDelay);
 	}
 }
 
-function * spotifyApiCall(url, method) {
+function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
+	yield put(spotifyPlayTrack({trackIds, seekPosition}));
+	// tell spotify to play
+	yield call(spotifyApiCall, {
+		url: '/v1/me/player/play',
+		method: 'PUT',
+		body: JSON.stringify({uris: trackIds.map(tid => `spotify:track:${tid}`)})
+	});
+
+	// now play call is complete (the above is 'blocking') now seek!
+	yield call(spotifyApiCall, {
+		url: `/v1/me/player/seek?position_ms=${seekPosition}`,
+		method: 'PUT'
+	});
+}
+
+function * watchForSyncStart() {
+	while (true) {
+		yield take(syncActions.SYNC_START);
+		const room = yield select(state => state.room);
+		if (!room || !room.id) {
+			yield put(syncStartFail({
+				error: `Can't sync when not in room.`
+			}));
+			continue;
+		}
+		if (room.playlist.length === 0) {
+			yield put(syncStartFail({error: `No music in room to sync to`}));
+			continue;
+		}
+
+		// ok, we're in a room, we've got a track to play.  let's do this!
+		yield call(spotifyPlayTracksThenSeek, {
+			trackIds: _.take(room.playlist, 5).map(t => t.id),
+			seekPosition: 45000
+		});
+
+	}
+}
+
+function * spotifyApiCall({url, method, body}) {
 	const {accessToken} = yield select(state => state.spotify);
 	if (!accessToken) {
 		// wait for spotify auth to initialise if we don't have an access token yet
@@ -82,7 +131,11 @@ function * spotifyApiCall(url, method) {
 		for (let retryCount = 0; retryCount < maxRetry; retryCount++) {
 			const {json, response} = yield fetch(webApiBaseUrl + url, {
 				method: method || 'GET',
-				headers: {Authorization: `Bearer ${accessToken}`}
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json'
+				},
+				body
 			}).then(response => response.text().then(text => ({
 					json: text.length > 0 ? JSON.parse(text) : null, // only parse if present
 					response
@@ -97,7 +150,8 @@ function * spotifyApiCall(url, method) {
 				return {json, response};
 			});
 
-			if (json && response.status !== 202) {
+			// 204 no content is fine for some calls (like play track)
+			if (response.status === 204 || (json && response.status !== 202)) {
 				yield put({type: spotifyActions.SPOTIFY_API_REQUEST_OK, payload: {json}});
 				return json;
 			}
@@ -144,7 +198,8 @@ export default function * spotifyInit() {
 		yield [
 			watchForAuthRequired(),
 			beginLogin(),
-			pollSpotifyPlayerStatus()
+			pollSpotifyPlayerStatus(),
+			watchForSyncStart()
 		];
 	} catch (err) {
 		console.log('unhandled spotify saga error: ' + err);

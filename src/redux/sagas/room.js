@@ -1,6 +1,8 @@
 import {take, put} from 'redux-saga/effects';
-import {actions as socketActions} from '../modules/socket';
 import {push} from 'react-router-redux';
+import {actions as socketActions} from '../modules/socket';
+import {actions as roomActions} from '../modules/shared/room';
+import {syncStart} from '../modules/sync';
 
 function * watchForSocketRoomJoinOk() {
 	while (true) {
@@ -8,6 +10,12 @@ function * watchForSocketRoomJoinOk() {
 		const {roomId} = payload;
 		// now navigate to the room
 		yield put(push(`/room/${roomId}`));
+
+
+
+		// now wait for a room full sync (i.e. full state over wire), then try to start audio
+		yield take(roomActions.ROOM_FULL_SYNC);
+		yield put(syncStart());
 	}
 }
 

@@ -16,6 +16,7 @@ export const SPOTIFY_API_REQUEST_ERROR = 'SPOTIFY_API_REQUEST_ERROR';
 export const SPOTIFY_PROFILE_REQUEST = 'SPOTIFY_PROFILE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_REQUEST = 'SPOTIFY_PLAYER_STATE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
+export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
 
 export const actions = {
 	SPOTIFY_AUTH_REQUIRED,
@@ -27,7 +28,8 @@ export const actions = {
 	SPOTIFY_API_REQUEST_ERROR,
 	SPOTIFY_PROFILE_REQUEST,
 	SPOTIFY_PLAYER_STATE_REQUEST,
-	SPOTIFY_PLAYER_STATE_UPDATE
+	SPOTIFY_PLAYER_STATE_UPDATE,
+	SPOTIFY_PLAY_TRACK
 };
 
 // ------------------------------------
@@ -70,6 +72,11 @@ export const spotifyPlayerStateRequest = () => ({
 export const spotifyPlayerStateUpdate = (playerState) => ({
 	type: SPOTIFY_PLAYER_STATE_UPDATE,
 	payload: {playerState}
+});
+
+export const spotifyPlayTrack = ({trackId, offset}) => ({
+	type: SPOTIFY_PLAY_TRACK,
+	payload: {trackId, offset}
 });
 
 // ------------------------------------

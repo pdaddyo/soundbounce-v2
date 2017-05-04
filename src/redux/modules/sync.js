@@ -36,6 +36,15 @@ export const syncSetServerOffset = ({ticks}) => ({
 	payload: {ticks}
 });
 
+export const syncStart = () => ({
+	type: SYNC_START
+});
+
+export const syncStartFail = ({error}) => ({
+	type: SYNC_START_FAIL,
+	payload: {error}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
