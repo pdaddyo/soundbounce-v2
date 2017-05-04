@@ -32,7 +32,9 @@ export default class RoomMenu extends Component {
 			<div className={theme.menu}>
 				<MenuItem selected={true}>Next Up</MenuItem>
 				<MenuItem>About</MenuItem>
-				<MenuItem>Listening {room.listeners.length}</MenuItem>
+				<MenuItem>{room.listeners.length} Listener{
+					room.listeners.length === 1 ? '' : 's'
+				}</MenuItem>
 				<MenuItem>Top Rated</MenuItem>
 			</div>
 		);
