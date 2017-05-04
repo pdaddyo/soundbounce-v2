@@ -1,6 +1,6 @@
 .avatar {
+	position: relative;
 	filter: grayscale(50%);
-	display: inline-block;
 	background-size: cover;
 	width: 2rem;
 	height: 2rem;
@@ -15,16 +15,17 @@
 
 .avatarInitial {
 	composes: avatar;
-	background-color: rgba(255, 255, 255, 0.1);
+	background-color: #333333;
 	border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .initial {
 	position: relative;
 	font-weight: 400;
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(255, 255, 255, 0.5);
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
-	width: 100%;
+	width: 2rem;
+	margin-bottom: -0.5rem;
 	text-align: center;
 	top: 0.4rem;
 	font-size: 1.05rem;
