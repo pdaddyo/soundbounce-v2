@@ -1,4 +1,4 @@
-import {applyMiddleware, createStore} from 'redux';
+import {applyMiddleware, createStore, compose} from 'redux';
 import rootReducer from './rootReducer';
 import createSagaMiddleware, {END} from 'redux-saga';
 import rootSaga from './sagas/root';
@@ -15,7 +15,11 @@ export default function configureStore(initialState = {}) {
 	if (true) { // __DEBUG__) {
 		const createLogger = require('redux-logger');
 		const logger = createLogger({collapsed: true});
-		middleware = applyMiddleware(sagaMiddleware, logger, routerMiddleware(browserHistory));
+		const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+		middleware = composeEnhancers(
+			applyMiddleware(sagaMiddleware, logger, routerMiddleware(browserHistory))
+		);
 	}
 
 	// Create final store and subscribe router in debug env ie. for devtools
