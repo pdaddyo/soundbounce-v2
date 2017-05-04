@@ -93,11 +93,9 @@ const applyVotes = ({playlist, payload}) => {
 	 */
 	let updatedPlaylist = playlist;
 	for (let trackId of trackIds) {
-		let isNew = false;
 		let playlistTrack = updatedPlaylist.find(t => t.id === trackId);
 		if (!playlistTrack) {
 			playlistTrack = {id: trackId, votes: []};
-			isNew = true;
 		} else {
 			const oldIndex = updatedPlaylist.indexOf(playlistTrack);
 
