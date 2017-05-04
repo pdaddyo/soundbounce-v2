@@ -85,6 +85,7 @@ export default class Tracks {
 										.bulkCreate(tracks.map(spotifyTrack => ({
 											id: spotifyTrack.id,
 											name: spotifyTrack.name,
+											duration: spotifyTrack.duration_ms,
 											albumArt: spotifyTrack.album.images.length > 1 ?
 												spotifyTrack.album.images[1].url :
 												(spotifyTrack.album.images.length === 1 ?

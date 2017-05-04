@@ -21,6 +21,7 @@ export const Artist = sequelize.define('artist', {
 export const Track = sequelize.define('track', {
 	id: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
 	name: {type: Sequelize.STRING, allowNull: false},
+	duration: {type: Sequelize.INTEGER},
 	albumArt: {type: Sequelize.STRING, allowNull: false},
 	json: {type: Sequelize.JSONB},
 	youtubeId: {type: Sequelize.STRING}
@@ -96,7 +97,7 @@ export const RoomActivities = {
 /// called on app startup
 export function syncDatabaseSchema(done) {
 	debug('Syncing database schema (sequelize.sync)...');
-	sequelize.sync({force: false}).then(() => {
+	sequelize.sync({force: true}).then(() => {
 		debug('Sync success');
 		done();
 	}).catch(error => {
