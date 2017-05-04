@@ -20,7 +20,7 @@ export default class Gradient extends Component {
 				left: 0,
 				right: 0,
 				top: 0,
-				bottom: '50%'
+				bottom: '20%'
 			}}/>
 		);
 	}
