@@ -87,17 +87,24 @@ class RoomView extends Component {
 			trackIds: [trackId]
 		});
 	};
+	/*
+	 onPlaylistAnimationStart =  () => {
+	 const {room} = this.refs;
+	 if (this.scrollPositionBeforePlaylistUpdate === 0
+	 || this.scrollPositionBeforePlaylistUpdate) {
+	 room.scrollTop = this.scrollPositionBeforePlaylistUpdate;
+	 }
+	 };
 
-	onPlaylistAnimationStart = () => {
-		const {room} = this.refs;
-		console.log(room.scrollTop);
-	};
-
-	onPlaylistAnimationFinish = () => {
-		const {room} = this.refs;
-		console.log(room.scrollTop);
-	};
-
+	 componentWillUpdate(nextProps) {
+	 if (!isEqual(nextProps.playlist, this.props.playlist)) {
+	 const {room} = this.refs;
+	 if (room) {
+	 this.scrollPositionBeforePlaylistUpdate = room.scrollTop;
+	 }
+	 }
+	 }
+	 */
 	render() {
 		const {room, params, actionLogForChatPanel, playlist} = this.props;
 		if (room.id !== params.roomId) {
@@ -115,8 +122,6 @@ class RoomView extends Component {
 				<div className={theme.roomAndChat}>
 					<div className={theme.room} ref='room'>
 						<FlipMove duration={400}
-								  onStartAll={this.onPlaylistAnimationStart}
-								  onFinishAll={this.onPlaylistAnimationFinish}
 								  easing='ease-in-out'
 								  enterAnimation='elevator'>
 							{playlist.map((track, index) => (

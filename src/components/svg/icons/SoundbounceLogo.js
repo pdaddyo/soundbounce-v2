@@ -16,7 +16,7 @@ export default class SoundbounceLogo extends Component {
 		leftColor: PropTypes.string,
 		rightColor: PropTypes.string,
 		size: PropTypes.number,
-		isSynced: PropTypes.boolean
+		isSynced: PropTypes.bool
 	};
 
 	static defaultProps = {
