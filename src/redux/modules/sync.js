@@ -25,7 +25,7 @@ const defaultState = {
 	isSynced: false,
 	isSyncing: false,
 	lastSyncError: null,
-	serverTickOffset: 0
+	serverMsOffset: 0
 };
 
 // ------------------------------------
@@ -51,7 +51,7 @@ export const syncStartFail = ({error}) => ({
 const ACTION_HANDLERS = {
 	[SYNC_SET_SERVER_OFFSET]: (state, {payload}) => ({
 		...state,
-		serverTickOffset: payload.ticks
+		serverMsOffset: payload.ticks
 	}),
 	[SYNC_START]: (state) => {
 		if (state.isSynced) {

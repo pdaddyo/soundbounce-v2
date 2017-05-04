@@ -14,6 +14,7 @@ import {
 import {syncStartFail, actions as syncActions} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
 import _ from 'lodash'; // importing all to avoid clash with redux saga 'take'
+import moment from 'moment';
 
 const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
 const error401 = '401-unauthorized';
@@ -98,7 +99,8 @@ function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 function * watchForSyncStart() {
 	while (true) {
 		yield take(syncActions.SYNC_START);
-		const room = yield select(state => state.room);
+		const {room, sync} = yield select(state => state);
+
 		if (!room || !room.id) {
 			yield put(syncStartFail({
 				error: 'No room to sync to.'
@@ -113,7 +115,7 @@ function * watchForSyncStart() {
 		// ok, we're in a room, we've got a track to play.  let's do this!
 		yield call(spotifyPlayTracksThenSeek, {
 			trackIds: _.take(room.playlist, 5).map(t => t.id),
-			seekPosition: 45000
+			seekPosition: moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset
 		});
 	}
 }
