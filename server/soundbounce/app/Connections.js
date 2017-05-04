@@ -29,7 +29,8 @@ export default class Connections {
 		const plainUserObject = authenticatedUser.get({plain: true});
 		// send the current user info back to the client
 		socket.emit('user:auth:ok', plainUserObject);
-
+		// send server time so client knows ms offset
+		socket.emit('server:time', {ticks: new Date().getTime()});
 		socket.on('disconnect', s => {
 			this.removeClient(socket);
 		});

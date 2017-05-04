@@ -7,6 +7,7 @@ import users from './modules/users';
 import room from './modules/shared/room';
 import home from './modules/home';
 import ui from './modules/ui';
+import sync from './modules/sync';
 
 export default combineReducers({
 	router,
@@ -15,5 +16,6 @@ export default combineReducers({
 	users,
 	room,
 	home,
-	ui
+	ui,
+	sync
 });

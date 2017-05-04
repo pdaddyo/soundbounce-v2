@@ -15,6 +15,7 @@ import {
 } from 'redux/modules/socket';
 import {homeSetData} from 'redux/modules/home';
 import {roomFullSync} from 'redux/modules/shared/room';
+import {syncSetServerOffset} from '../redux/modules/sync';
 
 class SocketClient {
 	setStore(store) {
@@ -45,6 +46,9 @@ class SocketClient {
 		const {dispatch} = this.store;
 		socket.on('user:auth:ok', (user) => {
 			dispatch(socketAuthOk(user));
+		});
+		socket.on('server:time', ({ticks}) => {
+			dispatch(syncSetServerOffset({ticks: (new Date().getTime()) - ticks}));
 		});
 		socket.on('room:create:ok', (room) => {
 			dispatch(socketRoomCreateOk(room));
