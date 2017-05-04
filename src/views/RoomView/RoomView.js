@@ -12,6 +12,7 @@ import RoomMenu from 'components/room/menu/RoomMenu.js';
 import TopBar from 'components/room/roomTopBar/RoomTopBar';
 import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 import Gradient from 'components/room/backgrounds/Gradient';
+import FlipMove from 'react-flip-move';
 
 import theme from './roomView.css';
 
@@ -98,19 +99,19 @@ class RoomView extends Component {
 
 		return (
 			<ColorContextProvider colors={room.config.colors}>
-
-
 				<ScrollStyle size={0.6} alpha={0.25}/>
 				<Gradient />
 				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
 					<div className={theme.room}>
-						{playlist.map((track, index) => (
-							<Track key={track.id}
-								   track={track}
-								   onClickVote={this.onClickVote}
-								   size={index === 0 ? 'hero' : 'normal'}/>
-						))}
+						<FlipMove duration={450} easing='ease-out'>
+							{playlist.map((track, index) => (
+								<Track key={track.id}
+									   track={track}
+									   onClickVote={this.onClickVote}
+									   size={index === 0 ? 'hero' : 'normal'}/>
+							))}
+						</FlipMove>
 						<RoomMenu room={room}/>
 					</div>
 					<div className={theme.chat}>
@@ -118,7 +119,6 @@ class RoomView extends Component {
 								   actionLog={actionLogForChatPanel}/>
 					</div>
 				</div>
-
 			</ColorContextProvider>
 		);
 	}
