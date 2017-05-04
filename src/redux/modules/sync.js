@@ -23,6 +23,7 @@ export const actions = {
 // ------------------------------------
 const defaultState = {
 	isSynced: false,
+	isSyncing: false,
 	lastSyncError: null,
 	serverTickOffset: 0
 };
@@ -42,6 +43,39 @@ const ACTION_HANDLERS = {
 	[SYNC_SET_SERVER_OFFSET]: (state, {payload}) => ({
 		...state,
 		serverTickOffset: payload.ticks
+	}),
+	[SYNC_START]: (state) => {
+		if (state.isSynced) {
+			// don't do anything if we're already synced
+			return state;
+		}
+		return {
+			...state,
+			isSyncing: true,
+			lastSyncError: null
+		};
+	},
+	[SYNC_START_OK]: (state) => ({
+		...state,
+		isSyncing: false,
+		isSynced: true
+	}),
+	[SYNC_START_FAIL]: (state, {payload}) => ({
+		...state,
+		isSyncing: false,
+		isSynced: true,
+		lastSyncError: payload.error
+	}),
+	[SYNC_PLAYER_DEVIATED]: (state, {payload}) => ({
+		...state,
+		isSyncing: false,
+		isSynced: false,
+		lastSyncError: `Sync stopped: ${payload.reason}`
+	}),
+	[SYNC_STOP]: (state, {payload}) => ({
+		...state,
+		isSyncing: false,
+		isSynced: false
 	})
 };
 
