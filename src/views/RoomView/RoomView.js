@@ -5,6 +5,7 @@ import {ROOM_CHAT} from 'redux/modules/shared/room';
 import {uiUpdate} from 'redux/modules/ui';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
+import {syncStart} from 'redux/modules/sync';
 import ChatPanel from 'components/room/chat/ChatPanel';
 import ColorContextProvider from 'components/context/color/ColorContextProvider';
 import Track from 'components/track/Track';
@@ -26,6 +27,7 @@ class RoomView extends Component {
 		actionLogForChatPanel: PropTypes.array,
 		roomChatText: PropTypes.string,
 		clearChatText: PropTypes.func,
+		syncStart: PropTypes.func,
 		playlist: PropTypes.array
 	};
 
@@ -87,24 +89,14 @@ class RoomView extends Component {
 			trackIds: [trackId]
 		});
 	};
-	/*
-	 onPlaylistAnimationStart =  () => {
-	 const {room} = this.refs;
-	 if (this.scrollPositionBeforePlaylistUpdate === 0
-	 || this.scrollPositionBeforePlaylistUpdate) {
-	 room.scrollTop = this.scrollPositionBeforePlaylistUpdate;
-	 }
-	 };
 
-	 componentWillUpdate(nextProps) {
-	 if (!isEqual(nextProps.playlist, this.props.playlist)) {
-	 const {room} = this.refs;
-	 if (room) {
-	 this.scrollPositionBeforePlaylistUpdate = room.scrollTop;
-	 }
-	 }
-	 }
-	 */
+	componentWillUpdate(nextProps) {
+		if (this.props.playlist.length === 0 && nextProps.playlist.length > 0) {
+			// adding a track to an empty room, so attempt to sync
+			this.props.syncStart();
+		}
+	}
+
 	render() {
 		const {room, params, actionLogForChatPanel, playlist} = this.props;
 		if (room.id !== params.roomId) {
@@ -176,6 +168,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	clearChatText: () => {
 		dispatch(uiUpdate({key: 'roomChat', newState: ''}));
+	},
+	syncStart: () => {
+		dispatch(syncStart());
 	}
 });
 
