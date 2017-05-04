@@ -126,14 +126,17 @@ const mapStateToProps = state => ({
 			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
 			user: state.users.users[chatWithUserId.payload.userId]
 		})),
-	playlist: state.room.playlist.map(playTrack => ({
+	playlist: state.room.playlist.map((playTrack, index) => ({
 		...playTrack,
 		// map the track details and voting user's details from state
 		...state.spotify.tracks[playTrack.id],
 		votes: playTrack.votes.map(vote => ({
 			...vote,
 			user: state.users.users[vote.userId]
-		}))
+		})),
+		canVote: index === 0
+			? false
+			: !playTrack.votes.find(vote => vote.userId === state.users.currentUserId)
 	})),
 	roomChatText: state.ui['roomChat']
 });

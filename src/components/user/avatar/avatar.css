@@ -4,6 +4,7 @@
 	background-size: cover;
 	width: 2rem;
 	height: 2rem;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -15,6 +16,7 @@
 .avatarInitial {
 	composes: avatar;
 	background-color: #333333;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .initial {

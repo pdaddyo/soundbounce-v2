@@ -6,12 +6,12 @@ import Avatar from '../user/avatar/Avatar';
 
 import theme from './track.css';
 import DotsVertical from '../svg/icons/DotsVertical';
+import ArrowUpCircle from '../svg/icons/ArrowUpCircle';
 
 export default class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
-		size: PropTypes.oneOf(['normal', 'hero']),
-		canVote: PropTypes.bool
+		size: PropTypes.oneOf(['normal', 'hero'])
 	};
 
 	static defaultProps = {
@@ -31,6 +31,11 @@ export default class Track extends Component {
 						<Avatar user={vote.user}/>
 					</div>
 				))}
+				{track.canVote && (
+					<div className={theme.voteUpButton}>
+						<ArrowUpCircle/>
+					</div>
+				)}
 			</div>
 		);
 
