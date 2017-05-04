@@ -11,7 +11,8 @@ import ArrowUpCircle from '../svg/icons/ArrowUpCircle';
 export default class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
-		size: PropTypes.oneOf(['normal', 'hero'])
+		size: PropTypes.oneOf(['normal', 'hero']),
+		onClickVote: PropTypes.func
 	};
 
 	static defaultProps = {
@@ -19,7 +20,7 @@ export default class Track extends Component {
 	};
 
 	render() {
-		const {track, size} = this.props;
+		const {track, size, onClickVote} = this.props;
 		// helper to append 'Hero' to big size track
 		const sizeTheme = (className) =>
 			theme[size === 'normal' ? className : className + 'Hero'];
@@ -32,7 +33,11 @@ export default class Track extends Component {
 					</div>
 				))}
 				{track.canVote && (
-					<div className={theme.voteUpButton}>
+					<div className={theme.voteUpButton} onClick={() => {
+						if (onClickVote) {
+							onClickVote(track.id);
+						}
+					}}>
 						<ArrowUpCircle/>
 					</div>
 				)}

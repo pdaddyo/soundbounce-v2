@@ -38,7 +38,6 @@ class RoomView extends Component {
 			.map(url => url.substr(url.lastIndexOf('/') + 1))
 			.filter(item => item);
 
-		console.log(`addOrVote ${trackIds}`);
 		this.props.emitRoomEvent({
 			type: 'addOrVote',
 			trackIds
@@ -81,6 +80,13 @@ class RoomView extends Component {
 		clearChatText();
 	}
 
+	onClickVote = (trackId) => {
+		this.props.emitRoomEvent({
+			type: 'addOrVote',
+			trackIds: [trackId]
+		});
+	};
+
 	render() {
 		const {room, params, actionLogForChatPanel, playlist} = this.props;
 		if (room.id !== params.roomId) {
@@ -102,6 +108,7 @@ class RoomView extends Component {
 						{playlist.map((track, index) => (
 							<Track key={track.id}
 								   track={track}
+								   onClickVote={this.onClickVote}
 								   size={index === 0 ? 'hero' : 'normal'}/>
 						))}
 						<RoomMenu room={room}/>
