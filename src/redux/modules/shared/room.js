@@ -134,9 +134,9 @@ const applyVotes = ({playlist, payload}) => {
 
 		// start from the bottom of the playlist, stopping before a track with our
 		// vote count
-		let playlistIndex = updatedPlaylist.length - 1;
-		while (playlistIndex > 0) {
-			if (updatedPlaylist[playlistIndex].votes.length >= newPlaylistTrack.votes.length) {
+		let playlistIndex = updatedPlaylist.length;
+		while (playlistIndex > 1) {
+			if (updatedPlaylist[playlistIndex - 1].votes.length >= newPlaylistTrack.votes.length) {
 				break;
 			}
 			playlistIndex--;
