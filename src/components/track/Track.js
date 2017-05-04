@@ -6,7 +6,7 @@ import Avatar from '../user/avatar/Avatar';
 
 import theme from './track.css';
 import DotsVertical from '../svg/icons/DotsVertical';
-import ArrowUpCircle from '../svg/icons/ArrowUpCircle';
+import ArrowUpThick from '../svg/icons/ArrowUpThick';
 
 export default class Track extends Component {
 	static propTypes = {
@@ -27,20 +27,21 @@ export default class Track extends Component {
 
 		const votes = (
 			<div className={sizeTheme('votes')}>
+				<div className={theme.voteUpButton} onClick={() => {
+					if (track.canVote && onClickVote) {
+						onClickVote(track.id);
+					}
+				}}>
+					{track.canVote && (
+						<ArrowUpThick/>
+					)}
+				</div>
+
 				{track.votes.map(vote => (
 					<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
 						<Avatar user={vote.user}/>
 					</div>
 				))}
-				{track.canVote && (
-					<div className={theme.voteUpButton} onClick={() => {
-						if (onClickVote) {
-							onClickVote(track.id);
-						}
-					}}>
-						<ArrowUpCircle/>
-					</div>
-				)}
 			</div>
 		);
 

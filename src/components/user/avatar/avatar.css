@@ -22,7 +22,7 @@
 .initial {
 	position: relative;
 	font-weight: 400;
-	color: rgba(255, 255, 255, 0.5);
+	color: rgba(200, 200, 200, 1);
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
 	width: 2rem;
 	margin-bottom: -0.5rem;
