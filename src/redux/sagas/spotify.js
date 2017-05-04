@@ -101,12 +101,12 @@ function * watchForSyncStart() {
 		const room = yield select(state => state.room);
 		if (!room || !room.id) {
 			yield put(syncStartFail({
-				error: `Can't sync when not in room.`
+				error: 'No room to sync to.'
 			}));
 			continue;
 		}
 		if (room.playlist.length === 0) {
-			yield put(syncStartFail({error: `No music in room to sync to`}));
+			yield put(syncStartFail({error: 'No music in room to sync to'}));
 			continue;
 		}
 
@@ -115,7 +115,6 @@ function * watchForSyncStart() {
 			trackIds: _.take(room.playlist, 5).map(t => t.id),
 			seekPosition: 45000
 		});
-
 	}
 }
 
