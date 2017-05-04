@@ -107,6 +107,7 @@
 		"react-addons-css-transition-group": "^15.5.2",
 		"react-addons-update": "^15.3.2",
 		"react-dom": "^0.14.0",
+		"react-flip-move": "^2.9.3",
 		"react-progress-bar-plus": "^1.0.0",
 		"react-redux": "^4.0.0",
 		"react-router": "^2.0.0",
