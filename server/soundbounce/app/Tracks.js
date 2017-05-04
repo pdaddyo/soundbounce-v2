@@ -26,6 +26,7 @@ export default class Tracks {
 	}
 
 	findInDbOrQuerySpotifyApi(trackIds) {
+		trackIds = uniq(trackIds);
 		// search our db for these tracks first
 		return this.findTracksInDb(trackIds)
 			.then(tracksInDb => {
