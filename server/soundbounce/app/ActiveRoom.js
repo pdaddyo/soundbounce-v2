@@ -14,6 +14,7 @@ import roomReducer, {
 } from '../../../src/redux/modules/shared/room';
 import {uniq, flatten, take} from 'lodash';
 import shortid from 'shortid';
+import moment from 'moment';
 
 const debug = _debug('soundbounce:rooms:active');
 
@@ -29,12 +30,44 @@ export default class ActiveRoom {
 	// called when first user joins a room so room goes active
 	startup() {
 		debug(`Active room startup for '${this.name}'`);
-		this.createReduxStore();
+
+		this.createAndPopulateReduxStore();
+		const {reduxStore, room} = this;
+		const existingState = reduxStore.getState();
+		const shutdownAt = room.get('shutdownAt');
+		if (shutdownAt) {
+			// we're resuming a room so will defo have at least some state
+			// was there a track playing when we shutdown?
+			if (existingState.playlist.length > 0) {
+				// ok resume the track as if we just left
+				const msSinceShutdown = moment().valueOf() - moment(shutdownAt).valueOf();
+				debug(`Resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
+
+				// add this difference onto nowPlayingStartedAt in the room redux store
+
+				this.setReduxRoomStateDuringStartup({
+					...existingState,
+					// either start now or resume where we were
+					nowPlayingStartedAt: existingState.nowPlayingStartedAt ?
+						existingState.nowPlayingStartedAt + msSinceShutdown :
+						moment().valueOf()
+				});
+			}
+		}
 		// save default state so it's sent to first client
-		this.room.set('reduxState', this.reduxStore.getState());
-		this.room.set('isActive', true);
-		this.room.set('shutdownAt', null);
-		return this.room.save();
+		room.set('reduxState', reduxStore.getState());
+		room.set('isActive', true);
+		room.set('shutdownAt', null);
+		return room.save();
+	}
+
+	setReduxRoomStateDuringStartup(newState) {
+		this.reduxStore.dispatch(roomFullSync({
+			room: {
+				reduxState: newState,
+				listeners: []
+			}
+		}));
 	}
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
@@ -51,26 +84,15 @@ export default class ActiveRoom {
 
 	// create a redux store on server that will match that on client, so we
 	// can pass action messages around and know the state is in sync
-	createReduxStore() {
+	createAndPopulateReduxStore() {
 		const reducer = roomReducer;
 		this.reduxStore = createStore(reducer);
 		const existingState = this.room.get('reduxState');
 		if (existingState !== null) {
-			debug('Found state in db, applying to redux');
-			this.reduxStore.dispatch(roomFullSync({
-				room: {
-					reduxState: existingState,
-					listeners: []
-				}
-			}));
+			this.setReduxRoomStateDuringStartup(existingState);
 		} else {
 			// sync with default state
-			this.reduxStore.dispatch(roomFullSync({
-				room: {
-					reduxState: this.reduxStore.getState(),
-					listeners: []
-				}
-			}));
+			this.setReduxRoomStateDuringStartup(this.reduxStore.getState())
 		}
 	}
 

@@ -3,6 +3,7 @@
 import update from 'react-addons-update';
 import config from '../../../../config/server';
 import {orderBy, take} from 'lodash';
+import moment from 'moment';
 
 // ------------------------------------
 // Constants
@@ -14,7 +15,6 @@ export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
-
 export const actions = {
 	ROOM_FULL_SYNC,
 	ROOM_USER_JOIN,
@@ -57,7 +57,7 @@ export const roomUserLeave = (userId) => ({
 	payload: {userId}
 });
 
-export const roomTrackAddOrVote = ({userId, trackIds, reason = 'Added manually by user', emote = ''}) => ({
+export const roomTrackAddOrVote = ({userId, trackIds, reason = 'Added manually', emote = ''}) => ({
 	type: ROOM_TRACK_ADD_OR_VOTE,
 	payload: {userId, trackIds, reason}
 });
@@ -193,11 +193,17 @@ const ACTION_HANDLERS = {
 	[ROOM_TRACK_ADD_OR_VOTE]: (state, action) => {
 		const {actionLog, playlist} = state;
 		const {payload} = action;
-		return {
+		const newState = {
 			...state,
 			playlist: applyVotes({playlist, payload}),
 			actionLog: appendToActionLog({actionLog, action})
 		};
+
+		// there were no tracks before, so set the start time as now
+		if (state.playlist.length === 0) {
+			newState.nowPlayingStartedAt = moment(action.timestamp).valueOf();
+		}
+		return newState;
 	}
 };
 // ------------------------------------
