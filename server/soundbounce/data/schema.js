@@ -46,6 +46,7 @@ export const UserActivity = sequelize.define('userActivity', {
 	type: {type: Sequelize.STRING, allowNull: false}, /* login, ... */
 	detail: {type: Sequelize.JSONB}
 });
+
 UserActivity.belongsTo(User, requiredFK('userId'));
 export const UserActivities = {
 	login: 'login'

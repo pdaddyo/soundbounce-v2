@@ -25,6 +25,7 @@ export default class ActiveRoom {
 		this.id = room.get('id');
 		this.name = room.get('name');
 		this.reduxStore = null;
+		this.timeoutId = null;
 	}
 
 	// called when first user joins a room so room goes active
@@ -43,8 +44,6 @@ export default class ActiveRoom {
 				const msSinceShutdown = moment().valueOf() - moment(shutdownAt).valueOf();
 				debug(`Resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
 
-				// add this difference onto nowPlayingStartedAt in the room redux store
-
 				this.setReduxRoomStateDuringStartup({
 					...existingState,
 					// either start now or resume where we were
@@ -52,6 +51,8 @@ export default class ActiveRoom {
 						existingState.nowPlayingStartedAt + msSinceShutdown :
 						moment().valueOf()
 				});
+
+				this.beginNextTrackTimer();
 			}
 		}
 		// save default state so it's sent to first client
@@ -60,6 +61,30 @@ export default class ActiveRoom {
 		room.set('shutdownAt', null);
 		return room.save();
 	}
+
+	beginNextTrackTimer = () => {
+		const {reduxStore} = this;
+		const state = reduxStore.getState();
+		if (state.playlist.length === 0) {
+			debug('Error - beingNextTrackTimer called with no tracks in playlist');
+			return;
+		}
+
+		// find the duration from the db
+		// todo: maybe store this in the redux state since it's an extra db hit
+		this.app.tracks.findTracksInDb(
+			[state.playlist[0].id]
+		).then(tracks => {
+			const {duration} = tracks[0];
+			const ms = state.nowPlayingStartedAt - moment().valueOf() + duration;
+			debug(`next track starts in ${ms}ms`);
+			this.timeoutId = setTimeout(this.nextTrackTimerTick, ms);
+		});
+	};
+
+	nextTrackTimerTick = () => {
+		debug('tick!', this.app);
+	};
 
 	setReduxRoomStateDuringStartup(newState) {
 		this.reduxStore.dispatch(roomFullSync({
@@ -75,6 +100,10 @@ export default class ActiveRoom {
 		debug(`Active room shutdown for '${this.name}'`);
 		// remove from the rooms list
 		this.removeFromList();
+		// clear timer
+		if (this.timeoutId) {
+			clearTimeout(this.timeoutId);
+		}
 		// store the state in the db
 		this.room.set('reduxState', this.reduxStore.getState());
 		this.room.set('isActive', false);
@@ -142,16 +171,25 @@ export default class ActiveRoom {
 	handleRoomEventMessage({sender, event}) {
 		if (event.type === 'addOrVote') {
 			let {trackIds} = event;
+			if (trackIds.length === 0) {
+				return;
+			}
 			// limit to 50 in one hit (spotify api limit)
 			trackIds = take(trackIds, 50);
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
+
+				const playlistWasEmptyBefore = this.reduxStore.getState().playlist.length === 0;
 				this.emitUserEvent(roomTrackAddOrVote({
 					userId: sender.get('id'),
 					trackIds,
 				}), {
 					tracks: tracks.map(t => t.get({plain: true}))
 				});
+
+				if (playlistWasEmptyBefore) {
+					this.beginNextTrackTimer();
+				}
 			});
 		}
 		if (event.type === 'chat') {
