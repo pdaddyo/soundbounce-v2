@@ -6,6 +6,7 @@ import {Link} from 'react-router';
 import HelpIcon from 'components/svg/icons/Help';
 
 import theme from './mainNavigation.css';
+import SoundbounceLogo from '../svg/icons/SoundbounceLogo';
 
 class MainNavigation extends Component {
 	static propTypes = {
@@ -19,7 +20,7 @@ class MainNavigation extends Component {
 			<div className={theme.nav}>
 				<Link to='/home'>
 					<div className={theme.soundbounce}>
-						SB
+						<SoundbounceLogo isSynced={true}/>
 					</div>
 				</Link>
 				<Link to='/help'>

@@ -88,6 +88,16 @@ class RoomView extends Component {
 		});
 	};
 
+	onPlaylistAnimationStart = () => {
+		const {room} = this.refs;
+		console.log(room.scrollTop);
+	};
+
+	onPlaylistAnimationFinish = () => {
+		const {room} = this.refs;
+		console.log(room.scrollTop);
+	};
+
 	render() {
 		const {room, params, actionLogForChatPanel, playlist} = this.props;
 		if (room.id !== params.roomId) {
@@ -103,8 +113,12 @@ class RoomView extends Component {
 				<Gradient />
 				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
-					<div className={theme.room}>
-						<FlipMove duration={450} easing='ease-out'>
+					<div className={theme.room} ref='room'>
+						<FlipMove duration={400}
+								  onStartAll={this.onPlaylistAnimationStart}
+								  onFinishAll={this.onPlaylistAnimationFinish}
+								  easing='ease-in-out'
+								  enterAnimation='elevator'>
 							{playlist.map((track, index) => (
 								<Track key={track.id}
 									   track={track}
