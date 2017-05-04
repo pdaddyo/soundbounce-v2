@@ -96,7 +96,7 @@ export const RoomActivities = {
 /// called on app startup
 export function syncDatabaseSchema(done) {
 	debug('Syncing database schema (sequelize.sync)...');
-	sequelize.sync({force: true}).then(() => {
+	sequelize.sync({force: false}).then(() => {
 		debug('Sync success');
 		done();
 	}).catch(error => {
