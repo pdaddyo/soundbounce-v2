@@ -28,7 +28,7 @@ export default class Track extends Component {
 		const votes = (
 			<div className={sizeTheme('votes')}>
 				{track.votes.map(vote => (
-					<div className={sizeTheme('avatarContainer')}>
+					<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
 						<Avatar user={vote.user}/>
 					</div>
 				))}
