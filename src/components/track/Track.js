@@ -12,15 +12,17 @@ export default class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
 		size: PropTypes.oneOf(['normal', 'hero']),
+		percentComplete: PropTypes.number,
 		onClickVote: PropTypes.func
 	};
 
 	static defaultProps = {
-		size: 'normal'
+		size: 'normal',
+		percentComplete: 0
 	};
 
 	render() {
-		const {track, size, onClickVote} = this.props;
+		const {track, size, onClickVote, percentComplete} = this.props;
 		// helper to append 'Hero' to big size track
 		const sizeTheme = (className) =>
 			theme[size === 'normal' ? className : className + 'Hero'];
@@ -49,6 +51,8 @@ export default class Track extends Component {
 			<div className={sizeTheme('track')}>
 				<div className={sizeTheme('artwork')}
 					 style={{backgroundImage: `url(${track.albumArt})`}}>
+					<div className={theme.progress} style={{width: `${percentComplete}%`}}>
+					</div>
 				</div>
 				<div className={sizeTheme('artistsAndTrackName')}>
 					<div className={sizeTheme('name')}>

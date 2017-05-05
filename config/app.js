@@ -13,5 +13,8 @@ export default {
 		recentlyPlayedMaxLength: 5,
 		playlistMaxLength: 300,
 		actionLogMaxLength: 350
+	},
+	player: {
+		progressUpdateDelay: 1000
 	}
 };

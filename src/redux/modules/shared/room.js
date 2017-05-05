@@ -15,6 +15,7 @@ export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
 export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
+export const ROOM_TRACK_PROGRESS = 'ROOM_TRACK_PROGRESS';
 
 export const actions = {
 	ROOM_FULL_SYNC,
@@ -23,7 +24,8 @@ export const actions = {
 	ROOM_NOW_PLAYING_ENDED,
 	ROOM_TRACK_ADD_OR_VOTE,
 	ROOM_TRACK_LIKE,
-	ROOM_CHAT
+	ROOM_CHAT,
+	ROOM_TRACK_PROGRESS
 };
 
 // ------------------------------------
@@ -37,7 +39,8 @@ const defaultState = {
 	listeners: [],
 	playlist: [],
 	recentlyPlayed: [],
-	nowPlayingStartedAt: null
+	nowPlayingStartedAt: null,
+	nowPlayingProgress: null
 };
 
 // ------------------------------------
@@ -71,6 +74,11 @@ export const roomChat = ({userId, text}) => ({
 export const roomNowPlayingEnded = ({trackWithVotes, nextTrackDuration}) => ({
 	type: ROOM_NOW_PLAYING_ENDED,
 	payload: {trackWithVotes, nextTrackDuration}
+});
+
+export const roomTrackProgress = ({nowPlayingProgress}) => ({
+	type: ROOM_TRACK_PROGRESS,
+	payload: {nowPlayingProgress}
 });
 
 // ------------------------------------
@@ -234,12 +242,17 @@ const ACTION_HANDLERS = {
 		// set nowPlayingStartedAt to last + duration
 		if (newState.playlist.length > 0) {
 			newState = update(newState, {
-				nowPlayingStartedAt: {$set: state.nowPlayingStartedAt + payload.nextTrackDuration}
+				nowPlayingStartedAt: {$set: state.nowPlayingStartedAt + payload.nextTrackDuration},
+				nowPlayingProgress: {$set: 0}
 			});
 		}
 
 		return newState;
-	}
+	},
+	[ROOM_TRACK_PROGRESS]: (state, {payload}) => ({
+		...state,
+		nowPlayingProgress: payload.nowPlayingProgress
+	})
 };
 
 // ------------------------------------

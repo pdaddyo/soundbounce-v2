@@ -106,6 +106,10 @@ class RoomView extends Component {
 			</div>;
 		}
 
+		let progressPercent = 0;
+		if (playlist.length > 0) {
+			progressPercent = room.nowPlayingProgress / playlist[0].duration * 100;
+		}
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<ScrollStyle size={0.6} alpha={0.25}/>
@@ -119,6 +123,7 @@ class RoomView extends Component {
 							{playlist.map((track, index) => (
 								<Track key={track.id}
 									   track={track}
+									   percentComplete={index === 0 ? progressPercent : 0}
 									   onClickVote={this.onClickVote}
 									   size={index === 0 ? 'hero' : 'normal'}/>
 							))}

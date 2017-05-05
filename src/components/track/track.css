@@ -11,6 +11,7 @@
 }
 
 .artwork {
+	position: relative;
 	width: 4rem;
 	height: 4rem;
 	background-size: cover;
@@ -131,4 +132,13 @@
 
 .button:hover {
 	opacity: 0.95;
+}
+
+.progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 0.5rem;
+	background-color: rgba(255, 255, 255, 0.7);
+
 }
