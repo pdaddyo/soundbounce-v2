@@ -11,16 +11,17 @@ import SoundbounceLogo from '../svg/icons/SoundbounceLogo';
 class MainNavigation extends Component {
 	static propTypes = {
 		currentUser: PropTypes.object,
-		player: PropTypes.object
+		player: PropTypes.object,
+		isSynced: PropTypes.bool
 	};
 
 	render() {
-		const {currentUser} = this.props;
+		const {currentUser, isSynced} = this.props;
 		return (
 			<div className={theme.nav}>
 				<Link to='/home'>
 					<div className={theme.soundbounce}>
-						<SoundbounceLogo isSynced={true}/>
+						<SoundbounceLogo isSynced={isSynced}/>
 					</div>
 				</Link>
 				<Link to='/help'>
@@ -40,7 +41,8 @@ class MainNavigation extends Component {
 
 // map the spotify player state to prop 'player'
 const mapStateToProps = state => ({
-	currentUser: selectCurrentUser(state)
+	currentUser: selectCurrentUser(state),
+	isSynced: state.sync.isSynced
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});

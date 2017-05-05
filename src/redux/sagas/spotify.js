@@ -12,7 +12,7 @@ import {
 	actions as spotifyActions
 } from '../modules/spotify';
 import {roomNowPlayingEnded} from '../modules/shared/room';
-import {syncStartFail, syncStop, actions as syncActions} from '../modules/sync';
+import {syncStartFail, syncStop, syncStartOk, actions as syncActions} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
 import _ from 'lodash'; // importing all to avoid clash with redux saga 'take'
 import moment from 'moment';
@@ -62,6 +62,32 @@ function * updatePlayerState() {
 	}
 }
 
+function * checkSyncStatus() {
+	const {room, sync, spotify} = yield select(state => state);
+	if (room.playlist.length > 0) {
+		const nowPlayingProgress = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
+		if (sync.isSynced) {
+			const {player} = spotify;
+			if (!player.is_playing) {
+				// player has stopped but we're supposed to be synced, stop sync
+				yield put(syncStop('Spotify playback was stopped.'));
+				return;
+			}
+			// we're playing! but are we playing the correct track?
+			if (player.item.id !== room.playlist[0].id) {
+				yield put(syncStop('A different track was playing.'));
+				return;
+			}
+			// OK so correct track, but it is reasonable track position?
+			const drift = Math.abs(nowPlayingProgress - player.progress_ms);
+			if (drift > config.player.maxDriftConsideredSynced) {
+				yield put(syncStop('Song position changed..'));
+				return;
+			}
+		}
+	}
+}
+
 // this saga runs forever checking the player status
 function * pollSpotifyPlayerStatus() {
 	while (true) {
@@ -76,7 +102,7 @@ function * pollSpotifyPlayerStatus() {
 			// todo: this is a sync failure if we can't get playerstate (this is after retries)
 		}
 
-		// todo: check sync status here
+		yield call(checkSyncStatus);
 		yield delay(pollPlayerDelay);
 	}
 }
@@ -115,6 +141,7 @@ function * watchForSyncStart() {
 			continue;
 		}
 
+		yield put(syncStartOk());
 		// ok, we're in a room, we've got a track to play.  let's do this!
 		while (true) {
 			let {room, sync, spotify} = yield select(state => state);

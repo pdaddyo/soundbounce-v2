@@ -6,7 +6,6 @@ export const SYNC_SET_SERVER_OFFSET = 'SYNC_SET_SERVER_OFFSET';
 export const SYNC_START = 'SYNC_START';
 export const SYNC_START_OK = 'SYNC_START_OK';
 export const SYNC_START_FAIL = 'SYNC_START_FAIL';
-export const SYNC_PLAYER_DEVIATED = 'SYNC_PLAYER_DEVIATED';
 export const SYNC_STOP = 'SYNC_STOP';
 
 export const actions = {
@@ -14,7 +13,6 @@ export const actions = {
 	SYNC_START,
 	SYNC_START_OK,
 	SYNC_START_FAIL,
-	SYNC_PLAYER_DEVIATED,
 	SYNC_STOP
 };
 
@@ -39,9 +37,13 @@ export const syncSetServerOffset = ({ticks}) => ({
 export const syncStart = () => ({
 	type: SYNC_START
 });
+export const syncStartOk = () => ({
+	type: SYNC_START_OK
+});
 
-export const syncStop = () => ({
-	type: SYNC_STOP
+export const syncStop = (reason) => ({
+	type: SYNC_STOP,
+	payload: {reason}
 });
 
 export const syncStartFail = ({error}) => ({
@@ -79,16 +81,11 @@ const ACTION_HANDLERS = {
 		isSynced: true,
 		lastSyncError: payload.error
 	}),
-	[SYNC_PLAYER_DEVIATED]: (state, {payload}) => ({
-		...state,
-		isSyncing: false,
-		isSynced: false,
-		lastSyncError: `Sync stopped: ${payload.reason}`
-	}),
 	[SYNC_STOP]: (state, {payload}) => ({
 		...state,
 		isSyncing: false,
-		isSynced: false
+		isSynced: false,
+		lastSyncError: payload.reason
 	})
 };
 
