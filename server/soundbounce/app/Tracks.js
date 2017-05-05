@@ -110,6 +110,10 @@ export default class Tracks {
 											return TrackArtist.bulkCreate(
 												trackArtistsToInsert
 											).then(() => {
+												// todo: fix bug with track relinking whereby
+												// the id back from api is diff to the id
+												// we asked for.
+												
 												return this.findTracksInDb(trackIds);
 											});
 										})

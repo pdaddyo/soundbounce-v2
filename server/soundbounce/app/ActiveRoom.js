@@ -19,7 +19,7 @@ import moment from 'moment';
 
 import {TrackActivity} from '../data/schema';
 
-const debug = _debug('soundbounce:rooms:active');
+const debug = _debug('soundbounce:activeroom');
 
 export default class ActiveRoom {
 	constructor({room, app}) {
