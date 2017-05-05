@@ -127,13 +127,13 @@ export default class ActiveRoom {
 			trackId: trackWithVotes.id
 		});
 
-		let nextTrackDuration = Promise.resolve(null);
+		let finishingTrackDuration = Promise.resolve(null);
+
 		// if there's a next track, find its duration
 		if (state.playlist.length > 1) {
-			nextTrackDuration = this.app.tracks.findTracksInDb(
-				[state.playlist[1].id]
+			finishingTrackDuration = this.app.tracks.findTracksInDb(
+				[state.playlist[0].id]
 			).then(tracks => tracks[0].get('duration'));
-
 			this.room.set('nowPlayingTrackId', state.playlist[1].id);
 		} else {
 			this.room.set('nowPlayingTrackId', null);
@@ -142,9 +142,9 @@ export default class ActiveRoom {
 		// save the now playing track id for the homepage view etc
 		this.room.save();
 
-		nextTrackDuration.then((nextTrackDuration) => {
+		finishingTrackDuration.then((finishingTrackDuration) => {
 			// fire the event to update our redux store
-			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, nextTrackDuration}));
+			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 			// if the playlist before we finished had more than one track
 			if (numTracksRemaining > 0) {
 				this.beginNextTrackTimer();

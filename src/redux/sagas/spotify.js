@@ -149,13 +149,10 @@ function * watchForSyncStart() {
 			let state = yield select(state => state);
 			room = state.room;
 
-			let nextTrackDuration = null;
-			if (room.playlist.length > 1) {
-				nextTrackDuration = state.spotify.tracks[room.playlist[1].id].duration;
-			}
+			const finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
 
 			// ok let's fire a next track action!
-			yield put(roomNowPlayingEnded({trackWithVotes, nextTrackDuration}));
+			yield put(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 		}
 	}
 }

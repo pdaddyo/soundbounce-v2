@@ -71,9 +71,9 @@ export const roomChat = ({userId, text}) => ({
 	payload: {userId, text}
 });
 
-export const roomNowPlayingEnded = ({trackWithVotes, nextTrackDuration}) => ({
+export const roomNowPlayingEnded = ({trackWithVotes, finishingTrackDuration}) => ({
 	type: ROOM_NOW_PLAYING_ENDED,
-	payload: {trackWithVotes, nextTrackDuration}
+	payload: {trackWithVotes, finishingTrackDuration}
 });
 
 export const roomTrackProgress = ({nowPlayingProgress}) => ({
@@ -242,7 +242,7 @@ const ACTION_HANDLERS = {
 		// set nowPlayingStartedAt to last + duration
 		if (newState.playlist.length > 0) {
 			newState = update(newState, {
-				nowPlayingStartedAt: {$set: state.nowPlayingStartedAt + payload.nextTrackDuration},
+				nowPlayingStartedAt: {$set: state.nowPlayingStartedAt + payload.finishingTrackDuration},
 				nowPlayingProgress: {$set: 0}
 			});
 		}
