@@ -10,11 +10,14 @@ import roomReducer, {
 	roomUserJoin,
 	roomUserLeave,
 	roomChat,
+	roomNowPlayingEnded,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
 import {uniq, flatten, take} from 'lodash';
 import shortid from 'shortid';
 import moment from 'moment';
+
+import {TrackActivity} from '../data/schema';
 
 const debug = _debug('soundbounce:rooms:active');
 
@@ -62,6 +65,23 @@ export default class ActiveRoom {
 		return room.save();
 	}
 
+	// called when last user leaves a room so shuts down (pauses) until someone rejoins
+	shutdown() {
+		debug(`Active room shutdown for '${this.name}'`);
+		// remove from the rooms list
+		this.removeFromList();
+		// clear next track timer
+		if (this.timeoutId) {
+			clearTimeout(this.timeoutId);
+			this.timeoutId = null;
+		}
+		// store the state in the db
+		this.room.set('reduxState', this.reduxStore.getState());
+		this.room.set('isActive', false);
+		this.room.set('shutdownAt', new Date());
+		return this.room.save();
+	}
+
 	beginNextTrackTimer = () => {
 		const {reduxStore} = this;
 		const state = reduxStore.getState();
@@ -70,46 +90,67 @@ export default class ActiveRoom {
 			return;
 		}
 
-		// find the duration from the db
-		// todo: maybe store this in the redux state since it's an extra db hit
+		// find the duration for playing track from the db
 		this.app.tracks.findTracksInDb(
 			[state.playlist[0].id]
 		).then(tracks => {
 			const {duration} = tracks[0];
 			const ms = state.nowPlayingStartedAt - moment().valueOf() + duration;
 			debug(`next track starts in ${ms}ms`);
+			if (this.timeoutId) {
+				clearTimeout(this.timeoutId);
+			}
 			this.timeoutId = setTimeout(this.nextTrackTimerTick, ms);
 		});
 	};
 
 	nextTrackTimerTick = () => {
-		debug('tick!', this.app);
-	};
+		const {reduxStore} = this;
+		const state = reduxStore.getState();
+		const trackWithVotes = state.playlist[0];
+		const numTracksRemaining = state.playlist.length - 1;
 
-	setReduxRoomStateDuringStartup(newState) {
-		this.reduxStore.dispatch(roomFullSync({
-			room: {
-				reduxState: newState,
-				listeners: []
-			}
-		}));
-	}
+		this.timeoutId = null; // timeout just ticked
 
-	// called when last user leaves a room so shuts down (pauses) until someone rejoins
-	shutdown() {
-		debug(`Active room shutdown for '${this.name}'`);
-		// remove from the rooms list
-		this.removeFromList();
-		// clear timer
-		if (this.timeoutId) {
-			clearTimeout(this.timeoutId);
+		// log play to database
+		TrackActivity.create({
+			type: 'play',
+			detail: {
+				// store who was listening at the time
+				listeners: this.app.connections
+					.getConnectedUsersForRoom(this.id)
+					.map(user => user.get('id')),
+				trackWithVotes
+			},
+			userId: null,
+			roomId: this.id,
+			trackId: trackWithVotes.id
+		});
+
+		let nextTrackDuration = Promise.resolve(null);
+		// if there's a next track, find its duration
+		if (state.playlist.length > 1) {
+			nextTrackDuration = this.app.tracks.findTracksInDb(
+				[state.playlist[1].id]
+			).then(tracks => tracks[0].get('duration'));
+
+			this.room.set('nowPlayingTrackId', state.playlist[1].id);
+		} else {
+			this.room.set('nowPlayingTrackId', null);
 		}
-		// store the state in the db
-		this.room.set('reduxState', this.reduxStore.getState());
-		this.room.set('isActive', false);
-		this.room.set('shutdownAt', new Date());
-		return this.room.save();
-	}
+
+		// save the now playing track id for the homepage view etc
+		this.room.save();
+
+		nextTrackDuration.then((nextTrackDuration) => {
+			// fire the event to update our redux store
+			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, nextTrackDuration}));
+			// if the playlist before we finished had more than one track
+			if (numTracksRemaining > 0) {
+				this.beginNextTrackTimer();
+			}
+		});
+	};
 
 	// create a redux store on server that will match that on client, so we
 	// can pass action messages around and know the state is in sync
@@ -123,6 +164,16 @@ export default class ActiveRoom {
 			// sync with default state
 			this.setReduxRoomStateDuringStartup(this.reduxStore.getState())
 		}
+	}
+
+	// a 'fake' sync action used to populate the server's room state during room startup
+	setReduxRoomStateDuringStartup(newState) {
+		this.reduxStore.dispatch(roomFullSync({
+			room: {
+				reduxState: newState,
+				listeners: []
+			}
+		}));
 	}
 
 	// get a full state object that allows the client to render everything in this room without
@@ -154,8 +205,13 @@ export default class ActiveRoom {
 			.filter(al => al.payload['trackIds'])
 			.map(al => al.payload.trackIds);
 
+		const trackIdsInPlaylist = reduxState.playlist.map(pt => pt.id);
+		const trackIdsInRecentlyPlayed = reduxState.recentlyPlayed.map(pt => pt.id);
+
 		const tracks = this.app.tracks.findTracksInDb(
-			uniq([...flatten(trackIdsInActionLog)])
+			uniq(flatten([...trackIdsInActionLog,
+						  ...trackIdsInPlaylist,
+						  ...trackIdsInRecentlyPlayed]))
 		);
 
 		return Promise.all([users, tracks]).then(([users, tracks]) => ({

@@ -8,5 +8,10 @@ export default {
 		pollPlayerDelay: 6000,
 		apiRetryDelay: 3000,
 		maxRetry: 5
+	},
+	playlist: {
+		recentlyPlayedMaxLength: 5,
+		playlistMaxLength: 300,
+		actionLogMaxLength: 350
 	}
 };

@@ -1,7 +1,7 @@
 // This redux module is shared between client and server,
 // so the same messages (shared via socket.io) can keep state in sync
 import update from 'react-addons-update';
-import config from '../../../../config/server';
+import config from '../../../../config/app';
 import {orderBy, take} from 'lodash';
 import moment from 'moment';
 
@@ -11,10 +11,11 @@ import moment from 'moment';
 export const ROOM_FULL_SYNC = 'ROOM_FULL_SYNC';
 export const ROOM_USER_JOIN = 'ROOM_USER_JOIN';
 export const ROOM_USER_LEAVE = 'ROOM_USER_LEAVE';
-export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
+export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
+
 export const actions = {
 	ROOM_FULL_SYNC,
 	ROOM_USER_JOIN,
@@ -67,11 +68,16 @@ export const roomChat = ({userId, text}) => ({
 	payload: {userId, text}
 });
 
+export const roomNowPlayingEnded = ({trackWithVotes, nextTrackDuration}) => ({
+	type: ROOM_NOW_PLAYING_ENDED,
+	payload: {trackWithVotes, nextTrackDuration}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const appendToActionLog = ({actionLog, action}) => {
-	if (actionLog.length >= config.actionLogMaxLength) {
+	if (actionLog.length >= config.playlist.actionLogMaxLength) {
 		// remove old messages if at limit
 		return update(take(
 			orderBy(actionLog, ['timestamp'], ['desc']),
@@ -199,17 +205,46 @@ const ACTION_HANDLERS = {
 			actionLog: appendToActionLog({actionLog, action})
 		};
 
-		// there were no tracks before, so set the start time as now
+		// there were no tracks before, so set the start time to the action timestamp (server now)
 		if (state.playlist.length === 0) {
 			newState.nowPlayingStartedAt = moment(action.timestamp).valueOf();
 		}
 		return newState;
+	},
+	[ROOM_NOW_PLAYING_ENDED]: (state, {payload}) => {
+		if (state.playlist.length === 0) {
+			return state;
+		}
+
+		// move playlist item to recently played
+		let newState = update(state, {
+				playlist: {$splice: [[0, 1]]},
+				recentlyPlayed: {$push: [payload.trackWithVotes]}
+			}
+		);
+
+		// remove item from recently played to size if required
+		const recentLength = newState.recentlyPlayed.length;
+		if (recentLength > config.playlist.recentlyPlayedMaxLength) {
+			newState = update(newState, {
+				recentlyPlayed: {$splice: [[recentLength - 1, 1]]}
+			});
+		}
+
+		// set nowPlayingStartedAt to last + duration
+		if (newState.playlist.length > 0) {
+			newState = update(newState, {
+				nowPlayingStartedAt: {$set: state.nowPlayingStartedAt + payload.nextTrackDuration}
+			});
+		}
+
+		return newState;
 	}
 };
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
-
 export default function roomReducer(state = defaultState, action) {
 	const handler = ACTION_HANDLERS[action.type];
 	return handler ? handler(state, action) : state;

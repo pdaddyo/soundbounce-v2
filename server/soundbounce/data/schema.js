@@ -4,8 +4,8 @@ import _debug from 'debug';
 const debug = _debug('soundbounce:data:schema');
 
 // helper function to get settings for a required foreign key
-const requiredFK = (field) => ({
-	foreignKey: {field, allowNull: false},
+const requiredFK = (field, allowNull = false) => ({
+	foreignKey: {field, allowNull},
 	onDelete: 'cascade'
 });
 
@@ -79,7 +79,7 @@ export const TrackActivity = sequelize.define('trackActivity', {
 	type: {type: Sequelize.STRING, allowNull: false}, /* add, vote up, vote down, play etc */
 	detail: {type: Sequelize.JSONB}
 });
-TrackActivity.belongsTo(User, requiredFK('userId'));
+TrackActivity.belongsTo(User, requiredFK('userId', true));
 TrackActivity.belongsTo(Room, requiredFK('roomId'));
 TrackActivity.belongsTo(Track, requiredFK('trackId'));
 
