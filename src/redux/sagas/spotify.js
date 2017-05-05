@@ -126,15 +126,16 @@ function * watchForSyncStart() {
 				return;
 			}
 
+			const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
 			// tell player to play track(s)
 			yield call(spotifyPlayTracksThenSeek, {
 				trackIds: _.take(room.playlist, 5).map(t => t.id),
-				seekPosition: moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset
+				seekPosition
 			});
 
 			// ok now race a timer to the end of this track vs sync stopping for any reason
 			const {cancel} = yield race({
-				nextTrack: delay(spotify.tracks[trackWithVotes.id].duration),
+				delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
 				cancel: take(syncActions.SYNC_STOP)
 			});
 
