@@ -16,6 +16,7 @@ import Gradient from 'components/room/backgrounds/Gradient';
 import FlipMove from 'react-flip-move';
 
 import theme from './roomView.css';
+import Play from '../../components/svg/icons/Play';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -28,7 +29,8 @@ class RoomView extends Component {
 		roomChatText: PropTypes.string,
 		clearChatText: PropTypes.func,
 		syncStart: PropTypes.func,
-		playlist: PropTypes.array
+		playlist: PropTypes.array,
+		sync: PropTypes.object
 	};
 
 	// try to pull spotify track Ids from drop text
@@ -93,16 +95,16 @@ class RoomView extends Component {
 	componentWillUpdate(nextProps) {
 		if (this.props.playlist.length === 0 && nextProps.playlist.length > 0) {
 			// adding a track to an empty room, so attempt to sync
-			this.props.syncStart();
+			//	this.props.syncStart();
 		}
 	}
 
 	render() {
-		const {room, params, actionLogForChatPanel, playlist} = this.props;
+		const {room, params, actionLogForChatPanel, playlist, sync, syncStart} = this.props;
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
 			return <div className={theme.container}>
-				Connecting to room...
+				todo: room loading icon
 			</div>;
 		}
 
@@ -117,6 +119,11 @@ class RoomView extends Component {
 				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
 					<div className={theme.room} ref='room'>
+						{(!sync.isSynced) && (
+							<div className={theme.play} onClick={syncStart}>
+								<Play/>
+							</div>
+						)}
 						<FlipMove duration={400}
 								  easing='ease-in-out'
 								  enterAnimation='elevator'>
@@ -143,6 +150,7 @@ class RoomView extends Component {
 const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
 	room: state.room,
+	sync: state.sync,
 	actionLogForChatPanel: state.room.actionLog.filter(al => al.type === ROOM_CHAT)
 		.map(chatWithUserId => ({
 			...chatWithUserId,

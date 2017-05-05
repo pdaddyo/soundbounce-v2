@@ -142,45 +142,50 @@ function * watchForSyncStart() {
 		}
 
 		yield put(syncStartOk());
-		// ok, we're in a room, we've got a track to play.  let's do this!
-		while (true) {
-			let {room, sync, spotify} = yield select(state => state);
+		yield call(syncLoop);
+		// we drop out of the sync loop when player syncing stops.
+	}
+}
 
-			if (room.playlist.length === 0) {
-				// no more tracks, we're done here
-				yield put(syncStop());
-				return;
-			}
+function * syncLoop() {
+	// ok, we're in a room, we've got a track to play.  let's do this!
+	while (true) {
+		let {room, sync, spotify} = yield select(state => state);
 
-			const trackWithVotes = room.playlist[0];
-			const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
-			// tell player to play track(s)
-			yield call(spotifyPlayTracksThenSeek, {
-				trackIds: _.take(room.playlist, 5).map(t => t.id),
-				seekPosition
-			});
-
-			// ok now race a timer to the end of this track vs sync stopping for any reason
-			const {cancel} = yield race({
-				delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
-				cancel: take(syncActions.SYNC_STOP)
-			});
-
-			// sync stopped, bail
-			if (cancel) {
-				return;
-			}
-
-			// reselect the state because it might have changed whilst track was playing
-			// e.g. new spotify track when we look up duration below
-			let state = yield select(state => state);
-			room = state.room;
-
-			const finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
-
-			// ok let's fire a next track action!
-			yield put(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
+		if (room.playlist.length === 0) {
+			// no more tracks, we're done here
+			yield put(syncStop());
+			return;
 		}
+
+		const trackWithVotes = room.playlist[0];
+		const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
+		// tell player to play track(s)
+		yield call(spotifyPlayTracksThenSeek, {
+			trackIds: _.take(room.playlist, 5).map(t => t.id),
+			seekPosition
+		});
+
+		// ok now race a timer to the end of this track vs sync stopping for any reason
+		const {cancel} = yield race({
+			delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
+			cancel: take(syncActions.SYNC_STOP)
+		});
+
+		// sync stopped, bail
+		if (cancel) {
+			return;
+		}
+
+		// reselect the state because it might have changed whilst track was playing
+		// e.g. new spotify track when we look up duration below
+		let state = yield select(state => state);
+		room = state.room;
+
+		const finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
+
+		// ok let's fire a next track action!
+		yield put(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 	}
 }
 
