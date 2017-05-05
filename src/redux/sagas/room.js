@@ -3,12 +3,18 @@ import {take, put, select} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import config from '../../../config/app';
 import {actions as socketActions} from '../modules/socket';
+import {syncStop} from '../modules/sync';
 import {roomTrackProgress, actions as roomActions} from '../modules/shared/room';
 import moment from 'moment';
 
 function * watchForSocketRoomJoinOk() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_JOIN_OK);
+		const {isSynced} = yield select(state => state.sync);
+		if (isSynced) {
+			yield put(syncStop('Joined a different room'));
+		}
+		
 		const {roomId} = payload;
 		// now navigate to the room
 		yield put(push(`/room/${roomId}`));
