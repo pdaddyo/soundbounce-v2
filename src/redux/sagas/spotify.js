@@ -1,6 +1,6 @@
 import {delay} from 'redux-saga';
 import config from '../../../config/app';
-import {select, put, call, take} from 'redux-saga/effects';
+import {race, select, put, call, take} from 'redux-saga/effects';
 import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
@@ -11,7 +11,8 @@ import {
 	spotifyPlayTrack,
 	actions as spotifyActions
 } from '../modules/spotify';
-import {syncStartFail, actions as syncActions} from '../modules/sync';
+import {roomNowPlayingEnded} from '../modules/shared/room';
+import {syncStartFail, syncStop, actions as syncActions} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
 import _ from 'lodash'; // importing all to avoid clash with redux saga 'take'
 import moment from 'moment';
@@ -89,17 +90,19 @@ function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 		body: JSON.stringify({uris: trackIds.map(tid => `spotify:track:${tid}`)})
 	});
 
-	// now play call is complete (the above is 'blocking') now seek!
-	yield call(spotifyApiCall, {
-		url: `/v1/me/player/seek?position_ms=${seekPosition}`,
-		method: 'PUT'
-	});
+	if (seekPosition > config.spotify.minSeekFromStart) {
+		// now play call is complete (the above is 'blocking' so device should be playing), now seek!
+		yield call(spotifyApiCall, {
+			url: `/v1/me/player/seek?position_ms=${seekPosition}`,
+			method: 'PUT'
+		});
+	}
 }
 
 function * watchForSyncStart() {
 	while (true) {
 		yield take(syncActions.SYNC_START);
-		const {room, sync} = yield select(state => state);
+		let {room} = yield select(state => state);
 
 		if (!room || !room.id) {
 			yield put(syncStartFail({
@@ -113,10 +116,46 @@ function * watchForSyncStart() {
 		}
 
 		// ok, we're in a room, we've got a track to play.  let's do this!
-		yield call(spotifyPlayTracksThenSeek, {
-			trackIds: _.take(room.playlist, 5).map(t => t.id),
-			seekPosition: moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset
-		});
+		while (true) {
+			let {room, sync, spotify} = yield select(state => state);
+			const trackWithVotes = room.playlist[0];
+
+			if (room.playlist.length === 0) {
+				// no more tracks, we're done here
+				yield put(syncStop());
+				return;
+			}
+
+			// tell player to play track(s)
+			yield call(spotifyPlayTracksThenSeek, {
+				trackIds: _.take(room.playlist, 5).map(t => t.id),
+				seekPosition: moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset
+			});
+
+			// ok now race a timer to the end of this track vs sync stopping for any reason
+			const {cancel} = yield race({
+				nextTrack: delay(spotify.tracks[trackWithVotes.id].duration),
+				cancel: take(syncActions.SYNC_STOP)
+			});
+
+			// sync stopped, bail
+			if (cancel) {
+				return;
+			}
+
+			// reselect the state because it might have changed whilst track was playing
+			// e.g. new spotify track when we look up duration below
+			let state = yield select(state => state);
+			room = state.room;
+
+			let nextTrackDuration = null;
+			if (room.playlist.length > 1) {
+				nextTrackDuration = state.spotify.tracks[room.playlist[1].id].duration;
+			}
+
+			// ok let's fire a next track action!
+			yield put(roomNowPlayingEnded({trackWithVotes, nextTrackDuration}));
+		}
 	}
 }
 

@@ -40,6 +40,10 @@ export const syncStart = () => ({
 	type: SYNC_START
 });
 
+export const syncStop = () => ({
+	type: SYNC_STOP
+});
+
 export const syncStartFail = ({error}) => ({
 	type: SYNC_START_FAIL,
 	payload: {error}
