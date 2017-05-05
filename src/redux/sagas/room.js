@@ -4,7 +4,6 @@ import {push} from 'react-router-redux';
 import config from '../../../config/app';
 import {actions as socketActions} from '../modules/socket';
 import {roomTrackProgress, actions as roomActions} from '../modules/shared/room';
-import {syncStart} from '../modules/sync';
 import moment from 'moment';
 
 function * watchForSocketRoomJoinOk() {
