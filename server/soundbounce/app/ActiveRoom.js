@@ -139,12 +139,14 @@ export default class ActiveRoom {
 			this.room.set('nowPlayingTrackId', null);
 		}
 
-		// save the now playing track id for the homepage view etc
-		this.room.save();
-
 		finishingTrackDuration.then((finishingTrackDuration) => {
 			// fire the event to update our redux store
 			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
+			// save the redux state to the db
+			this.room.set('reduxState', this.reduxStore.getState());
+			this.room.save();
+
+			// save the now playing track id for the homepage view etc
 			// if the playlist before we finished had more than one track
 			if (numTracksRemaining > 0) {
 				this.beginNextTrackTimer();

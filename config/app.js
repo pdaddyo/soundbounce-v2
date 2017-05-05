@@ -15,6 +15,7 @@ export default {
 		actionLogMaxLength: 350
 	},
 	player: {
-		progressUpdateDelay: 1000
+		progressUpdateDelay: 1000,
+		maxDriftConsideredSynced: 5000
 	}
 };
