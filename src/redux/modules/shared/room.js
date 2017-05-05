@@ -61,7 +61,7 @@ export const roomUserLeave = (userId) => ({
 	payload: {userId}
 });
 
-export const roomTrackAddOrVote = ({userId, trackIds, reason = 'Added manually', emote = ''}) => ({
+export const roomTrackAddOrVote = ({userId, trackIds, reason = '', emote = ''}) => ({
 	type: ROOM_TRACK_ADD_OR_VOTE,
 	payload: {userId, trackIds, reason}
 });
