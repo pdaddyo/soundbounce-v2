@@ -78,7 +78,7 @@ const ACTION_HANDLERS = {
 	[SYNC_START_FAIL]: (state, {payload}) => ({
 		...state,
 		isSyncing: false,
-		isSynced: true,
+		isSynced: false,
 		lastSyncError: payload.error
 	}),
 	[SYNC_STOP]: (state, {payload}) => ({
