@@ -141,7 +141,6 @@ function * watchForSyncStart() {
 			continue;
 		}
 
-		yield put(syncStartOk());
 		yield call(syncLoop);
 		// we drop out of the sync loop when player syncing stops.
 	}
@@ -162,9 +161,13 @@ function * syncLoop() {
 		const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
 		// tell player to play track(s)
 		yield call(spotifyPlayTracksThenSeek, {
-			trackIds: _.take(room.playlist, 5).map(t => t.id),
+			trackIds: _.take(room.playlist, config.player.maxTracksToQueueWhenPlaying).map(t => t.id),
 			seekPosition
 		});
+
+		if (sync.isSyncing) {
+			yield put(syncStartOk());
+		}
 
 		// ok now race a timer to the end of this track vs sync stopping for any reason
 		const {cancel} = yield race({

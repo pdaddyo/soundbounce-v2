@@ -16,6 +16,7 @@ export default {
 	},
 	player: {
 		progressUpdateDelay: 1000,
-		maxDriftConsideredSynced: 5000
+		maxDriftConsideredSynced: 5000,
+		maxTracksToQueueWhenPlaying: 10
 	}
 };
