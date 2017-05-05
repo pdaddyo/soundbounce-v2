@@ -118,7 +118,6 @@ function * watchForSyncStart() {
 		// ok, we're in a room, we've got a track to play.  let's do this!
 		while (true) {
 			let {room, sync, spotify} = yield select(state => state);
-			const trackWithVotes = room.playlist[0];
 
 			if (room.playlist.length === 0) {
 				// no more tracks, we're done here
@@ -126,6 +125,7 @@ function * watchForSyncStart() {
 				return;
 			}
 
+			const trackWithVotes = room.playlist[0];
 			const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
 			// tell player to play track(s)
 			yield call(spotifyPlayTracksThenSeek, {
