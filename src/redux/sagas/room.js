@@ -16,7 +16,9 @@ function * watchForSocketRoomJoinOk() {
 
 		// now wait for a room full sync (i.e. full state over wire), then try to start audio
 		yield take(roomActions.ROOM_FULL_SYNC);
-		yield put(syncStart());
+
+		// no longer auto-play
+		// yield put(syncStart());
 	}
 }
 
