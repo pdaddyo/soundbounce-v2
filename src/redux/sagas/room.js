@@ -14,7 +14,6 @@ function * watchForSocketRoomJoinOk() {
 		if (isSynced) {
 			yield put(syncStop('Joined a different room'));
 		}
-		
 		const {roomId} = payload;
 		// now navigate to the room
 		yield put(push(`/room/${roomId}`));
