@@ -136,9 +136,16 @@
 
 .progress {
 	position: absolute;
-	bottom: -0.5rem;
+	bottom: 0;
 	left: 0;
 	height: 0.5rem;
-	background-color: rgba(255, 255, 255, 0.8);
+	background-color: rgba(255, 255, 255, 0.7);
 
+}
+
+.progressBg {
+	composes: progress;
+	bottom: -0.5rem;
+	background-color: rgba(255, 255, 255, 0.1);
+	width: 100%;
 }

@@ -18,7 +18,7 @@ export default class Track extends Component {
 
 	static defaultProps = {
 		size: 'normal',
-		percentComplete: 0
+		percentComplete: -1
 	};
 
 	render() {
@@ -47,12 +47,17 @@ export default class Track extends Component {
 			</div>
 		);
 
+		const progress = percentComplete > -1 ? (
+			<div className={theme.progressBg}>
+				<div className={theme.progress} style={{width: `${percentComplete}%`}}>
+				</div>
+			</div>
+		) : null;
 		return (
 			<div className={sizeTheme('track')}>
 				<div className={sizeTheme('artwork')}
 					 style={{backgroundImage: `url(${track.albumArt})`}}>
-					<div className={theme.progress} style={{width: `${percentComplete}%`}}>
-					</div>
+					{progress}
 				</div>
 				<div className={sizeTheme('artistsAndTrackName')}>
 					<div className={sizeTheme('name')}>
