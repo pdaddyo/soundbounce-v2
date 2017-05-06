@@ -12,6 +12,10 @@ export default class Rooms {
 	activeRooms = [];
 
 	createRoom(roomOptions) {
+		if (!roomOptions.name) {
+			debug('createRoom called with no name in options');
+			return;
+		}
 		debug(`Creating new room "${roomOptions.name}"`);
 		return Room.create({
 			id: shortid.generate(),
