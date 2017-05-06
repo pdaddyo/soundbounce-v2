@@ -7,8 +7,16 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 1rem;
+	margin-left: 1rem;
+	font-weight: 200;
 }
 
 .name {
 	padding-left: 2rem;
+	font-size: 1rem;
+	min-width: 15rem;
+	color: rgba(255, 255, 255, 0.9);
+	letter-spacing: 0.05rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	font-weight: 500;
 }
