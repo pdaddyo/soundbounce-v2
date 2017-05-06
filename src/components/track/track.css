@@ -136,9 +136,9 @@
 
 .progress {
 	position: absolute;
-	bottom: 0;
+	bottom: -0.5rem;
 	left: 0;
 	height: 0.5rem;
-	background-color: rgba(255, 255, 255, 0.7);
+	background-color: rgba(255, 255, 255, 0.8);
 
 }
