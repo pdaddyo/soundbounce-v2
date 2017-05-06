@@ -1,10 +1,14 @@
 .listeners {
+	font-size: 110%;
 	padding-top: 0.5rem;
 }
 
 .listener {
-	padding: 0.2rem;
-	line-height: 0rem;
-	margin-left: -1.5rem;
-	display: inline-block;
+	display: flex;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+
+.name {
+	padding-left: 2rem;
 }

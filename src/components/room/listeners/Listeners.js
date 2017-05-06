@@ -20,7 +20,9 @@ class Listeners extends Component {
 				{listeners.map(listener => (
 					<div key={listener.id}
 						 className={theme.listener}>
-						<Avatar src={listener.avatar}/>
+
+						<Avatar user={listener}/>
+						<div className={theme.name}>{listener.nickname}</div>
 					</div>
 				))}
 			</div>

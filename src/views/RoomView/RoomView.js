@@ -17,6 +17,7 @@ import FlipMove from 'react-flip-move';
 
 import theme from './roomView.css';
 import Play from '../../components/svg/icons/Play';
+import Listeners from '../../components/room/listeners/Listeners';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -101,10 +102,12 @@ class RoomView extends Component {
 
 	render() {
 		const {room, params, actionLogForChatPanel, playlist, sync, syncStart} = this.props;
+		const roomTab = params.roomTab || 'next-up';
+
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
 			return <div className={theme.container}>
-				todo: room loading icon
+				{/* todo: room loading icon */}
 			</div>;
 		}
 
@@ -132,10 +135,16 @@ class RoomView extends Component {
 									   track={track}
 									   percentComplete={index === 0 ? progressPercent : -1}
 									   onClickVote={this.onClickVote}
-									   size={index === 0 ? 'hero' : 'normal'}/>
+									   size={index === 0 ? 'hero' : 'normal'}
+									   visible={index === 0 ? true : roomTab === 'next-up'}/>
 							))}
 						</FlipMove>
-						<RoomMenu room={room}/>
+						<RoomMenu room={room} params={params}/>
+						<div className={theme.otherTabs}>
+							{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
+							{roomTab === 'about' && <div>coming soon!</div>}
+							{roomTab === 'top' && <div>coming soon!</div>}
+						</div>
 					</div>
 					<div className={theme.chat}>
 						<ChatPanel onChatSend={this.onChatSend.bind(this)}

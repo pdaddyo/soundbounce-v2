@@ -13,6 +13,7 @@ export default (store) => (
 		<Route path='home' component={HomeView}/>
 		<Route path='help' component={HelpView}/>
 		<Route path='room/:roomId' component={RoomView}/>
+		<Route path='room/:roomId/:roomTab' component={RoomView}/>
 		<Route path='*' component={NoMatchView}/>
 	</Route>
 );
