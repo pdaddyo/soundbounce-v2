@@ -130,7 +130,7 @@ class RoomView extends Component {
 							{playlist.map((track, index) => (
 								<Track key={track.id}
 									   track={track}
-									   percentComplete={index === 0 ? progressPercent : 0}
+									   percentComplete={index === 0 ? progressPercent : -1}
 									   onClickVote={this.onClickVote}
 									   size={index === 0 ? 'hero' : 'normal'}/>
 							))}
