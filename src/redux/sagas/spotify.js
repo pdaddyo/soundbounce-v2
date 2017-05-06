@@ -1,6 +1,6 @@
 import {delay} from 'redux-saga';
 import config from '../../../config/app';
-import {race, select, put, call, take} from 'redux-saga/effects';
+import {select, put, call, take} from 'redux-saga/effects';
 import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
@@ -11,11 +11,11 @@ import {
 	spotifyPlayTrack,
 	actions as spotifyActions
 } from '../modules/spotify';
-import {roomNowPlayingEnded} from '../modules/shared/room';
+import {actions as roomActions} from '../modules/shared/room';
 import {syncStartFail, syncStop, syncStartOk, actions as syncActions} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
-import _ from 'lodash'; // importing all to avoid clash with redux saga 'take'
 import moment from 'moment';
+import _ from 'lodash';
 
 const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
 const error401 = '401-unauthorized';
@@ -75,6 +75,16 @@ function * checkSyncStatus() {
 			}
 			// we're playing! but are we playing the correct track?
 			if (player.item.id !== room.playlist[0].id) {
+				// spotify might be playing the end of the track that we were just listening to...
+				// so isn't a desync if we're within the maxDrift of the next song!
+				if (nowPlayingProgress < config.player.maxDriftConsideredSynced) {
+					if (room.recentlyPlayed.length > 0) {
+						if (player.item.id === room.recentlyPlayed[0].id) {
+							// this is ok, so return to caller
+							return;
+						}
+					}
+				}
 				yield put(syncStop('A different track was playing.'));
 				return;
 			}
@@ -128,7 +138,7 @@ function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 function * watchForSyncStart() {
 	while (true) {
 		yield take(syncActions.SYNC_START);
-		let {room} = yield select(state => state);
+		const {room, sync} = yield select(state => state);
 
 		if (!room || !room.id) {
 			yield put(syncStartFail({
@@ -141,54 +151,27 @@ function * watchForSyncStart() {
 			continue;
 		}
 
-		yield call(syncLoop);
-		// we drop out of the sync loop when player syncing stops.
-	}
-}
-
-function * syncLoop() {
-	// ok, we're in a room, we've got a track to play.  let's do this!
-	while (true) {
-		let {room, sync, spotify} = yield select(state => state);
-
-		if (room.playlist.length === 0) {
-			// no more tracks, we're done here
-			yield put(syncStop());
-			return;
-		}
-
-		const trackWithVotes = room.playlist[0];
+		// play the top track in the room
 		const seekPosition = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
-		// tell player to play track(s)
+
 		yield call(spotifyPlayTracksThenSeek, {
 			trackIds: _.take(room.playlist, config.player.maxTracksToQueueWhenPlaying).map(t => t.id),
 			seekPosition
 		});
 
-		if (sync.isSyncing) {
-			yield put(syncStartOk());
+		// we're synced once that call above returns
+		yield put(syncStartOk());
+	}
+}
+
+// play the track if now playing in room changes and we're synced
+function * watchForRoomNowPlayingChanged() {
+	while (true) {
+		const {payload: {trackIds, seekPosition}} = yield take(roomActions.ROOM_NOW_PLAYING_CHANGED);
+		const {isSynced, isSyncing} = yield select(state => state.sync);
+		if (isSynced || isSyncing) {
+			yield call(spotifyPlayTracksThenSeek, {trackIds, seekPosition});
 		}
-
-		// ok now race a timer to the end of this track vs sync stopping for any reason
-		const {cancel} = yield race({
-			delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
-			cancel: take(syncActions.SYNC_STOP)
-		});
-
-		// sync stopped, bail
-		if (cancel) {
-			return;
-		}
-
-		// reselect the state because it might have changed whilst track was playing
-		// e.g. new spotify track when we look up duration below
-		let state = yield select(state => state);
-		room = state.room;
-
-		const finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
-
-		// ok let's fire a next track action!
-		yield put(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 	}
 }
 
@@ -270,6 +253,7 @@ export default function * spotifyInit() {
 	try {
 		yield [
 			watchForAuthRequired(),
+			watchForRoomNowPlayingChanged(),
 			beginLogin(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()

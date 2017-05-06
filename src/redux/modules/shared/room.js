@@ -12,6 +12,7 @@ export const ROOM_FULL_SYNC = 'ROOM_FULL_SYNC';
 export const ROOM_USER_JOIN = 'ROOM_USER_JOIN';
 export const ROOM_USER_LEAVE = 'ROOM_USER_LEAVE';
 export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
+export const ROOM_NOW_PLAYING_CHANGED = 'ROOM_NOW_PLAYING_CHANGED';
 export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
@@ -21,6 +22,7 @@ export const actions = {
 	ROOM_FULL_SYNC,
 	ROOM_USER_JOIN,
 	ROOM_USER_LEAVE,
+	ROOM_NOW_PLAYING_CHANGED,
 	ROOM_NOW_PLAYING_ENDED,
 	ROOM_TRACK_ADD_OR_VOTE,
 	ROOM_TRACK_LIKE,
@@ -69,6 +71,11 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = '', emote = ''}) 
 export const roomChat = ({userId, text}) => ({
 	type: ROOM_CHAT,
 	payload: {userId, text}
+});
+
+export const roomNowPlayingChanged = ({trackIds, seekPosition}) => ({
+	type: ROOM_NOW_PLAYING_CHANGED,
+	payload: {trackIds, seekPosition}
 });
 
 export const roomNowPlayingEnded = ({trackWithVotes, finishingTrackDuration}) => ({
