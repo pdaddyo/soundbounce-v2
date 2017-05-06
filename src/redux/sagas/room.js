@@ -26,7 +26,8 @@ function * watchForSocketRoomJoinOk() {
 
 		// now wait for a room full sync (i.e. full state over wire), then try to start audio
 		yield take(roomActions.ROOM_FULL_SYNC);
-
+		// don't wait for next timer to update the progress
+		yield call(updateRoomTrackProgress);
 		// this call only ends when we join a differnt room, so will loop around and navigate.
 		yield call(roomTrackTimerLoop);
 
@@ -45,12 +46,16 @@ function * watchForSocketRoomEvent() {
 
 function * pollRoomTrackProgress() {
 	while (true) {
-		const {room, sync} = yield select(state => state);
-		if (room.playlist.length > 0) {
-			const nowPlayingProgress = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
-			yield put(roomTrackProgress({nowPlayingProgress}));
-		}
+		yield call(updateRoomTrackProgress);
 		yield delay(config.player.progressUpdateDelay);
+	}
+}
+
+function * updateRoomTrackProgress() {
+	const {room, sync} = yield select(state => state);
+	if (room.playlist.length > 0) {
+		const nowPlayingProgress = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
+		yield put(roomTrackProgress({nowPlayingProgress}));
 	}
 }
 
