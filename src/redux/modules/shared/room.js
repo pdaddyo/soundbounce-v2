@@ -181,13 +181,16 @@ const ACTION_HANDLERS = {
 		 nested state object (like we do in the db).
 		 this could probably be refactored to be easier to understand, but means
 		 the client sees a single room object, but the database has reduxState separated.
+
+		 note: new db fields added to the room have to be added here for clients to pick them up
 		 */
 		...state,
 		...payload.fullSync.room.reduxState,
 		listeners: payload.fullSync.room.listeners,
 		name: payload.fullSync.room.name,
 		id: payload.fullSync.room.id,
-		config: payload.fullSync.room.config
+		config: payload.fullSync.room.config,
+		creatorId: payload.fullSync.room.creatorId
 	}),
 	[ROOM_USER_JOIN]: (state, action) => {
 		const {userId} = action.payload;

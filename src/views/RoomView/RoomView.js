@@ -16,8 +16,9 @@ import Gradient from 'components/room/backgrounds/Gradient';
 import FlipMove from 'react-flip-move';
 
 import theme from './roomView.css';
-import Play from '../../components/svg/icons/Play';
-import Listeners from '../../components/room/listeners/Listeners';
+import Play from 'components/svg/icons/Play';
+import Listeners from 'components/room/listeners/Listeners';
+import About from 'components/room/about/About';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -93,15 +94,11 @@ class RoomView extends Component {
 		});
 	};
 
-	componentWillUpdate(nextProps) {
-		if (this.props.playlist.length === 0 && nextProps.playlist.length > 0) {
-			// adding a track to an empty room, so attempt to sync
-			//	this.props.syncStart();
-		}
-	}
-
 	render() {
-		const {room, params, actionLogForChatPanel, playlist, sync, syncStart} = this.props;
+		const {
+			room, params, actionLogForChatPanel, playlist, sync,
+			syncStart, currentUser
+		} = this.props;
 		const roomTab = params.roomTab || 'next-up';
 
 		if (room.id !== params.roomId) {
@@ -142,8 +139,9 @@ class RoomView extends Component {
 						<RoomMenu room={room} params={params}/>
 						<div className={theme.otherTabs}>
 							{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
-							{roomTab === 'about' && <div>coming soon!</div>}
-							{roomTab === 'top' && <div>coming soon!</div>}
+							{roomTab === 'about' && <About room={room} currentUser={currentUser}/>}
+							{roomTab === 'top' &&
+							<div>Top Tracks / Artists / Contributors coming soon!</div>}
 						</div>
 					</div>
 					<div className={theme.chat}>
