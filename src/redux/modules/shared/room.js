@@ -17,6 +17,7 @@ export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
 export const ROOM_TRACK_PROGRESS = 'ROOM_TRACK_PROGRESS';
+export const ROOM_NAVIGATING = 'ROOM_NAVIGATING';
 
 export const actions = {
 	ROOM_FULL_SYNC,
@@ -27,7 +28,8 @@ export const actions = {
 	ROOM_TRACK_ADD_OR_VOTE,
 	ROOM_TRACK_LIKE,
 	ROOM_CHAT,
-	ROOM_TRACK_PROGRESS
+	ROOM_TRACK_PROGRESS,
+	ROOM_NAVIGATING
 };
 
 // ------------------------------------
@@ -86,6 +88,11 @@ export const roomNowPlayingEnded = ({trackWithVotes, finishingTrackDuration}) =>
 export const roomTrackProgress = ({nowPlayingProgress}) => ({
 	type: ROOM_TRACK_PROGRESS,
 	payload: {nowPlayingProgress}
+});
+
+export const roomNavigating = (roomId) => ({
+	type: ROOM_NAVIGATING,
+	payload: {roomId}
 });
 
 // ------------------------------------

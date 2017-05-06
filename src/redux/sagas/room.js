@@ -27,8 +27,10 @@ function * watchForSocketRoomJoinOk() {
 		// now wait for a room full sync (i.e. full state over wire), then try to start audio
 		yield take(roomActions.ROOM_FULL_SYNC);
 
+		// this call only ends when we join a differnt room, so will loop around and navigate.
 		yield call(roomTrackTimerLoop);
-		// no longer auto-play
+
+		// don't auto-play on room join - could be config option though?
 		// yield put(syncStart());
 	}
 }
@@ -86,8 +88,7 @@ function * roomTrackTimerLoop() {
 		// ok now race a timer to the end of this track vs sync stopping for any reason
 		const {leftRoom} = yield race({
 			delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
-			// todo: better detection of leaving the room (currently joining another room...)
-			leftRoom: take(socketActions.SOCKET_ROOM_JOIN_OK)
+			leftRoom: take(roomActions.ROOM_NAVIGATING)
 		});
 
 		// sync stopped, bail

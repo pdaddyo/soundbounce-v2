@@ -14,7 +14,7 @@ import {
 	socketHomeDataOk
 } from 'redux/modules/socket';
 import {homeSetData} from 'redux/modules/home';
-import {roomFullSync} from 'redux/modules/shared/room';
+import {roomFullSync, roomNavigating} from 'redux/modules/shared/room';
 import {syncSetServerOffset} from '../redux/modules/sync';
 
 class SocketClient {
@@ -58,6 +58,7 @@ class SocketClient {
 			socket.emit('room:join', roomId);
 		});
 		socket.on('room:join:ok', (fullSync) => {
+			dispatch(roomNavigating(fullSync.room.id));
 			dispatch(socketRoomJoinOk(fullSync.room.id));
 			dispatch(roomFullSync(fullSync));
 		});
