@@ -237,7 +237,9 @@ export default class ActiveRoom {
 				const playlistWasEmptyBefore = this.reduxStore.getState().playlist.length === 0;
 				this.emitUserEvent(roomTrackAddOrVote({
 					userId: sender.get('id'),
-					trackIds,
+					// some tracks may have failed so only
+					// send back ids from the results
+					trackIds: tracks.map(t => t.get('id')),
 				}), {
 					tracks: tracks.map(t => t.get({plain: true}))
 				});
