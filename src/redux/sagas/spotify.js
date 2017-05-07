@@ -65,7 +65,6 @@ function * updatePlayerState() {
 function * checkSyncStatus() {
 	const {room, sync, spotify} = yield select(state => state);
 	if (room.playlist.length > 0) {
-		const nowPlayingProgress = moment().valueOf() - room.nowPlayingStartedAt - sync.serverMsOffset;
 		if (sync.isSynced) {
 			const {player} = spotify;
 			if (!player.is_playing) {
@@ -73,6 +72,8 @@ function * checkSyncStatus() {
 				yield put(syncStop('Spotify playback was stopped.'));
 				return;
 			}
+			const nowPlayingProgress = moment().valueOf() -
+				room.nowPlayingStartedAt - sync.serverMsOffset;
 			// we're playing! but are we playing the correct track?
 			if (player.item.id !== room.playlist[0].id) {
 				// spotify might be playing the end of the track that we were just listening to...
@@ -80,14 +81,30 @@ function * checkSyncStatus() {
 				if (nowPlayingProgress < config.player.maxDriftConsideredSynced) {
 					if (room.recentlyPlayed.length > 0) {
 						if (player.item.id === room.recentlyPlayed[room.recentlyPlayed.length - 1].id) {
-							// this is ok, so return to caller
+							// this is ok (not desync), so return to caller
+							console.log('keeping synced, spotify track behind withing max drift ');
 							return;
 						}
 					}
 				}
+				// spotify might be slightly ahead - playing the beginning of the next track
+				// when playlist is at end of previous.  this is also not a desync
+				if (spotify.tracks[room.playlist[0].id].duration -
+					nowPlayingProgress < config.player.maxDriftConsideredSynced) {
+					if (room.playlist.length > 1) {
+						if (player.item.id === room.playlist[1].id) {
+							// this is ok (not desync), so return to caller
+							console.log('keeping synced, spotify track ahead within max drift');
+							return;
+						}
+					}
+				}
+
 				yield put(syncStop(`A different track was playing.
-				Expected '${room.playlist[0].id}' @${player.progress_ms}ms,
-				but detected '${player.item.id}' @${nowPlayingProgress}ms`));
+				Expected '${room.playlist[0].id}' @${nowPlayingProgress}ms,
+				but detected '${player.item.id}' @${player.progress_ms}ms.
+				last played: [${room.recentlyPlayed.map(r => r.id).join(',')}].
+				playlist: [${_.take(room.playlist, 3).map(t => t.id).join(',')}]`));
 				return;
 			}
 			// OK so correct track, but it is reasonable track position?
@@ -108,13 +125,14 @@ function * pollSpotifyPlayerStatus() {
 		if (!isLoggedIn) {
 			yield take(spotifyActions.SPOTIFY_AUTH_OK);
 		}
+
 		try {
 			yield call(updatePlayerState);
+			yield call(checkSyncStatus);
 		} catch (playerStateError) {
 			// todo: this is a sync failure if we can't get playerstate (this is after retries)
 		}
 
-		yield call(checkSyncStatus);
 		yield delay(pollPlayerDelay);
 	}
 }
