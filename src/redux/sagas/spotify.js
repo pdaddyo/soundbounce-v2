@@ -79,15 +79,15 @@ function * checkSyncStatus() {
 				// so isn't a desync if we're within the maxDrift of the next song!
 				if (nowPlayingProgress < config.player.maxDriftConsideredSynced) {
 					if (room.recentlyPlayed.length > 0) {
-						if (player.item.id === room.recentlyPlayed[room.recentlyPlayed - 1].id) {
+						if (player.item.id === room.recentlyPlayed[room.recentlyPlayed.length - 1].id) {
 							// this is ok, so return to caller
 							return;
 						}
 					}
 				}
 				yield put(syncStop(`A different track was playing.
-				Expected '${spotify.tracks[room.playlist[0].id].name}' @${player.progress_ms}ms,
-				but detected '${player.item.name}' @${nowPlayingProgress}ms`));
+				Expected '${room.playlist[0].id}' @${player.progress_ms}ms,
+				but detected '${player.item.id}' @${nowPlayingProgress}ms`));
 				return;
 			}
 			// OK so correct track, but it is reasonable track position?

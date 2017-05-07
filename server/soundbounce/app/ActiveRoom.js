@@ -44,7 +44,7 @@ export default class ActiveRoom {
 			if (existingState.playlist.length > 0) {
 				// ok resume the track as if we just left
 				const msSinceShutdown = moment().valueOf() - moment(shutdownAt).valueOf();
-				debug(`Resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
+				debug(`Room '${this.name}' startup - resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
 				this.setReduxRoomStateDuringStartup({
 					...existingState,
 					// either start now or resume where we were
@@ -65,7 +65,7 @@ export default class ActiveRoom {
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
 	shutdown() {
-		debug(`Active room shutdown for '${this.name}'`);
+		debug(`Room '${this.name}' shutdown.`);
 		// remove from the rooms list
 		this.removeFromList();
 		// clear next track timer
