@@ -9,7 +9,7 @@ import theme from './roomMenu.css';
 
 export default class RoomMenu extends Component {
 	static propTypes = {
-		roomId: PropTypes.object.isRequired,
+		roomId: PropTypes.string.isRequired,
 		listeners: PropTypes.array,
 		params: PropTypes.any
 	};

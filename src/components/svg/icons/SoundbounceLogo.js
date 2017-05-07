@@ -35,13 +35,13 @@ export default class SoundbounceLogo extends Component {
 			}} version='1.2' baseProfile='tiny' id='Layer_1' xmlns='http://www.w3.org/2000/svg'
 				 x='0px' y='0px' viewBox='0 0 100 100' xmlSpace='preserve'>
 				<path fill='none' stroke={rgba(leftColor, 0.75)} strokeWidth='4.3255'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M29.8,26c14.1,14.1,14.1,36.9,0,51'/>
 				<path fill='none' stroke={rgba(leftColor, 0.50)} strokeWidth='5.7674'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M19.6,36.2c8.4,8.4,8.4,22.1,0,30.6'/>
 				<path fill='none' stroke={rgba(leftColor, 0.25)} strokeWidth='5.7674'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M9.4,46.4c2.8,2.8,2.8,7.4,0,10.2'/>
 				{isSynced && (
 					<g>
@@ -56,16 +56,16 @@ export default class SoundbounceLogo extends Component {
 
 					</g>)}
 				<path fill='none' stroke={rgba(rightColor, 0.75)} strokeWidth='4.3255'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M71.8,77c-14.1-14.1-14.1-36.9,0-51'/>
 				<path fill='none' stroke={rgba(rightColor, 0.50)} strokeWidth='5.7674'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M82,66.8c-8.4-8.4-8.4-22.1,0-30.6'/>
 				<path fill='none' stroke={rgba(rightColor, 0.25)} strokeWidth='5.7674'
-					  strokeMiterLimit='10'
+					  strokeMiterlimit='10'
 					  d='M92.2,56.6c-2.8-2.8-2.8-7.4,0-10.2'/>
 				{isSynced && (<g>
-					<path fill='none' stroke={leftColor} strokeWidth='2.8837' strokeMiterLimit='10'
+					<path fill='none' stroke={leftColor} strokeWidth='2.8837' strokeMiterlimit='10'
 						  d='M54.8,51.5c0,12.9-4.9,25.8-14.8,35.7'/>
 					<linearGradient id='SVGID_2_' gradientUnits='userSpaceOnUse' x1='47.5962'
 									y1='51.49'
@@ -75,14 +75,14 @@ export default class SoundbounceLogo extends Component {
 						<stop offset='1' style={{stopColor: leftColor}}/>
 					</linearGradient>
 					<path fill='none' stroke='url(#SVGID_2_)' strokeWidth='2.8837'
-						  strokeMiterLimit='10'
+						  strokeMiterlimit='10'
 						  d='M40,16.1c9.9,9.9,14.8,22.8,14.8,35.7'
 					/>
 				</g>)}
 
 				{isSynced && (
 					<path fill='none' stroke={rightColor} strokeWidth='2.8837'
-						  strokeMiterLimit='10'
+						  strokeMiterlimit='10'
 						  d='M46.8,51.5c0-12.9,4.9-25.8,14.8-35.7'/>
 				)}
 
