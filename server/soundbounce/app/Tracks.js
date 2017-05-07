@@ -36,9 +36,21 @@ export default class Tracks {
 					return spotifyApi
 						.getTracks(take(trackIdsToFetch, 50))
 						.then(response => {
-							if (response.statusCode === 200) {
+								if (response.statusCode !== 200) {
+									return Promise.reject();
+								}
 								// add these spotify tracks to the db
 								const {tracks} = response.body;
+
+								// update trackIds for any relinked tracks
+								for (let trackIndex in trackIds) {
+									const linkedTrack = tracks.find(t =>
+										t.linked_from && t.linked_from.id === trackIds[trackIndex]
+									);
+									if (linkedTrack) {
+										trackIds[trackIndex] = linkedTrack.id;
+									}
+								}
 
 								// get all the unique artists in the response
 								const artists = chain(tracks)
@@ -56,74 +68,99 @@ export default class Tracks {
 									},
 									attributes: ['id']
 								}).then(artistsInDb => {
-									// work out which ones we don't have yet
-									const artistIdsToInsert =
-										without(artistIds,
-											...artistsInDb.map(t => t.get('id')));
+										// work out which ones we don't have yet
+										const artistIdsToInsert =
+											without(artistIds,
+												...artistsInDb.map(t => t.get('id')));
 
-									/*	debug('inserting artists ', artistIdsToInsert,
-									 artistsInDb.map(t => t.get('id')), artistIds
-									 ); */
-									const artistsToInsert = artists
-										.filter(a => artistIdsToInsert.indexOf(a.id) > -1);
+										const artistsToInsert = artists
+											.filter(a => artistIdsToInsert.indexOf(a.id) > -1);
 
-									// default to just resolving
-									let artistsInsertPromise = Promise.resolve();
+										// default to just resolving
+										let artistsInsertPromise = Promise.resolve();
 
-									// unless we have artists to insert
-									if (artistIdsToInsert.length > 0) {
-										artistsInsertPromise = Artist.bulkCreate(
-											artistsToInsert.map(artist => ({
-												id: artist.id,
-												name: artist.name,
-												json: artist
-											}))
-										)
-									}
+										// unless we have artists to insert
+										if (artistIdsToInsert.length > 0) {
+											artistsInsertPromise = Artist.bulkCreate(
+												artistsToInsert.map(artist => ({
+													id: artist.id,
+													name: artist.name,
+													json: artist
+												}))
+											)
+										}
 
-									const trackInsertPromise = Track
-										.bulkCreate(tracks.map(spotifyTrack => ({
-											id: spotifyTrack.id,
-											name: spotifyTrack.name,
-											duration: spotifyTrack.duration_ms,
-											albumArt: spotifyTrack.album.images.length > 1 ?
-												spotifyTrack.album.images[1].url :
-												(spotifyTrack.album.images.length === 1 ?
-													spotifyTrack.album.images[0].url : emptyAlbumArt),
-											json: spotifyTrack
-										})));
+										// work out if we have any track ids back from api
+										// that we didn't ask for - these may already be in db
+										const relinkedTracksCouldBeInDb = tracks.filter(t =>
+										t.linked_from && t.linked_from.id);
 
-									// wait until we have inserted all the artists and the tracks
-									return Promise.all([artistsInsertPromise, trackInsertPromise])
-										.then(() => {
-											// now associate the saved tracks with the saved artists
-											const trackArtistsToInsert =
-												flatten(
-													tracks.map(track =>
-														track.album.artists.map(artist => ({
-																artistId: artist.id,
-																trackId: track.id
-															})
-														)
-													)
-												);
-											return TrackArtist.bulkCreate(
-												trackArtistsToInsert
-											).then(() => {
-												// todo: fix bug with track relinking whereby
-												// the id back from api is diff to the id
-												// we asked for.
+										let tracksAlreadyExistPromise = Promise.resolve([]);
 
-												return this.findTracksInDb(trackIds);
+										if (relinkedTracksCouldBeInDb.length > 0) {
+											tracksAlreadyExistPromise = Track.findAll({
+												where: {
+													id: {$in: relinkedTracksCouldBeInDb.map(t => t.id)}
+												},
+												attributes: ['id']
 											});
-										})
-										.catch(err => {
-											debug('Error during insert of artist/tracks to db', err);
-										});
-								});
+										}
 
+										const trackInsertPromise =
+											tracksAlreadyExistPromise.then(relinkedTracksInDb => {
+												const idsAlreadyInDb = relinkedTracksInDb
+													.map(t => t.get('id'));
+												debug('idsAlreadyInDb', idsAlreadyInDb);
+												return Track
+													.bulkCreate(tracks
+														.filter(t => !idsAlreadyInDb.includes(t.id))
+														.map(spotifyTrack => ({
+															id: spotifyTrack.id,
+															name: spotifyTrack.name,
+															duration: spotifyTrack.duration_ms,
+															albumArt: spotifyTrack.album.images.length > 1 ?
+																spotifyTrack.album.images[1].url :
+																(spotifyTrack.album.images.length === 1 ?
+																	spotifyTrack.album.images[0].url : emptyAlbumArt),
+															json: spotifyTrack
+														}))).then(() => idsAlreadyInDb);
+											});
+
+										// wait until we have inserted all the artists and the tracks
+										return Promise.all([artistsInsertPromise, trackInsertPromise])
+											.then(([, idsAlreadyInDb]) => {
+
+												// now associate the saved tracks with the saved artists
+												const trackArtistsToInsert =
+													flatten(
+														tracks
+															.filter(track => !idsAlreadyInDb.includes(track.id))
+															.map(track =>
+																track.album.artists.map(artist => ({
+																		artistId: artist.id,
+																		trackId: track.id
+																	})
+																)
+															)
+													);
+												return TrackArtist.bulkCreate(
+													trackArtistsToInsert
+												).then(() => {
+													// we include return ids due to track relinking whereby
+													// the id back from api is diff to the id
+													// we asked for.
+													return this.findTracksInDb(
+														uniq([...trackIds])
+													);
+												});
+											})
+											.catch(err => {
+												debug('Error during insert of artist/tracks to db', err);
+											});
+									}
+								);
 							}
-						});
+						);
 				} else {
 					// we didn't need to insert any tracks, so the db result have it all
 					return Promise.resolve(tracksInDb);
