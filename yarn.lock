@@ -4040,6 +4040,12 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linkify-it@^1.2.0:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-1.2.4.tgz#0773526c317c8fd13bd534ee1d180ff88abf881a"
+  dependencies:
+    uc.micro "^1.0.1"
+
 lnfs@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/lnfs/-/lnfs-1.1.0.tgz#9f4df9e0f178cf626fe9575ff12a3af401bc88bc"
@@ -5732,6 +5738,13 @@ react-json-tree@^0.10.0:
     babel-runtime "^6.6.1"
     react-base16-styling "^0.5.1"
 
+react-linkify@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-linkify/-/react-linkify-0.2.0.tgz#9c76665d9cd62aae1785314a9cbb2361833e0c9c"
+  dependencies:
+    linkify-it "^1.2.0"
+    tlds "^1.57.0"
+
 react-progress-bar-plus@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-progress-bar-plus/-/react-progress-bar-plus-1.2.0.tgz#dc94a634819ba905954493f9bb4b711a7ecec66a"
@@ -6853,6 +6866,10 @@ timers-browserify@^1.0.1:
   dependencies:
     process "~0.11.0"
 
+tlds@^1.57.0:
+  version "1.185.0"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.185.0.tgz#9d5ddaae379778a98e3edc3a131d46a40cbc3ba4"
+
 tmp@0.0.x:
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.31.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
@@ -6953,6 +6970,10 @@ typedarray@^0.0.6, typedarray@~0.0.5:
 ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
+
+uc.micro@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.3.tgz#7ed50d5e0f9a9fb0a573379259f2a77458d50192"
 
 uglify-js@^2.6, uglify-js@~2.8.22:
   version "2.8.22"

@@ -109,6 +109,7 @@
 		"react-addons-update": "^15.3.2",
 		"react-dom": "^15.0.0",
 		"react-flip-move": "^2.9.3",
+		"react-linkify": "^0.2.0",
 		"react-progress-bar-plus": "^1.0.0",
 		"react-redux": "^4.0.0",
 		"react-router": "^2.0.0",

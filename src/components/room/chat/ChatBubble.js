@@ -6,11 +6,16 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import theme from './chatBubble.css';
 import Avatar from '../../user/avatar/Avatar';
+import Linkify from 'react-linkify';
 
 export default class ChatBubble extends Component {
 	static propTypes = {
 		chat: PropTypes.object.isRequired
 	};
+
+	linkify(text) {
+
+	}
 
 	render() {
 		const {chat} = this.props;
@@ -28,7 +33,8 @@ export default class ChatBubble extends Component {
 			<div className={userTheme('container')}>
 				<div className={userTheme('bubble')}>
 					{chat.payloads.map((chat, index) => (
-						<div className={theme.text} key={index}>{chat.text}</div>
+						<div className={theme.text} key={index}><Linkify
+							properties={{target: '_blank'}}>{chat.text}</Linkify></div>
 					))}
 					<div className={userTheme('timestamp')}>
 						{friendlyTimeStamp}
