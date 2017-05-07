@@ -1,5 +1,5 @@
 /* @flow */
-import React, {Component, PropType} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
@@ -43,14 +43,17 @@ class HomeView extends Component {
 	render() {
 		const {activeRooms, popularRooms} = this.props;
 
-		const Room = ({name, track, colors}) => (
-			<div className={theme.room}>
-				<div className={theme.albumArt} style={{backgroundImage: track.albumArt}}>
+		const Room = ({room: {name, track, config: {colors}, id}}) => (
+			<Link to={`/room/${id}`} key={id}>
+				<div className={theme.room}>
+					<div className={theme.albumArt}
+						 style={{backgroundImage: track ? `url(${track.albumArt})` : null}}>
+					</div>
+					<div className={theme.name} style={{borderBottomColor: colors.primary}}>
+						{name}
+					</div>
 				</div>
-				<div className={theme.name} style={{borderBottomColor: colors.primary}}>
-					{name}
-				</div>
-			</div>
+			</Link>
 		);
 
 		return (
@@ -58,10 +61,10 @@ class HomeView extends Component {
 				<TopBar/>
 				<div className={theme.home}>
 					{activeRooms.map(room => (
-						<Room name={room.name} track={room.nowPlaying} colors={room.config.colors}/>
+						<Room room={room}/>
 					))}
 					{popularRooms.map(room => (
-						<Room name={room.name} track={room.nowPlaying} colors={room.config.colors}/>
+						<Room room={room}/>
 					))}
 					<br/>
 					<button onClick={this.clickCreateRoom}>Create new room</button>
@@ -73,7 +76,14 @@ class HomeView extends Component {
 
 const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
-	home: state.home
+	activeRooms: state.home.activeRooms.map(room => ({
+		...room,
+		track: room.nowPlayingTrackId ? state.spotify.tracks[room.nowPlayingTrackId] : null
+	})),
+	popularRooms: state.home.popularRooms.map(room => ({
+		...room,
+		track: room.nowPlayingTrackId ? state.spotify.tracks[room.nowPlayingTrackId] : null
+	}))
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

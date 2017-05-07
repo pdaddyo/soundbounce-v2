@@ -5,3 +5,38 @@
 .home {
 	padding-left: 2rem;
 }
+
+.room {
+	display: inline-flex;
+	margin-right: 2rem;
+	margin-bottom: 4rem;
+	align-items: center;
+	flex-direction: column;
+}
+
+.albumArt {
+	background-size: cover;
+	width: 12rem;
+	height: 12rem;
+}
+
+.name {
+	font-size: 90%;
+	text-align: center;
+
+	margin-top: 0.5rem;
+	display: inline-block;
+	max-width: 11rem;
+	color: rgba(255, 255, 255, 0.9);
+	letter-spacing: 0.05rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	border-bottom: solid 0.1rem;
+	margin-bottom: 0.2rem;
+}
+
+.room:hover .name {
+	border-bottom: solid 0.3rem;
+	margin-bottom: 0;
+}

@@ -116,20 +116,28 @@ export default class Connections {
 			// find all rooms with recent activity, and any active rooms
 			Room
 				.findAll({
-					limit: 20,
+					limit: 30,
 					order: [['updatedAt', 'DESC']],
 					where: activeRooms.length > 0
 						? {id: {$notIn: activeRooms.map(ar => ar.id)}}
-						: null,
-					attributes: ['id', 'name']
+						: null
 				})
 				.then(popularRooms => {
-					app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
-						activeRooms: activeRooms.map(activeRoom =>
-							(activeRoom.room.get({plain: true}))
-						),
-						popularRooms: popularRooms.map(room => (room.get({plain: true})))
-					});
+					// get now playing track for all these rooms
+					return this.app.tracks.findTracksInDb(
+						[...popularRooms.map(r => r.get('nowPlayingTrackId')),
+						 ...activeRooms.map(activeRoom =>
+							 activeRoom.room.get('nowPlayingTrackId'))])
+						.then(tracks => {
+							app.io.to(socket.allSocketsForThisUser).emit('home:data:ok', {
+								activeRooms: activeRooms.map(activeRoom =>
+									(activeRoom.room.get({plain: true})),
+								),
+								popularRooms: popularRooms.map(room => (room.get({plain: true}))),
+								tracks: tracks.map(track => track.get({plain: true}))
+							});
+						});
+
 				});
 		});
 	}
