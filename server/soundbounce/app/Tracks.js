@@ -110,7 +110,6 @@ export default class Tracks {
 											tracksAlreadyExistPromise.then(relinkedTracksInDb => {
 												const idsAlreadyInDb = relinkedTracksInDb
 													.map(t => t.get('id'));
-												debug('idsAlreadyInDb', idsAlreadyInDb);
 												return Track
 													.bulkCreate(tracks
 														.filter(t => !idsAlreadyInDb.includes(t.id))
