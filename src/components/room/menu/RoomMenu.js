@@ -22,7 +22,7 @@ export default class RoomMenu extends Component {
 		super(props);
 		this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 	}
-	
+
 	render() {
 		const {roomId, listeners, params} = this.props;
 		const roomTab = params.roomTab || 'next-up';
