@@ -19,7 +19,7 @@ import moment from 'moment';
 
 import {TrackActivity} from '../data/schema';
 
-const debug = _debug('soundbounce:activeroom');
+let debug = _debug('soundbounce:activeroom');
 
 export default class ActiveRoom {
 	constructor({room, app}) {
@@ -29,12 +29,11 @@ export default class ActiveRoom {
 		this.name = room.get('name');
 		this.reduxStore = null;
 		this.timeoutId = null;
+		debug = _debug(`soundbounce:activeroom:${this.id}`);
 	}
 
 	// called when first user joins a room so room goes active
 	startup() {
-		debug(`Active room startup for '${this.name}'`);
-
 		this.createAndPopulateReduxStore();
 		const {reduxStore, room} = this;
 		const existingState = reduxStore.getState();
@@ -46,7 +45,6 @@ export default class ActiveRoom {
 				// ok resume the track as if we just left
 				const msSinceShutdown = moment().valueOf() - moment(shutdownAt).valueOf();
 				debug(`Resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
-
 				this.setReduxRoomStateDuringStartup({
 					...existingState,
 					// either start now or resume where we were
@@ -96,7 +94,6 @@ export default class ActiveRoom {
 		).then(tracks => {
 			const {duration} = tracks[0];
 			const ms = state.nowPlayingStartedAt - moment().valueOf() + duration;
-			debug(`next track starts in ${ms}ms`);
 			if (this.timeoutId) {
 				clearTimeout(this.timeoutId);
 			}
