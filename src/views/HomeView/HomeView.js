@@ -1,5 +1,6 @@
 /* @flow */
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropType} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {socketEmitRoomCreate, socketRequestHomeData} from 'redux/modules/socket';
@@ -14,7 +15,8 @@ class HomeView extends Component {
 		createRoom: PropTypes.func.isRequired,
 		currentUser: PropTypes.object,
 		requestHomeData: PropTypes.func,
-		home: PropTypes.object
+		activeRooms: PropTypes.array,
+		popularRooms: PropTypes.array
 	};
 
 	clickCreateRoom = (evt) => {
@@ -39,19 +41,27 @@ class HomeView extends Component {
 	}
 
 	render() {
-		const {home} = this.props;
+		const {activeRooms, popularRooms} = this.props;
+
+		const Room = ({name, track, colors}) => (
+			<div className={theme.room}>
+				<div className={theme.albumArt} style={{backgroundImage: track.albumArt}}>
+				</div>
+				<div className={theme.name} style={{borderBottomColor: colors.primary}}>
+					{name}
+				</div>
+			</div>
+		);
+
 		return (
 			<div className={theme.container}>
 				<TopBar/>
 				<div className={theme.home}>
-					{home.activeRooms.map(room => (
-						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link>
-							[<span
-								style={{color: room.config.colors.primary}}>ACTIVE</span>]
-						</div>
+					{activeRooms.map(room => (
+						<Room name={room.name} track={room.nowPlaying} colors={room.config.colors}/>
 					))}
-					{home.popularRooms.map(room => (
-						<div key={room.id}> - <Link to={`/room/${room.id}`}>{room.name}</Link></div>
+					{popularRooms.map(room => (
+						<Room name={room.name} track={room.nowPlaying} colors={room.config.colors}/>
 					))}
 					<br/>
 					<button onClick={this.clickCreateRoom}>Create new room</button>

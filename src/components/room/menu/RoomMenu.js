@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 03/05/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import {Link} from 'react-router';

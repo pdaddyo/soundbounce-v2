@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 29/04/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {ROOM_CHAT} from 'redux/modules/shared/room';
 import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';

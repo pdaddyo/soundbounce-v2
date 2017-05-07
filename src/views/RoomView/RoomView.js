@@ -1,5 +1,6 @@
 /* @flow */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {ROOM_CHAT} from 'redux/modules/shared/room';
 import {uiUpdate} from 'redux/modules/ui';

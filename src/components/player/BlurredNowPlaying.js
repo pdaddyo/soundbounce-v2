@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 30/04/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Transition from 'components/transition/Transition';
 

@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 01/05/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export default class ColorContextProvider extends Component {
 

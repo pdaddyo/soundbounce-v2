@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 30/04/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import TextInput from 'components/ui/textInput/TextInput';
 import SearchIcon from 'components/svg/icons/Search';
 

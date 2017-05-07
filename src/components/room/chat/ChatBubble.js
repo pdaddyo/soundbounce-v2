@@ -1,7 +1,8 @@
 /**
  * Created by paulbarrass on 29/04/2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import theme from './chatBubble.css';
 import Avatar from '../../user/avatar/Avatar';

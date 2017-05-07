@@ -1,7 +1,7 @@
 import update from 'react-addons-update';
 
 import {ROOM_FULL_SYNC} from './shared/room';
-import {SOCKET_ROOM_EVENT} from './socket';
+import {SOCKET_ROOM_EVENT, SOCKET_HOME_DATA_OK} from './socket';
 
 // ------------------------------------
 // Constants
@@ -135,6 +135,10 @@ const ACTION_HANDLERS = {
 	[ROOM_FULL_SYNC]: (state, {payload}) => {
 		// merge any track data from room sync
 		return mergeTracks({state, tracks: payload.fullSync.tracks});
+	},
+	[SOCKET_HOME_DATA_OK]: (state, {payload}) => {
+		// merge any track data from room sync
+		return mergeTracks({state, tracks: payload.home.tracks});
 	},
 	[SOCKET_ROOM_EVENT]: (state, {payload}) => {
 		// merge any track data from adds / votes if present

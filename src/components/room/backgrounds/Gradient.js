@@ -2,7 +2,8 @@
  * Created by paulbarrass on 03/05/2017.
  */
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export default class Gradient extends Component {
 	static contextTypes = {
