@@ -136,7 +136,7 @@ class RoomView extends Component {
 									   visible={index === 0 ? true : roomTab === 'next-up'}/>
 							))}
 						</FlipMove>
-						<RoomMenu room={room} params={params}/>
+						<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
 						<div className={theme.otherTabs}>
 							{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
 							{roomTab === 'about' && <About room={room} currentUser={currentUser}/>}

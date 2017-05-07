@@ -85,7 +85,7 @@ function * checkSyncStatus() {
 						}
 					}
 				}
-				yield put(syncStop('A different track was playing.'));
+				yield put(syncStop(`A different track was playing. Expected '${spotify.tracks[room.playlist[0].id]}' @${player.progress_ms}ms, but detected '${player.item.name}' @${nowPlayingProgress}ms`));
 				return;
 			}
 			// OK so correct track, but it is reasonable track position?
