@@ -252,7 +252,7 @@ const ACTION_HANDLERS = {
 		const recentLength = newState.recentlyPlayed.length;
 		if (recentLength > config.playlist.recentlyPlayedMaxLength) {
 			newState = update(newState, {
-				recentlyPlayed: {$splice: [[recentLength - 1, 1]]}
+				recentlyPlayed: {$splice: [[0, 1]]}
 			});
 		}
 
