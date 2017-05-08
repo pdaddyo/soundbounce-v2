@@ -33,14 +33,15 @@ export default class ChatBubble extends Component {
 			<div className={userTheme('container')}>
 				<div className={userTheme('bubble')}>
 					{chat.payloads.map((chat, index) => (
-						<div className={theme.text} key={index}><Linkify
-							properties={{target: '_blank'}}>{chat.text}</Linkify></div>
+						<div className={theme.text} key={index}>
+							<Linkify properties={{target: '_blank'}}>
+								{chat.text.trim()}
+							</Linkify></div>
 					))}
 					<div className={userTheme('timestamp')}>
 						{friendlyTimeStamp}
 					</div>
 				</div>
-
 				<div className={userTheme('avatar')}>
 					<Avatar user={chat.user}/>
 				</div>
