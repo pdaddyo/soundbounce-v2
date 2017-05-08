@@ -88,6 +88,10 @@ export default class ActiveRoom {
 			return;
 		}
 
+		this.room.set('reduxState', state);
+		this.room.set('nowPlayingTrackId', state.playlist[0].id);
+		this.room.save();
+
 		// find the duration for playing track from the db
 		this.app.tracks.findTracksInDb(
 			[state.playlist[0].id]
@@ -140,7 +144,7 @@ export default class ActiveRoom {
 			// fire the event to update our redux store
 			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 			// save the redux state to the db
-			this.room.set('reduxState', this.reduxStore.getState());
+			this.room.set('reduxState', this.reduxStore.getState())
 			this.room.save();
 
 			// save the now playing track id for the homepage view etc
