@@ -82,7 +82,7 @@ function * checkSyncStatus() {
 					if (room.recentlyPlayed.length > 0) {
 						if (player.item.id === room.recentlyPlayed[room.recentlyPlayed.length - 1].id) {
 							// this is ok (not desync), so return to caller
-							console.log('keeping synced, spotify track behind withing max drift ');
+							console.log('keeping synced, spotify track behind within max drift ');
 							return;
 						}
 					}
@@ -92,10 +92,13 @@ function * checkSyncStatus() {
 				if (spotify.tracks[room.playlist[0].id].duration -
 					nowPlayingProgress < config.player.maxDriftConsideredSynced) {
 					if (room.playlist.length > 1) {
-						if (player.item.id === room.playlist[1].id) {
-							// this is ok (not desync), so return to caller
-							console.log('keeping synced, spotify track ahead within max drift');
-							return;
+						// is this track in the playlist anywhere
+						// it could have been the next track when we last queued, but not anymore
+						for (let playlistTrack of room.playlist) {
+							if (playlistTrack.id === player.item.id) {
+								console.log('keeping synced, spotify track ahead within max drift');
+								return;
+							}
 						}
 					}
 				}
