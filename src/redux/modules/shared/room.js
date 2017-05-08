@@ -103,7 +103,7 @@ const appendToActionLog = ({actionLog, action}) => {
 		// remove old messages if at limit
 		return update(take(
 			orderBy(actionLog, ['timestamp'], ['desc']),
-			config.actionLogMaxLength - 1), {
+			config.playlist.actionLogMaxLength - 1), {
 			$push: [action]
 		});
 	}
