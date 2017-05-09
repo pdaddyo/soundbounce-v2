@@ -61,10 +61,10 @@ class HomeView extends Component {
 				<TopBar/>
 				<div className={theme.home}>
 					{activeRooms.map(room => (
-						<Room room={room}/>
+						<Room room={room} key={room.id}/>
 					))}
 					{popularRooms.map(room => (
-						<Room room={room}/>
+						<Room room={room} key={room.id}/>
 					))}
 					<br/>
 					<button onClick={this.clickCreateRoom}>Create new room</button>
