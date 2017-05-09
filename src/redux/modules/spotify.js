@@ -17,6 +17,7 @@ export const SPOTIFY_PROFILE_REQUEST = 'SPOTIFY_PROFILE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_REQUEST = 'SPOTIFY_PLAYER_STATE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
 export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
+export const SPOTIFY_DISABLE_SHUFFLE = 'SPOTIFY_DISABLE_SHUFFLE';
 
 export const actions = {
 	SPOTIFY_AUTH_REQUIRED,
@@ -29,7 +30,8 @@ export const actions = {
 	SPOTIFY_PROFILE_REQUEST,
 	SPOTIFY_PLAYER_STATE_REQUEST,
 	SPOTIFY_PLAYER_STATE_UPDATE,
-	SPOTIFY_PLAY_TRACK
+	SPOTIFY_PLAY_TRACK,
+	SPOTIFY_DISABLE_SHUFFLE
 };
 
 // ------------------------------------
@@ -79,6 +81,9 @@ export const spotifyPlayTrack = ({trackId, offset}) => ({
 	payload: {trackId, offset}
 });
 
+export const spotifyDisableShuffle = () => ({
+	type: SPOTIFY_DISABLE_SHUFFLE
+});
 // ------------------------------------
 // Action Handlers
 // ------------------------------------

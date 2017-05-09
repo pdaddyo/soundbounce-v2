@@ -9,6 +9,7 @@ import {
 	spotifyPlayerStateRequest,
 	spotifyPlayerStateUpdate,
 	spotifyPlayTrack,
+	spotifyDisableShuffle,
 	actions as spotifyActions
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
@@ -140,8 +141,22 @@ function * pollSpotifyPlayerStatus() {
 	}
 }
 
+function * spotifyDisableShuffleIfEnabled() {
+	const {player} = yield select(state => state.spotify);
+	if (player && player.shuffle_state) {
+		yield put(spotifyDisableShuffle());
+		// disable shuffle first
+		yield call(spotifyApiCall, {
+			url: '/v1/me/player/shuffle?state=false',
+			method: 'PUT'
+		});
+	}
+
+}
+
 function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 	yield put(spotifyPlayTrack({trackIds, seekPosition}));
+	yield call(spotifyDisableShuffleIfEnabled);
 	// tell spotify to play
 	yield call(spotifyApiCall, {
 		url: '/v1/me/player/play',
