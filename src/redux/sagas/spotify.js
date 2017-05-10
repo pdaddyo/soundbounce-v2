@@ -22,6 +22,7 @@ const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify
 const error401 = '401-unauthorized';
 
 function * beginLogin() {
+	// pull the spotify access tokens from the hash fragment of the url
 	const {hash, href} = window.location;
 	if (hash) {
 		const matches = hash.match(/access_token=(.+)&refresh_token=(.+)/);
@@ -129,14 +130,12 @@ function * pollSpotifyPlayerStatus() {
 		if (!isLoggedIn) {
 			yield take(spotifyActions.SPOTIFY_AUTH_OK);
 		}
-
 		try {
 			yield call(updatePlayerState);
 			yield call(checkSyncStatus);
 		} catch (playerStateError) {
 			// todo: this is a sync failure if we can't get playerstate (this is after retries)
 		}
-
 		yield delay(pollPlayerDelay);
 	}
 }
