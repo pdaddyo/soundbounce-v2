@@ -2,6 +2,7 @@
  Socket.io / socket redux go-between
  */
 
+import config from '../../config/app';
 import io from 'socket.io-client';
 import {
 	socketRoomCreateOk,
@@ -49,6 +50,13 @@ class SocketClient {
 		});
 		socket.on('server:time', ({ticks}) => {
 			dispatch(syncSetServerOffset({ticks: (new Date().getTime()) - ticks}));
+		});
+		socket.on('server:version', ({buildVersion}) => {
+			if (buildVersion !== config.buildVersion) {
+				console.log(`Wrong client version! Server: ${buildVersion}, Client: ${config.buildVersion}`);
+				alert('A new version of Soundbounce has just been deployed! Press OK to refresh and load the latest version...');
+				location.reload(true);
+			}
 		});
 		socket.on('room:create:ok', (room) => {
 			dispatch(socketRoomCreateOk(room));

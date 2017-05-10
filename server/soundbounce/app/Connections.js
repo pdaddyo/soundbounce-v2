@@ -1,3 +1,4 @@
+import config from '../../../config/app';
 import _debug from 'debug';
 const debug = _debug('soundbounce:connections');
 import {Room, RoomActivities} from '../data/schema';
@@ -31,6 +32,9 @@ export default class Connections {
 		socket.emit('user:auth:ok', plainUserObject);
 		// send server time so client knows ms offset
 		socket.emit('server:time', {ticks: new Date().getTime()});
+		// notify client of server version - they'll refresh if wrong
+		const {buildVersion} = config;
+		socket.emit('server:version', {buildVersion});
 		socket.on('disconnect', s => {
 			this.removeClient(socket);
 		});

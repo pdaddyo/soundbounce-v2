@@ -2,6 +2,7 @@
  * Created by paulbarrass on 02/05/2017.
  */
 export default {
+	buildVersion: 2,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
 		pollPlayerDelay: 2500,
