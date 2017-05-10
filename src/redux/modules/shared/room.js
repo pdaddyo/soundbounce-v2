@@ -2,7 +2,6 @@
 // so the same messages (shared via socket.io) can keep state in sync
 import update from 'react-addons-update';
 import config from '../../../../config/app';
-import {orderBy, take} from 'lodash';
 import moment from 'moment';
 
 // ------------------------------------
@@ -99,18 +98,13 @@ export const roomNavigating = (roomId) => ({
 // Action Handlers
 // ------------------------------------
 const appendToActionLog = ({actionLog, action}) => {
-	if (actionLog.length >= config.playlist.actionLogMaxLength) {
+	const messagesToRemove = actionLog.length - config.playlist.actionLogMaxLength;
+	if (messagesToRemove > 0) {
 		// remove old messages if at limit
-		return update(take(
-			orderBy(actionLog, ['timestamp'], ['desc']),
-			config.playlist.actionLogMaxLength - 1), {
-			$push: [action]
-		});
+		const croppedLog = update(actionLog, {$splice: [[0, messagesToRemove]]});
+		return update(croppedLog, {$push: [action]});
 	}
-
-	return update(actionLog, {
-		$push: [action]
-	});
+	return update(actionLog, {$push: [action]});
 };
 
 const applyVotes = ({playlist, payload}) => {
