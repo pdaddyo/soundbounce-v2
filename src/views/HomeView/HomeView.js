@@ -24,8 +24,10 @@ class HomeView extends Component {
 		// todo: better ui here!
 		const roomName = prompt('Enter your room name (this will be nice ui later!)',
 			`${currentUser.nickname}'s room`);
+		if (!roomName) {
+			return;
+		}
 		const color = prompt('Enter your color', '#ad009f');
-
 		createRoom({
 			name: roomName,
 			config: {
