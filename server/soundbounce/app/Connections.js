@@ -84,6 +84,9 @@ export default class Connections {
 	addSocketEventListeners(socket) {
 		const {app} = this;
 		socket.on('room:create', (roomOptions) => {
+			if (!roomOptions.name) {
+				return;
+			}
 			app.rooms.createRoom(roomOptions)
 				.then(room => {
 					room.setCreator(socket.authenticatedUser);
