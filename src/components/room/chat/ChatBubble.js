@@ -13,10 +13,6 @@ export default class ChatBubble extends Component {
 		chat: PropTypes.object.isRequired
 	};
 
-	linkify(text) {
-
-	}
-
 	render() {
 		const {chat} = this.props;
 		const {sentByCurrentUser} = chat;
@@ -36,11 +32,13 @@ export default class ChatBubble extends Component {
 						<div className={theme.text} key={index}>
 							<Linkify properties={{target: '_blank'}}>
 								{chat.text.trim()}
-							</Linkify></div>
+							</Linkify>
+						</div>
 					))}
-					<div className={userTheme('timestamp')}>
-						{friendlyTimeStamp}
-					</div>
+				</div>
+				<div className={userTheme('timestamp')}>
+					{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
+					{friendlyTimeStamp}
 				</div>
 				<div className={userTheme('avatar')}>
 					<Avatar user={chat.user}/>

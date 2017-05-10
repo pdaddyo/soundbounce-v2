@@ -1,4 +1,5 @@
 .container {
+	position: relative;
 	margin-top: 0.5rem;
 	padding-right: 1rem;
 	display: flex;
@@ -85,7 +86,7 @@
 .timestamp {
 	position: absolute;
 	bottom: -1rem;
-	right: 0.1rem;
+	right: 3.5rem;
 	font-size: 0.55rem;
 	color: rgba(255, 255, 255, 0.3);
 }
@@ -93,5 +94,5 @@
 .timestampOtherUser {
 	composes: timestamp;
 	right: auto;
-	left: 0.1rem;
+	left: 3.5rem;
 }
