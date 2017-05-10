@@ -54,7 +54,9 @@ class SocketClient {
 		socket.on('server:version', ({buildVersion}) => {
 			if (buildVersion !== config.buildVersion) {
 				console.log(`Wrong client version! Server: ${buildVersion}, Client: ${config.buildVersion}`);
-				alert('A new version of Soundbounce has just been deployed! Press OK to refresh and load the latest version...');
+				alert(`A new version of Soundbounce has just been deployed!
+
+Press OK to refresh and load the latest version...`);
 				location.reload(true);
 			}
 		});
