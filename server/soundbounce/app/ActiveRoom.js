@@ -37,20 +37,30 @@ export default class ActiveRoom {
 		this.createAndPopulateReduxStore();
 		const {reduxStore, room} = this;
 		const existingState = reduxStore.getState();
-		const shutdownAt = room.get('shutdownAt');
-		if (shutdownAt) {
+		let lastRoomActivityTimestamp = room.get('shutdownAt');
+
+		if (!lastRoomActivityTimestamp && room.get('isActive')) {
+			// room wasn't shut down correctly, since it's active but no shutdownAt
+			debug(`Room '${this.name}' startup - room was not shut down correctly.`);
+			lastRoomActivityTimestamp = room.get('updatedAt');
+		}
+
+		if (lastRoomActivityTimestamp) {
 			// we're resuming a room so will defo have at least some state
 			// was there a track playing when we shutdown?
 			if (existingState.playlist.length > 0) {
 				// ok resume the track as if we just left
-				const msSinceShutdown = moment().valueOf() - moment(shutdownAt).valueOf();
+				const msSinceShutdown = moment().valueOf() - moment(lastRoomActivityTimestamp).valueOf();
 				debug(`Room '${this.name}' startup - resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
+
+				// either start now or resume where we were
+				const nowPlayingStartedAt = existingState.nowPlayingStartedAt ?
+					existingState.nowPlayingStartedAt + msSinceShutdown :
+					moment.valueOf();
+
 				this.setReduxRoomStateDuringStartup({
 					...existingState,
-					// either start now or resume where we were
-					nowPlayingStartedAt: existingState.nowPlayingStartedAt ?
-						existingState.nowPlayingStartedAt + msSinceShutdown :
-						moment().valueOf()
+					nowPlayingStartedAt
 				});
 
 				this.beginNextTrackTimer();
@@ -144,7 +154,7 @@ export default class ActiveRoom {
 			// fire the event to update our redux store
 			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
 			// save the redux state to the db
-			this.room.set('reduxState', this.reduxStore.getState())
+			this.room.set('reduxState', this.reduxStore.getState());
 			this.room.save();
 
 			// save the now playing track id for the homepage view etc
@@ -184,7 +194,6 @@ export default class ActiveRoom {
 	// so room state, plus short form for tracks, artists and users mentioned
 	getFullSync() {
 		const reduxState = this.reduxStore.getState();
-
 		this.room.set('reduxState', reduxState);
 
 		const roomPlain = this.room.get({plain: true});
