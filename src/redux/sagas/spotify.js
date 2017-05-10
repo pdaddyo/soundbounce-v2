@@ -151,11 +151,11 @@ function * spotifyDisableShuffleIfEnabled() {
 			method: 'PUT'
 		});
 	}
-
 }
 
 function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 	yield put(spotifyPlayTrack({trackIds, seekPosition}));
+	// make sure shuffle hasn't been switched on
 	yield call(spotifyDisableShuffleIfEnabled);
 	// tell spotify to play
 	yield call(spotifyApiCall, {
