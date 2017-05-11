@@ -7,6 +7,7 @@ import moment from 'moment';
 import theme from './chatBubble.css';
 import Avatar from '../../user/avatar/Avatar';
 import Linkify from 'react-linkify';
+import ReactEmoji from 'react-emoji';
 
 export default class ChatBubble extends Component {
 	static propTypes = {
@@ -31,7 +32,7 @@ export default class ChatBubble extends Component {
 					{chat.payloads.map((chat, index) => (
 						<div className={theme.text} key={index}>
 							<Linkify properties={{target: '_blank'}}>
-								{chat.text.trim()}
+								{ReactEmoji.emojify(chat.text.trim())}
 							</Linkify>
 						</div>
 					))}
