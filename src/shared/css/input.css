@@ -3,7 +3,7 @@
 	border: none;
 	outline: none;
 	color: rgba(255, 255, 255, 0.6);
-	font-size: 1rem;
+	font-size: 0.9rem;
 	font-weight: 200;
 	width: 100%;
 }
@@ -15,7 +15,7 @@
 }
 
 .surround {
-	padding: 0.5rem 2.5rem 0.5rem 1rem;
+	padding: 0.5rem 4rem 0.5rem 1rem;
 	border: 0.05rem solid rgba(255, 255, 255, 0.4);
 	border-radius: 0.4rem;
 }

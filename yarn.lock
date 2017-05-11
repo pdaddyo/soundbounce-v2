@@ -2193,6 +2193,10 @@ emoji-emoticon-to-unicode@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/emoji-emoticon-to-unicode/-/emoji-emoticon-to-unicode-0.2.2.tgz#5ae60d53852d8328b63f31d1ca29897ebb783260"
 
+emoji-mart@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-0.5.0.tgz#9da3e29123c1203237d8b0606ad7006195b1c859"
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -2396,11 +2400,11 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
-escape-string-regexp@1.0.2, escape-string-regexp@^1.0.2:
+escape-string-regexp@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz#4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
 
-escape-string-regexp@^1.0.0, escape-string-regexp@^1.0.3, escape-string-regexp@^1.0.5:
+escape-string-regexp@^1.0.0, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.3, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 

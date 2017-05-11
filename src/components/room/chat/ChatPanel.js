@@ -3,16 +3,27 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import {ROOM_CHAT} from 'redux/modules/shared/room';
+import {Picker} from 'emoji-mart';
 import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
+import {uiUpdate} from 'redux/modules/ui';
 import theme from './chatPanel.css';
 
-export default class ChatPanel extends Component {
+// global emoji mart (the emoji picker) styles
+import './emoji-mart.css';
+import Emoticon from '../../svg/icons/Emoticon';
+
+class ChatPanel extends Component {
 	static propTypes = {
 		onChatSend: PropTypes.func,
-		actionLog: PropTypes.array
+		actionLog: PropTypes.array,
+		emojiPickerVisible: PropTypes.bool,
+		setEmojiPickerVisible: PropTypes.func,
+		chatText: PropTypes.string,
+		updateChatText: PropTypes.func
 	};
 
 	chatEnterPressed = () => {
@@ -59,7 +70,7 @@ export default class ChatPanel extends Component {
 			actionLog[actionIndex + 1].type === action.type &&
 			actionLog[actionIndex + 1].payload.userId === action.payload.userId &&
 			((new Date(actionLog[actionIndex + 1].timestamp)).getTime() -
-			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 240) {
+			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 60) {
 				groupedPayloads.push(actionLog[++actionIndex].payload);
 			}
 
@@ -73,7 +84,33 @@ export default class ChatPanel extends Component {
 		return groupedActionLog;
 	}
 
+	hideEmojiPanel = (evt) => {
+		const emojiMartPanel = document.getElementsByClassName('emoji-mart')[0];
+		if (emojiMartPanel && emojiMartPanel.contains(evt.target)) {
+			// we're clicking inside the emoji box, allow this
+			return;
+		}
+		this.props.setEmojiPickerVisible(false);
+		document.removeEventListener('click', this.hideEmojiPanel);
+	};
+
+	emojiButtonClick = () => {
+		document.addEventListener('click', this.hideEmojiPanel);
+		this.props.setEmojiPickerVisible(true);
+	};
+
+	clickEmojiInPanel = (emoji, event) => {
+		// add space if there is content already
+		const prefix = this.props.chatText ? this.props.chatText + ' ' : '';
+		this.props.updateChatText(prefix + emoji.colons);
+		// hide panel
+		this.props.setEmojiPickerVisible(false);
+		// focus the box so you can just press enter
+		document.getElementById('roomChat').focus();
+	};
+
 	render() {
+		const {emojiPickerVisible} = this.props;
 		const actionLog = ChatPanel.groupSimilarActionLogItems(this.props.actionLog);
 		return (
 			<div className={theme.panel}>
@@ -86,7 +123,6 @@ export default class ChatPanel extends Component {
 									item = <ChatBubble chat={loggedAction}/>;
 									break;
 								// todo: add track, vote, like etc etc
-
 							}
 							return (
 								<div key={loggedAction.id}>
@@ -102,6 +138,28 @@ export default class ChatPanel extends Component {
 							   className={theme.input}
 							   placeholder='Type message'
 							   onEnterPressed={this.chatEnterPressed}/>
+					{emojiPickerVisible && (
+						<Picker set='twitter'
+								emojiSize={20}
+								perLine={9}
+								sheetSize={64}
+								autoFocus={true}
+								include={['search', 'recent', 'people',
+										  'nature', 'foods', 'activity',
+										  'objects', 'symbols']}
+								title='Pick an emoji'
+								emoji='point_up'
+								onClick={this.clickEmojiInPanel}
+								style={{
+									position: 'absolute',
+									bottom: '2.5rem',
+									right: '0.5rem'
+								}}/>
+					)}
+
+					<div className={theme.emojiIcon} onClick={this.emojiButtonClick}>
+						<Emoticon size={1.5}/>
+					</div>
 					<div className={theme.sendIcon} onClick={this.chatEnterPressed}>
 						<ArrowRight/>
 					</div>
@@ -110,4 +168,20 @@ export default class ChatPanel extends Component {
 		);
 	}
 }
+
+const mapStateToProps = state => ({
+	emojiPickerVisible: state.ui['emojiPickerVisible'] || false,
+	chatText: state.ui['roomChat'] || ''
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	setEmojiPickerVisible: (show) => {
+		dispatch(uiUpdate({key: 'emojiPickerVisible', newState: show}));
+	},
+	updateChatText: (text) => {
+		dispatch(uiUpdate({key: 'roomChat', newState: text}));
+	}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatPanel);
 

@@ -1,5 +1,4 @@
 .panel {
-
 	font-size: 100%;
 }
 
@@ -24,6 +23,18 @@
 }
 
 .sendIcon:hover {
+	opacity: 0.8;
+}
+
+.emojiIcon {
+	position: absolute;
+	right: 2rem;
+	top: 0.4rem;
+	cursor: pointer;
+	opacity: 0.6;
+}
+
+.emojiIcon:hover {
 	opacity: 0.8;
 }
 

@@ -30,9 +30,11 @@ class TextInput extends Component {
 	};
 
 	render() {
-		const {text, className, placeholder} = this.props;
+		const {text, className, placeholder, uiKey} = this.props;
 		return (
 			<input type='text'
+				   name={uiKey}
+				   id={uiKey}
 				   className={className}
 				   value={text || ''}
 				   onChange={this.onChange}
