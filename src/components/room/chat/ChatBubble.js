@@ -18,6 +18,7 @@ export default class ChatBubble extends Component {
 
 	emojify(text) {
 		const emojifiedText = ReactEmoji.emojify(text);
+		// check if this is just an emoji with no other text
 		if (Array.isArray(emojifiedText) &&
 			emojifiedText.length === 1 &&
 			typeof emojifiedText[0] !== 'string') {
