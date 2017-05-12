@@ -264,6 +264,9 @@ export default class ActiveRoom {
 		}
 		if (event.type === 'chat') {
 			const {text} = event;
+			if (text === null || text === '') {
+				return;
+			}
 			this.emitUserEvent(roomChat({userId: sender.get('id'), text}));
 		}
 	}
