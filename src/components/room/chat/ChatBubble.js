@@ -34,6 +34,9 @@ export default class ChatBubble extends Component {
 		const {chat} = this.props;
 		const {sentByCurrentUser} = chat;
 
+		if (!chat || chat['text'] === null) {
+			return null;
+		}
 		const userTheme = (className) =>
 			theme[sentByCurrentUser ? className : className + 'OtherUser'];
 
