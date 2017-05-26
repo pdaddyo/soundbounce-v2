@@ -1,7 +1,7 @@
 # soundbounce-v2
 Soundbounce v2 - web-based rebuild of Soundbounce using new Spotify Web Connect Player api
 
-http://soundbounce.org
+http://v2.soundbounce.org
 
 To get dev environment up and running locally:
 
