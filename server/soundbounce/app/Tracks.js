@@ -11,6 +11,30 @@ import {without, flatten, uniq, chain, value, take} from 'lodash';
 const spotifyApi = new SpotifyWebApi(secrets.spotify);
 const emptyAlbumArt = 'oops.png';
 
+var spotify_data = {
+	'access_token' : null,
+	'expire' : 0,
+	'checkAuth': function() {
+		if (this.access_token == null || Date.now() > this.expire)
+		{
+			debug('Spotify: Need new access token, requesting...');
+			spotifyApi.setAccessToken(null);
+			var promise = spotifyApi.clientCredentialsGrant().then(function(data) {
+				debug('Spotify: New access token ' + data.body['access_token'] + ' expires in ' + data.body['expires_in'] + ' seconds');
+				// Save the access token so that it's used in future calls
+				spotify_data.access_token = data.body['access_token'];
+				spotify_data.expire = Date.now() + parseInt(data.body['expires_in']) * 1000;
+				spotifyApi.setAccessToken(data.body['access_token']);
+			}, function(err) {
+				debug('Something went wrong when retrieving an access token', err);
+			});
+			return promise;
+		}
+		debug('Spotify: Using access token ' + this.access_token + ' expiring in ' + (this.expire - Date.now()) / 1000 + ' seconds');
+		return Promise.resolve();
+	}
+}
+
 export default class Tracks {
 	constructor(app) {
 		this.app = app;
@@ -33,7 +57,9 @@ export default class Tracks {
 				const trackIdsToFetch = without(trackIds,
 					...tracksInDb.map(t => t.get('id')));
 				if (trackIdsToFetch.length > 0) {
-					return spotifyApi
+					var promise = spotify_data.checkAuth();
+					return promise.then(tracks =>
+						spotifyApi
 						.getTracks(take(trackIdsToFetch, 50))
 						.then(response => {
 								if (response.statusCode !== 200) {
@@ -159,7 +185,8 @@ export default class Tracks {
 									}
 								);
 							}
-						);
+						)
+					);
 				} else {
 					// we didn't need to insert any tracks, so the db result have it all
 					return Promise.resolve(tracksInDb);
