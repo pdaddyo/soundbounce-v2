@@ -13,7 +13,7 @@
 	left: 2rem;
 	top: 0;
 	bottom: 0;
-	right: 22.5rem;
+	right: 30.5rem;
 	min-height: 0;
 }
 
@@ -22,8 +22,23 @@
 	top: 0;
 	bottom: 0;
 	right: 0.5rem;
-	width: 21.5rem;
+	width: 29.5rem;
 	min-height: 0;
+}
+
+@media (max-width: 1200px) {
+	/* narrower chat when narrower window
+    todo: mobile versions of this kind of thing
+     */
+	.room {
+		composes: room;
+		right: 20.5rem;
+	}
+
+	.chat {
+		composes: chat;
+		width: 19.5rem;
+	}
 }
 
 @media (max-width: 1100px) {
