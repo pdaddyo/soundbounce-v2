@@ -3,14 +3,15 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {linkUnfurlingRequestStart} from '../../../redux/modules/unfurling';
+import {linkUnfurlingRequestStart, linkUnfurlingToggleHide} from '../../../redux/modules/unfurling';
 import Linkify from 'react-linkify';
 
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import theme from './chatBubble.css';
 import Avatar from '../../user/avatar/Avatar';
 import ReactEmoji from 'react-emoji';
+
+import theme from './chatBubble.css';
 
 const soloEmojiSize = '30px';
 /*eslint-disable */
@@ -21,6 +22,7 @@ class ChatBubble extends Component {
 	static propTypes = {
 		chat: PropTypes.object.isRequired,
 		linkUnfurlingRequestStart: PropTypes.func,
+		toggleUnfurl: PropTypes.func,
 		unfurling: PropTypes.object
 	};
 
@@ -64,22 +66,87 @@ class ChatBubble extends Component {
 
 	getUnfurledLinks(text) {
 		const matches = text.match(linkRegex);
-		const {unfurling} = this.props;
+		const {unfurling, toggleUnfurl} = this.props;
 		const returnArray = [];
 		if (matches) {
-			for (let match of matches) {
-				if (match) {
-					if (unfurling.urls[match] && unfurling.urls[match].json) {
+			for (let url of matches) {
+				if (url) {
+					if (unfurling.urls[url] && unfurling.urls[url].json) {
 						// we have json data for this unfurl
-						const json = unfurling.urls[match].json;
-						if (json['html']) {
+						const {json, hidden} = unfurling.urls[url];
+
+						// don't show 'app' html like reddit inline comments
+						const showHtml = json.html && json.rel.indexOf('app') === -1;
+
+						if (json.meta) {
+							const {title = url, description} = json.meta;
+							let iconSrc = '', thumbnailSrc = '';
+							if (json.links && json.links.icon) {
+								iconSrc = json.links.icon[0].href;
+							}
+							if (json.links && json.links.thumbnail) {
+								thumbnailSrc = json.links.thumbnail[0].href;
+							}
+
 							returnArray.push(
-								<div className={theme.unfurl}
-									 dangerouslySetInnerHTML={
-										 {
-											 __html: json['html']
-										 }
-									 }/>
+								<div className={theme.unfurl}>
+									<div className={theme.unfurlTitleArea}>
+										{iconSrc && (
+											<img className={theme.unfurlIcon}
+												 src={iconSrc}
+												 onClick={() => toggleUnfurl(url)}
+											/>
+										)}
+										<span><a className={theme.unfurlTitle}
+												 href={url}
+												 target='_blank'>
+											{title}
+										</a>
+											{!hidden && (
+												<span className={theme.showHide}
+													  onClick={() => toggleUnfurl(url)}
+												>
+													 [x]
+												</span>
+											)}
+											{hidden && (
+												<span className={theme.showHide}
+													  onClick={() => toggleUnfurl(url)}
+												>
+													 [+]
+												</span>
+											)}
+
+											</span>
+
+									</div>
+									{(description || thumbnailSrc) && !showHtml && !hidden && (
+										<div className={theme.unfurlThumbDescription}>
+											{thumbnailSrc && (
+												<div>
+													<img className={theme.unfurlThumbnail}
+														 src={thumbnailSrc}/>
+												</div>
+											)}
+											{description && (
+												<div className={theme.unfurlDescription}>
+													{description}
+												</div>
+											)}
+
+										</div>
+
+									)}
+
+									{(showHtml && !hidden) && (
+										<div className={theme.unfurlHtml}
+											 dangerouslySetInnerHTML={
+												 {
+													 __html: json['html']
+												 }
+											 }/>
+									)}
+								</div>
 							);
 						}
 					}
@@ -135,7 +202,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	linkUnfurlingRequestStart: (url) => {
 		dispatch(linkUnfurlingRequestStart({url}));
+	},
+	toggleUnfurl: (url) => {
+		dispatch(linkUnfurlingToggleHide({url}));
 	}
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBubble);
