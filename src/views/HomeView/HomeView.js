@@ -10,6 +10,19 @@ import TopBar from 'components/home/homeTopBar/HomeTopBar';
 
 import theme from './homeView.css';
 
+const Room = ({room: {name, track, config: {colors}, id}}) => (
+	<Link to={`/room/${id}`} key={id}>
+		<div className={theme.room}>
+			<div className={theme.albumArt}
+				 style={{backgroundImage: track ? `url(${track.albumArt})` : null}}>
+			</div>
+			<div className={theme.name} style={{borderBottomColor: colors.primary}}>
+				{name}
+			</div>
+		</div>
+	</Link>
+);
+
 class HomeView extends Component {
 	static propTypes = {
 		createRoom: PropTypes.func.isRequired,
@@ -44,19 +57,6 @@ class HomeView extends Component {
 
 	render() {
 		const {activeRooms, popularRooms} = this.props;
-
-		const Room = ({room: {name, track, config: {colors}, id}}) => (
-			<Link to={`/room/${id}`} key={id}>
-				<div className={theme.room}>
-					<div className={theme.albumArt}
-						 style={{backgroundImage: track ? `url(${track.albumArt})` : null}}>
-					</div>
-					<div className={theme.name} style={{borderBottomColor: colors.primary}}>
-						{name}
-					</div>
-				</div>
-			</Link>
-		);
 
 		return (
 			<div className={theme.container}>
