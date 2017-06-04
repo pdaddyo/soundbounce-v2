@@ -2,18 +2,25 @@
  * Created by paulbarrass on 29/04/2017.
  */
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {linkUnfurlingRequestStart} from '../../../redux/modules/unfurling';
+
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import theme from './chatBubble.css';
 import Avatar from '../../user/avatar/Avatar';
-import Linkify from 'react-linkify';
 import ReactEmoji from 'react-emoji';
 
 const soloEmojiSize = '30px';
+/*eslint-disable */
+const linkRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/g;
+/*eslint-enable */
 
-export default class ChatBubble extends Component {
+class ChatBubble extends Component {
 	static propTypes = {
-		chat: PropTypes.object.isRequired
+		chat: PropTypes.object.isRequired,
+		linkUnfurlingRequestStart: PropTypes.func,
+		unfurling: PropTypes.object
 	};
 
 	emojify(text) {
@@ -28,6 +35,40 @@ export default class ChatBubble extends Component {
 			);
 		}
 		return emojifiedText;
+	}
+
+	componentWillMount() {
+		this.makeLinkUnfurlRequests();
+	}
+
+	componentDidUpdate() {
+		this.makeLinkUnfurlRequests();
+	}
+
+	makeLinkUnfurlRequests() {
+		const {chat, unfurling, linkUnfurlingRequestStart} = this.props;
+
+		for (let chatMessage of chat.payloads) {
+			const matches = chatMessage.text.match(linkRegex);
+			if (matches) {
+				for (let match of matches) {
+					if (match) {
+						if (!unfurling.urls[match]) {
+							linkUnfurlingRequestStart(match);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	linkify(text) {
+		const matches = text.match(linkRegex);
+		/*const {unfurling, linkUnfurlingRequestStart} = this.props;
+		 if (matches) {
+
+		 }*/
+		return text;
 	}
 
 	render() {
@@ -50,9 +91,9 @@ export default class ChatBubble extends Component {
 				<div className={userTheme('bubble')}>
 					{chat.payloads.map((chat, index) => (
 						<div className={theme.text} key={index}>
-							<Linkify properties={{target: '_blank'}}>
-								{this.emojify(chat.text.trim())}
-							</Linkify>
+
+							{this.emojify(this.linkify(chat.text.trim()))}
+
 						</div>
 					))}
 				</div>
@@ -67,3 +108,16 @@ export default class ChatBubble extends Component {
 		);
 	}
 }
+
+const mapStateToProps = state => ({
+	unfurling: state.unfurling
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	linkUnfurlingRequestStart: (url) => {
+		dispatch(linkUnfurlingRequestStart({url}));
+	}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatBubble);
+
