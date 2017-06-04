@@ -31,6 +31,7 @@
 .bubbleOtherUser {
 	composes: bubble;
 	margin-left: 1.6rem;
+	margin-right: 0;
 }
 
 .bubble:after {
@@ -104,19 +105,18 @@
 .unfurl {
 	margin-top: 0.5rem;
 	width: 100%;
-	min-width: 23rem;
-	align-self: stretch;
+	min-width: 22rem;
 }
 
 @media (max-width: 1200px) {
 	.unfurl {
-		min-width: 14rem;
+		min-width: 13rem;
 	}
 }
 
 @media (max-width: 1100px) {
 	.unfurl {
-		min-width: 11rem;
+		min-width: 10rem;
 	}
 }
 
