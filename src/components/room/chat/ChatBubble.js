@@ -4,6 +4,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {linkUnfurlingRequestStart} from '../../../redux/modules/unfurling';
+import Linkify from 'react-linkify';
 
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -47,7 +48,6 @@ class ChatBubble extends Component {
 
 	makeLinkUnfurlRequests() {
 		const {chat, unfurling, linkUnfurlingRequestStart} = this.props;
-
 		for (let chatMessage of chat.payloads) {
 			const matches = chatMessage.text.match(linkRegex);
 			if (matches) {
@@ -62,13 +62,31 @@ class ChatBubble extends Component {
 		}
 	}
 
-	linkify(text) {
-		/* const matches = text.match(linkRegex);
-		 const {unfurling, linkUnfurlingRequestStart} = this.props;
-		 if (matches) {
-
-		 }*/
-		return text;
+	getUnfurledLinks(text) {
+		const matches = text.match(linkRegex);
+		const {unfurling} = this.props;
+		const returnArray = [];
+		if (matches) {
+			for (let match of matches) {
+				if (match) {
+					if (unfurling.urls[match] && unfurling.urls[match].json) {
+						// we have json data for this unfurl
+						const json = unfurling.urls[match].json;
+						if (json['html']) {
+							returnArray.push(
+								<div className={theme.unfurl}
+									 dangerouslySetInnerHTML={
+										 {
+											 __html: json['html']
+										 }
+									 }/>
+							);
+						}
+					}
+				}
+			}
+		}
+		return returnArray;
 	}
 
 	render() {
@@ -91,9 +109,10 @@ class ChatBubble extends Component {
 				<div className={userTheme('bubble')}>
 					{chat.payloads.map((chat, index) => (
 						<div className={theme.text} key={index}>
-
-							{this.emojify(this.linkify(chat.text.trim()))}
-
+							<Linkify properties={{target: '_blank'}}>
+								{this.emojify(chat.text.trim())}
+							</Linkify>
+							{this.getUnfurledLinks(chat.text.trim())}
 						</div>
 					))}
 				</div>

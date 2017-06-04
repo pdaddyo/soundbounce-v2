@@ -96,3 +96,8 @@
 	right: auto;
 	left: 3.5rem;
 }
+
+.unfurl img {
+	max-width: 100%;
+	height: auto;
+}
