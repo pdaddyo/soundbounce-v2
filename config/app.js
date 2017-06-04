@@ -19,5 +19,8 @@ export default {
 		progressUpdateDelay: 700,
 		maxDriftConsideredSynced: 15000,
 		maxTracksToQueueWhenPlaying: 10
+	},
+	unfurling: {
+		url: 'https://v2.soundbounce.org/iframely'
 	}
 };
