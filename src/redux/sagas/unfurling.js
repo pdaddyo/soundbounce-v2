@@ -7,7 +7,9 @@ import {
 
 function * fetchUrlInfo({payload: {url}}) {
 	// request from our hosted link unfurling api
-	const json = yield fetch(`${config.unfurling.url}?url=${encodeURIComponent(url)}&iframe=1&align=left&media=1&omit_script=1`, {
+	const json = yield fetch(`${config.unfurling.url}?url=${
+		encodeURIComponent(url)
+		}&iframe=1&align=left&media=1&omit_script=1`, {
 		method: 'GET'
 	}).then(response => response.json())
 		.catch(error => console.log(error));
