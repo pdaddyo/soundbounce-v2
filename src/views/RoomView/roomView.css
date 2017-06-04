@@ -32,12 +32,12 @@
      */
 	.room {
 		composes: room;
-		right: 20.5rem;
+		right: 22.5rem;
 	}
 
 	.chat {
 		composes: chat;
-		width: 19.5rem;
+		width: 21.5rem;
 	}
 }
 
@@ -47,12 +47,12 @@
      */
 	.room {
 		composes: room;
-		right: 17.5rem;
+		right: 18.5rem;
 	}
 
 	.chat {
 		composes: chat;
-		width: 17rem;
+		width: 18rem;
 	}
 }
 
