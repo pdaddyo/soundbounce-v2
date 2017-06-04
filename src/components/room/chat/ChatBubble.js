@@ -89,7 +89,7 @@ class ChatBubble extends Component {
 							}
 
 							returnArray.push(
-								<div className={theme.unfurl}>
+								<div className={theme.unfurl} key={url}>
 									<div className={theme.unfurlTitleArea}>
 										{iconSrc && (
 											<img className={theme.unfurlIcon}

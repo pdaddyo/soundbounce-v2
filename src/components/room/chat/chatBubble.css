@@ -83,6 +83,10 @@
 	text-overflow: ellipsis;
 }
 
+.text a:hover {
+	text-decoration: underline;
+}
+
 .timestamp {
 	position: absolute;
 	bottom: -1rem;
