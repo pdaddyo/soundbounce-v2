@@ -63,8 +63,8 @@ class ChatBubble extends Component {
 	}
 
 	linkify(text) {
-		const matches = text.match(linkRegex);
-		/*const {unfurling, linkUnfurlingRequestStart} = this.props;
+		/* const matches = text.match(linkRegex);
+		 const {unfurling, linkUnfurlingRequestStart} = this.props;
 		 if (matches) {
 
 		 }*/
