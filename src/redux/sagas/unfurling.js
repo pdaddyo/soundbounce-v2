@@ -7,12 +7,15 @@ import {
 
 function * fetchUrlInfo({payload: {url}}) {
 	// request from our hosted link unfurling api
-	const json = yield fetch(`${config.unfurling.url}?url=${encodeURIComponent(url)}`, {
+	const json = yield fetch(`${config.unfurling.url}?url=${encodeURIComponent(url)}&iframe=1&align=left&media=1&omit_script=1`, {
 		method: 'GET'
-	}).then(response => response.json());
+	}).then(response => response.json())
+		.catch(error => console.log(error));
 
-	// store the result
-	yield put(linkUnfurlingRequestOk({json, url}));
+	if (json) {
+		// store the result
+		yield put(linkUnfurlingRequestOk({json, url}));
+	}
 }
 
 function * watchForUnfurlingRequestStart() {
