@@ -4,11 +4,13 @@
 import spotifyInit from './spotify';
 import socketInit from './socket';
 import roomInit from './room';
+import unfurlingInit from './unfurling';
 
 export default function * rootSaga() {
 	yield [
 		spotifyInit(),
 		socketInit(),
-		roomInit()
+		roomInit(),
+		unfurlingInit()
 	];
 }

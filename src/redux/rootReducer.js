@@ -8,6 +8,7 @@ import room from './modules/shared/room';
 import home from './modules/home';
 import ui from './modules/ui';
 import sync from './modules/sync';
+import unfurling from './modules/unfurling';
 
 export default combineReducers({
 	router,
@@ -17,5 +18,6 @@ export default combineReducers({
 	room,
 	home,
 	ui,
-	sync
+	sync,
+	unfurling
 });
