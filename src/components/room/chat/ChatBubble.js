@@ -75,8 +75,10 @@ class ChatBubble extends Component {
 						// we have json data for this unfurl
 						const {json, hidden} = unfurling.urls[url];
 
-						// don't show 'app' html like reddit inline comments
-						const showHtml = json.html && json.rel.indexOf('app') === -1;
+						// don't show 'app' html like reddit inline comments or autoplay
+						const showHtml = json.html &&
+							json.rel.indexOf('autoplay') === -1 &&
+							url.indexOf('reddit.com') === -1;
 
 						if (json.meta) {
 							const {title = url, description} = json.meta;
