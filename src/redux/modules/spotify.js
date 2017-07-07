@@ -16,6 +16,8 @@ export const SPOTIFY_API_REQUEST_ERROR = 'SPOTIFY_API_REQUEST_ERROR';
 export const SPOTIFY_PROFILE_REQUEST = 'SPOTIFY_PROFILE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_REQUEST = 'SPOTIFY_PLAYER_STATE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
+export const SPOTIFY_DEVICES_REQUEST = 'SPOTIFY_DEVICES_REQUEST';
+export const SPOTIFY_DEVICES_UPDATE = 'SPOTIFY_DEVICES_UPDATE';
 export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
 export const SPOTIFY_DISABLE_SHUFFLE = 'SPOTIFY_DISABLE_SHUFFLE';
 
@@ -28,6 +30,8 @@ export const actions = {
 	SPOTIFY_API_REQUEST_RETRY,
 	SPOTIFY_API_REQUEST_ERROR,
 	SPOTIFY_PROFILE_REQUEST,
+	SPOTIFY_DEVICES_REQUEST,
+	SPOTIFY_DEVICES_UPDATE,
 	SPOTIFY_PLAYER_STATE_REQUEST,
 	SPOTIFY_PLAYER_STATE_UPDATE,
 	SPOTIFY_PLAY_TRACK,
@@ -43,6 +47,7 @@ const defaultState = {
 	refreshToken: null,
 	isLoggedIn: false,
 	player: {},
+	devices: [],
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -76,6 +81,15 @@ export const spotifyPlayerStateUpdate = (playerState) => ({
 	payload: {playerState}
 });
 
+export const spotifyDevicesRequest = () => ({
+	type: SPOTIFY_DEVICES_REQUEST
+});
+
+export const spotifyDevicesUpdate = (devices) => ({
+	type: SPOTIFY_DEVICES_UPDATE,
+	payload: {devices}
+});
+
 export const spotifyPlayTrack = ({trackId, offset}) => ({
 	type: SPOTIFY_PLAY_TRACK,
 	payload: {trackId, offset}
@@ -84,6 +98,7 @@ export const spotifyPlayTrack = ({trackId, offset}) => ({
 export const spotifyDisableShuffle = () => ({
 	type: SPOTIFY_DISABLE_SHUFFLE
 });
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -137,6 +152,10 @@ const ACTION_HANDLERS = {
 		}
 		return newState;
 	},
+	[SPOTIFY_DEVICES_UPDATE]: (state, {payload}) => ({
+		...state,
+		devices: payload.devices
+	}),
 	[ROOM_FULL_SYNC]: (state, {payload}) => {
 		// merge any track data from room sync
 		return mergeTracks({state, tracks: payload.fullSync.tracks});

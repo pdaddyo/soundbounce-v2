@@ -10,6 +10,7 @@ import {
 	spotifyPlayerStateUpdate,
 	spotifyPlayTrack,
 	spotifyDisableShuffle,
+	spotifyDevicesUpdate,
 	actions as spotifyActions
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
@@ -286,11 +287,29 @@ function * watchForAuthRequired() {
 	}
 }
 
+function * watchForDevicesRequest() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+	// request devices
+	const apiResult = yield call(spotifyApiCall, {url: '/v1/me/player/devices'});
+	if (apiResult && apiResult.devices) {
+		yield put(spotifyDevicesUpdate(apiResult.devices));
+	}
+	// listen for future requests to fetch devices
+	while (true) {
+		yield take(spotifyActions.SPOTIFY_DEVICES_REQUEST);
+		const apiResult = yield call(spotifyApiCall, {url: '/v1/me/player/devices'});
+		if (apiResult && apiResult.devices) {
+			yield put(spotifyDevicesUpdate(apiResult.devices));
+		}
+	}
+}
 export default function * spotifyInit() {
 	try {
 		yield [
 			watchForAuthRequired(),
 			watchForRoomNowPlayingChanged(),
+			watchForDevicesRequest(),
 			beginLogin(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
