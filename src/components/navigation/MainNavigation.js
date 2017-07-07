@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
+import {spotifyDevicesRequest} from 'redux/modules/spotify';
 import Avatar from 'components/user/avatar/Avatar';
 import {Link} from 'react-router';
 import HelpIcon from 'components/svg/icons/Help';
@@ -14,7 +15,14 @@ class MainNavigation extends Component {
 	static propTypes = {
 		currentUser: PropTypes.object,
 		player: PropTypes.object,
-		isSynced: PropTypes.bool
+		isSynced: PropTypes.bool,
+		spotifyDevicesRequest: PropTypes.func
+	};
+
+	clickDevicesIcon = evt => {
+		// update device list from api
+		this.props.spotifyDevicesRequest();
+		// show menu
 	};
 
 	render() {
@@ -26,7 +34,7 @@ class MainNavigation extends Component {
 						<SoundbounceLogo isSynced={isSynced}/>
 					</div>
 				</Link>
-				<div className={theme.deviceIconContainer}>
+				<div className={theme.deviceIconContainer} onClick={this.clickDevicesIcon}>
 					<DeviceIcon />
 				</div>
 				<Link to='/help'>
@@ -47,10 +55,14 @@ class MainNavigation extends Component {
 // map the spotify player state to prop 'player'
 const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
-	isSynced: state.sync.isSynced
+	isSynced: state.sync.isSynced,
+	showing
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({});
-
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	spotifyDevicesRequest: (text) => {
+		dispatch(spotifyDevicesRequest());
+	}
+});
 export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);
 
