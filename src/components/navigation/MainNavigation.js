@@ -60,7 +60,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	spotifyDevicesRequest: (text) => {
+	spotifyDevicesRequest: () => {
 		dispatch(spotifyDevicesRequest());
 	}
 });
