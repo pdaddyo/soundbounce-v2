@@ -5,6 +5,7 @@ import {selectCurrentUser} from 'redux/modules/users';
 import Avatar from 'components/user/avatar/Avatar';
 import {Link} from 'react-router';
 import HelpIcon from 'components/svg/icons/Help';
+import DeviceIcon from 'components/svg/icons/Device';
 
 import theme from './mainNavigation.css';
 import SoundbounceLogo from '../svg/icons/SoundbounceLogo';
@@ -25,6 +26,9 @@ class MainNavigation extends Component {
 						<SoundbounceLogo isSynced={isSynced}/>
 					</div>
 				</Link>
+				<div className={theme.deviceIconContainer}>
+					<DeviceIcon />
+				</div>
 				<Link to='/help'>
 					<div className={theme.helpContainer}>
 						<HelpIcon />
