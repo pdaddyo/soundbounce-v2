@@ -10,43 +10,61 @@ import DeviceIcon from 'components/svg/icons/Device';
 
 import theme from './mainNavigation.css';
 import SoundbounceLogo from '../svg/icons/SoundbounceLogo';
+import {uiUpdate} from '../../redux/modules/ui';
+import DeviceList from '../devices/DeviceList';
 
 class MainNavigation extends Component {
 	static propTypes = {
 		currentUser: PropTypes.object,
 		player: PropTypes.object,
 		isSynced: PropTypes.bool,
-		spotifyDevicesRequest: PropTypes.func
+		spotifyDevicesRequest: PropTypes.func,
+		showDeviceList: PropTypes.func,
+		deviceListVisible: PropTypes.bool
 	};
 
 	clickDevicesIcon = evt => {
+		const {spotifyDevicesRequest, showDeviceList} = this.props;
 		// update device list from api
-		this.props.spotifyDevicesRequest();
+		spotifyDevicesRequest();
 		// show menu
+		showDeviceList(true);
+		document.addEventListener('click', this.hideDevicesList);
+	};
+
+	hideDevicesList = evt => {
+		const {showDeviceList} = this.props;
+		showDeviceList(false);
+		document.removeEventListener('click', this.hideDevicesList);
 	};
 
 	render() {
-		const {currentUser, isSynced} = this.props;
+		const {currentUser, isSynced, deviceListVisible} = this.props;
 		return (
-			<div className={theme.nav}>
-				<Link to='/home'>
-					<div className={theme.soundbounce}>
-						<SoundbounceLogo isSynced={isSynced}/>
+			<div>
+				<div className={theme.nav}>
+					<Link to='/home'>
+						<div className={theme.soundbounce}>
+							<SoundbounceLogo isSynced={isSynced}/>
+						</div>
+					</Link>
+					<div className={theme.deviceIconContainer} onClick={this.clickDevicesIcon}>
+						<DeviceIcon />
+
 					</div>
-				</Link>
-				<div className={theme.deviceIconContainer} onClick={this.clickDevicesIcon}>
-					<DeviceIcon />
+
+					<Link to='/help'>
+						<div className={theme.helpContainer}>
+							<HelpIcon />
+						</div>
+					</Link>
+					<Link to='/profile'>
+						<div className={theme.avatarContainer}>
+							<Avatar user={currentUser}/>
+						</div>
+					</Link>
 				</div>
-				<Link to='/help'>
-					<div className={theme.helpContainer}>
-						<HelpIcon />
-					</div>
-				</Link>
-				<Link to='/profile'>
-					<div className={theme.avatarContainer}>
-						<Avatar user={currentUser}/>
-					</div>
-				</Link>
+				{deviceListVisible && <DeviceList/>}
 			</div>
 		);
 	}
@@ -56,12 +74,18 @@ class MainNavigation extends Component {
 const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
 	isSynced: state.sync.isSynced,
-	showing
+	deviceListVisible: Boolean(state.ui['deviceListVisible'])
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	spotifyDevicesRequest: () => {
 		dispatch(spotifyDevicesRequest());
+	},
+	showDeviceList: (visible) => {
+		dispatch(uiUpdate({
+			key: 'deviceListVisible',
+			newState: visible
+		}));
 	}
 });
 export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);

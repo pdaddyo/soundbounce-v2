@@ -304,12 +304,25 @@ function * watchForDevicesRequest() {
 		}
 	}
 }
+
+function * watchForSwitchDevice() {
+	while (true) {
+		const {payload} = yield take(spotifyActions.SPOTIFY_SWITCH_DEVICE);
+		yield call(spotifyApiCall, {
+			url: '/v1/me/player',
+			method: 'PUT',
+			body: JSON.stringify({device_ids: [payload.deviceId]})
+		});
+	}
+}
+
 export default function * spotifyInit() {
 	try {
 		yield [
 			watchForAuthRequired(),
 			watchForRoomNowPlayingChanged(),
 			watchForDevicesRequest(),
+			watchForSwitchDevice(),
 			beginLogin(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
