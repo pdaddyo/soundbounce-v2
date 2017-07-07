@@ -5,7 +5,7 @@ export default {
 	buildVersion: 4,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
-		pollPlayerDelay: 2500,
+		pollPlayerDelay: 5000,
 		apiRetryDelay: 3000,
 		maxRetry: 5,
 		minSeekFromStart: 2000
