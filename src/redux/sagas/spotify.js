@@ -75,49 +75,52 @@ function * checkSyncStatus() {
 				yield put(syncStop('Spotify playback was stopped.'));
 				return;
 			}
-			const nowPlayingProgress = moment().valueOf() -
-				room.nowPlayingStartedAt - sync.serverMsOffset;
-			// we're playing! but are we playing the correct track?
-			if (player.item.id !== room.playlist[0].id) {
-				// spotify might be playing the end of the track that we were just listening to...
-				// so isn't a desync if we're within the maxDrift of the next song!
-				if (nowPlayingProgress < config.player.maxDriftConsideredSynced) {
-					if (room.recentlyPlayed.length > 0) {
-						if (player.item.id === room.recentlyPlayed[room.recentlyPlayed.length - 1].id) {
-							// this is ok (not desync), so return to caller
-							console.log('keeping synced, spotify track behind within max drift ');
-							return;
-						}
-					}
-				}
-				// spotify might be slightly ahead - playing the beginning of the next track
-				// when playlist is at end of previous.  this is also not a desync
-				if (spotify.tracks[room.playlist[0].id].duration -
-					nowPlayingProgress < config.player.maxDriftConsideredSynced) {
-					if (room.playlist.length > 1) {
-						// is this track in the playlist anywhere
-						// it could have been the next track when we last queued, but not anymore
-						for (let playlistTrack of room.playlist) {
-							if (playlistTrack.id === player.item.id) {
-								console.log('keeping synced, spotify track ahead within max drift');
+
+			if (config.player.strictSync) {
+				const nowPlayingProgress = moment().valueOf() -
+					room.nowPlayingStartedAt - sync.serverMsOffset;
+				// we're playing! but are we playing the correct track?
+				if (player.item.id !== room.playlist[0].id) {
+					// spotify might be playing the end of the track that we were just listening to...
+					// so isn't a desync if we're within the maxDrift of the next song!
+					if (nowPlayingProgress < config.player.maxDriftConsideredSynced) {
+						if (room.recentlyPlayed.length > 0) {
+							if (player.item.id === room.recentlyPlayed[room.recentlyPlayed.length - 1].id) {
+								// this is ok (not desync), so return to caller
+								console.log('keeping synced, spotify track behind within max drift ');
 								return;
 							}
 						}
 					}
-				}
+					// spotify might be slightly ahead - playing the beginning of the next track
+					// when playlist is at end of previous.  this is also not a desync
+					if (spotify.tracks[room.playlist[0].id].duration -
+						nowPlayingProgress < config.player.maxDriftConsideredSynced) {
+						if (room.playlist.length > 1) {
+							// is this track in the playlist anywhere
+							// it could have been the next track when we last queued, but not anymore
+							for (let playlistTrack of room.playlist) {
+								if (playlistTrack.id === player.item.id) {
+									console.log('keeping synced, spotify track ahead within max drift');
+									return;
+								}
+							}
+						}
+					}
 
-				yield put(syncStop(`A different track was playing.
+					yield put(syncStop(`A different track was playing.
 				Expected '${room.playlist[0].id}' @${nowPlayingProgress}ms,
 				but detected '${player.item.id}' @${player.progress_ms}ms.
 				last played: [${room.recentlyPlayed.map(r => r.id).join(',')}].
 				playlist: [${_.take(room.playlist, 3).map(t => t.id).join(',')}]`));
-				return;
-			}
-			// OK so correct track, but it is reasonable track position?
-			const drift = Math.abs(nowPlayingProgress - player.progress_ms);
-			if (drift > config.player.maxDriftConsideredSynced) {
-				yield put(syncStop('Song position changed..'));
-				return;
+					return;
+				}
+				// OK so correct track, but it is reasonable track position?
+				const drift = Math.abs(nowPlayingProgress - player.progress_ms);
+				if (drift > config.player.maxDriftConsideredSynced) {
+					yield put(syncStop('Song position changed..'));
+					return;
+				}
 			}
 		}
 	}

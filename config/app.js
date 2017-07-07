@@ -2,7 +2,7 @@
  * Created by paulbarrass on 02/05/2017.
  */
 export default {
-	buildVersion: 4,
+	buildVersion: 5,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
 		pollPlayerDelay: 5000,
@@ -18,7 +18,8 @@ export default {
 	player: {
 		progressUpdateDelay: 700,
 		maxDriftConsideredSynced: 15000,
-		maxTracksToQueueWhenPlaying: 10
+		maxTracksToQueueWhenPlaying: 10,
+		strictSync: false
 	},
 	unfurling: {
 		url: 'https://v2.soundbounce.org/iframely'
