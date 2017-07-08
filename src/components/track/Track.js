@@ -8,20 +8,36 @@ import Avatar from '../user/avatar/Avatar';
 import theme from './track.css';
 import DotsVertical from '../svg/icons/DotsVertical';
 import ArrowUpThick from '../svg/icons/ArrowUpThick';
+import {spotifyPreviewTrack} from '../../redux/modules/spotify';
+import {connect} from 'react-redux';
+import {syncStart} from '../../redux/modules/sync';
 
-export default class Track extends Component {
+class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
 		size: PropTypes.oneOf(['normal', 'hero']),
 		percentComplete: PropTypes.number,
 		onClickVote: PropTypes.func,
-		visible: PropTypes.bool
+		visible: PropTypes.bool,
+		previewStart: PropTypes.func,
+		previewStop: PropTypes.func
 	};
 
 	static defaultProps = {
 		size: 'normal',
 		percentComplete: -1,
 		visible: true
+	};
+
+	artworkMouseDown = evt => {
+		this.props.previewStart(this.props.track.id);
+		document.addEventListener('mouseup', this.artworkMouseUp);
+	};
+
+	artworkMouseUp = (evt) => {
+
+		document.removeEventListener('mouseup', this.artworkMouseUp);
+		this.props.previewStop();
 	};
 
 	render() {
@@ -60,7 +76,9 @@ export default class Track extends Component {
 			<div className={sizeTheme('track')}
 				 style={{visibility: visible ? 'visible' : 'hidden'}}>
 				<div className={sizeTheme('artwork')}
-					 style={{backgroundImage: `url(${track.albumArt})`}}>
+					 style={{backgroundImage: `url(${track.albumArt})`}}
+					 onMouseDown={this.artworkMouseDown}
+				>
 					{progress}
 				</div>
 				<div className={sizeTheme('artistsAndTrackName')}>
@@ -82,3 +100,17 @@ export default class Track extends Component {
 		);
 	}
 }
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	previewStart: (trackId) => {
+		dispatch(spotifyPreviewTrack(trackId));
+	},
+	previewStop: () => {
+		dispatch(syncStart());
+	}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Track);
+

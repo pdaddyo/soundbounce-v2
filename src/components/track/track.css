@@ -19,6 +19,17 @@
 	flex-shrink: 0;
 }
 
+.artwork:after {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.artwork:hover {
+	opacity: 0.9;
+	cursor: pointer;
+}
+
 .artworkHero {
 	composes: artwork;
 	width: 10rem;

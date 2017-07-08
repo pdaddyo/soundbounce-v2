@@ -19,6 +19,7 @@ export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
 export const SPOTIFY_DEVICES_REQUEST = 'SPOTIFY_DEVICES_REQUEST';
 export const SPOTIFY_DEVICES_UPDATE = 'SPOTIFY_DEVICES_UPDATE';
 export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
+export const SPOTIFY_PREVIEW_TRACK = 'SPOTIFY_PREVIEW_TRACK';
 export const SPOTIFY_SWITCH_DEVICE = 'SPOTIFY_SWITCH_DEVICE';
 export const SPOTIFY_DISABLE_SHUFFLE = 'SPOTIFY_DISABLE_SHUFFLE';
 
@@ -36,6 +37,7 @@ export const actions = {
 	SPOTIFY_PLAYER_STATE_REQUEST,
 	SPOTIFY_PLAYER_STATE_UPDATE,
 	SPOTIFY_PLAY_TRACK,
+	SPOTIFY_PREVIEW_TRACK,
 	SPOTIFY_SWITCH_DEVICE,
 	SPOTIFY_DISABLE_SHUFFLE
 };
@@ -95,6 +97,11 @@ export const spotifyDevicesUpdate = (devices) => ({
 export const spotifyPlayTrack = ({trackId, offset}) => ({
 	type: SPOTIFY_PLAY_TRACK,
 	payload: {trackId, offset}
+});
+
+export const spotifyPreviewTrack = (trackId) => ({
+	type: SPOTIFY_PREVIEW_TRACK,
+	payload: {trackId}
 });
 
 export const spotifyDisableShuffle = () => ({

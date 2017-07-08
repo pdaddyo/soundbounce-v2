@@ -208,11 +208,23 @@ function * watchForSyncStart() {
 // play the track if now playing in room changes and we're synced
 function * watchForRoomNowPlayingChanged() {
 	while (true) {
-		const {payload: {trackIds, seekPosition}} = yield take(roomActions.ROOM_NOW_PLAYING_CHANGED);
+		const {payload: {trackIds}} = yield take(roomActions.ROOM_NOW_PLAYING_CHANGED);
 		const {isSynced, isSyncing} = yield select(state => state.sync);
 		if (isSynced || isSyncing) {
 			yield call(spotifyPlayTracksThenSeek, {trackIds, seekPosition: 0});
 		}
+	}
+}
+
+function * watchForPreviewTrack() {
+	while (true) {
+		const {payload: {trackId}} = yield take(spotifyActions.SPOTIFY_PREVIEW_TRACK);
+		const {tracks} = yield select(state => state.spotify);
+		yield call(spotifyPlayTracksThenSeek, {
+			trackIds: [trackId],
+			// seek to 1/3 through for preview
+			seekPosition: Math.round(tracks[trackId].duration / 3)
+		});
 	}
 }
 
@@ -326,6 +338,7 @@ export default function * spotifyInit() {
 			watchForRoomNowPlayingChanged(),
 			watchForDevicesRequest(),
 			watchForSwitchDevice(),
+			watchForPreviewTrack(),
 			beginLogin(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
