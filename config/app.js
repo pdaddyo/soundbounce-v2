@@ -8,7 +8,8 @@ export default {
 		pollPlayerDelay: 5000,
 		apiRetryDelay: 3000,
 		maxRetry: 5,
-		minSeekFromStart: 2000
+		// when playing a track, don't then send a follow-up seek command if position < ms
+		minSeekFromStart: 400
 	},
 	playlist: {
 		recentlyPlayedMaxLength: 5,
