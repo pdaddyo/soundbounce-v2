@@ -71,7 +71,7 @@ export default class Tracks {
 								// update trackIds for any relinked tracks
 								for (let trackIndex in trackIds) {
 									const linkedTrack = tracks.find(t =>
-										t.linked_from && t.linked_from.id === trackIds[trackIndex]
+										t && t.linked_from && t.linked_from.id === trackIds[trackIndex]
 									);
 									if (linkedTrack) {
 										trackIds[trackIndex] = linkedTrack.id;
