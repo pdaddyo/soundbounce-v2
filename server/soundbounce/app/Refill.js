@@ -9,8 +9,6 @@ export default class Refill {
 	constructor({room, app}) {
 		this.room = room;
 		this.app = app;
-		this.id = room.get('id');
-		this.name = room.get('name');
 		this.debug = _debug(`soundbounce:refill:${this.id}`);
 	}
 
@@ -21,8 +19,6 @@ export default class Refill {
 			...room.config
 		};
 		this.debug(`Checking if '${room.name}' needs a refill...`);
-		this.debug(sources);
-
 		let promises = [];
 		for (let source of sources) {
 			if (source.percent === 0) {
@@ -32,8 +28,6 @@ export default class Refill {
 			const handler = ({
 				'room-history': ({percent}) => {
 					this.debug(`${percent} from room history`);
-					promises.push()
-
 				},
 				'suggestions-from-room-history': ({percent}) => {
 					this.debug(`${percent} from history suggestions`);
