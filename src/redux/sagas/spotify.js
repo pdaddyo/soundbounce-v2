@@ -211,7 +211,7 @@ function * watchForRoomNowPlayingChanged() {
 		const {payload: {trackIds, seekPosition}} = yield take(roomActions.ROOM_NOW_PLAYING_CHANGED);
 		const {isSynced, isSyncing} = yield select(state => state.sync);
 		if (isSynced || isSyncing) {
-			yield call(spotifyPlayTracksThenSeek, {trackIds, seekPosition});
+			yield call(spotifyPlayTracksThenSeek, {trackIds, seekPosition: 0});
 		}
 	}
 }
