@@ -34,8 +34,7 @@ class Track extends Component {
 		document.addEventListener('mouseup', this.artworkMouseUp);
 	};
 
-	artworkMouseUp = (evt) => {
-
+	artworkMouseUp = evt => {
 		document.removeEventListener('mouseup', this.artworkMouseUp);
 		this.props.previewStop();
 	};
