@@ -49,10 +49,10 @@ export default class RoomMenu extends Component {
 		return (
 			<div className={theme.menu}>
 				<MenuItem tab='next-up'>Next Up</MenuItem>
-				<MenuItem tab='about'>About</MenuItem>
 				<MenuItem tab='listeners'>{listeners.length} Listener{
 					listeners.length === 1 ? '' : 's'
 				}</MenuItem>
+				<MenuItem tab='about'>About</MenuItem>
 				<MenuItem tab='top'>Top Rated</MenuItem>
 			</div>
 		);
