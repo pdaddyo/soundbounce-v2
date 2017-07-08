@@ -135,10 +135,12 @@ const applyVotes = ({playlist, payload}) => {
 			updatedPlaylist = update(updatedPlaylist, {$splice: [[oldIndex, 1]]});
 		}
 
-		// add the vote to the track
-		const newPlaylistTrack = update(playlistTrack, {
-			votes: {$push: [{userId, emote, reason}]}
-		});
+		// add the vote to the track if there's a userId
+		// if no userId, it was added by soundbounce itself (refill)
+		const newPlaylistTrack = userId ?
+			update(playlistTrack, {
+				votes: {$push: [{userId, emote, reason}]}
+			}) : playlistTrack;
 
 		// if this is the only track or first track, just return it as only item
 		if (updatedPlaylist.length === 0) {

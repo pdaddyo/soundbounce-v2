@@ -32,7 +32,7 @@ export default class ActiveRoom {
 		this.reduxStore = null;
 		this.trackTimeoutId = null;
 		this.refillTimeoutId = null;
-		this.refill = new Refill({room, app});
+		this.refill = new Refill({room, app, activeRoom: this});
 		this.debug = _debug(`soundbounce:activeroom:${this.id}`);
 	}
 
@@ -264,13 +264,13 @@ export default class ActiveRoom {
 				return;
 			}
 			// limit to 50 in one hit (spotify api limit)
-			trackIds = take(trackIds, 50);
+			trackIds = take(uniq(trackIds), 50)
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
 
 				const playlistWasEmptyBefore = this.reduxStore.getState().playlist.length === 0;
 				this.emitUserEvent(roomTrackAddOrVote({
-					userId: sender.get('id'),
+					userId: sender ? sender.get('id') : 0,
 					// some tracks may have failed so only
 					// send back ids from the results
 					trackIds: tracks.map(t => t.get('id')),
@@ -304,7 +304,10 @@ export default class ActiveRoom {
 
 		const socketsForUser = app.connections.getAllSocketsForUserId(userId);
 		let getUserInfoPromise = null;
-		if (socketsForUser.length > 0) {
+		if (userId === 0) {
+			// this originated from the server (refill)
+			getUserInfoPromise = Promise.resolve([]);
+		} else if (socketsForUser.length > 0) {
 			// we have a socket connected for this user
 			// so get user data from there instead of db hit
 			const user = socketsForUser[0].authenticatedUser.get({plain: true});

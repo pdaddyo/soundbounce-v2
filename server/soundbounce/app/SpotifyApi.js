@@ -31,7 +31,7 @@ class SpotifyAuth {
 
 			return promise;
 		}
-		debug('Spotify: Using access token ' + this.access_token + ' expiring in ' + (this.expire - Date.now()) / 1000 + ' seconds');
+		//debug('Spotify: Using access token ' + this.access_token + ' expiring in ' + (this.expire - Date.now()) / 1000 + ' seconds');
 		return Promise.resolve();
 	};
 
