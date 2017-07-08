@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {socketEmitRoomCreate, socketRequestHomeData} from 'redux/modules/socket';
 import {selectCurrentUser} from 'redux/modules/users';
+import defaultRoomConfig from '../../../server/soundbounce/data/defaultRoomConfig';
 
 import TopBar from 'components/home/homeTopBar/HomeTopBar';
 
@@ -44,6 +45,7 @@ class HomeView extends Component {
 		createRoom({
 			name: roomName,
 			config: {
+				...defaultRoomConfig,
 				colors: {
 					primary: color
 				}

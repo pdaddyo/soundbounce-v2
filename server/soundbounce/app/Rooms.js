@@ -2,6 +2,7 @@ import shortid from 'shortid';
 import _debug from 'debug';
 const debug = _debug('soundbounce:rooms');
 import {Room, RoomActivity, RoomActivities} from '../data/schema';
+import defaultRoomConfig from '../data/defaultRoomConfig';
 import ActiveRoom from './ActiveRoom';
 
 export default class Rooms {
@@ -40,6 +41,10 @@ export default class Rooms {
 
 		return leaveFirst.then(() => {
 			return Room.findOne({where: {id: roomId}}).then(room => {
+
+				// make sure we load it with any new default config
+				room.config = {...defaultRoomConfig, ...room.config};
+
 				debug(`${user.get('nickname')} joined ${room.get('name')}`);
 
 				user.set('currentRoomId', roomId);
