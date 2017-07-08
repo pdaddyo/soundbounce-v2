@@ -3,14 +3,15 @@
 	position: absolute;
 	bottom: 10rem;
 	left: 5rem;
-	background-color: rgba(0, 0, 0, 0.9);
-	border-radius: 1rem;
+	background-color: rgba(0, 0, 0, 0.99);
+	border-radius: 2px;
 	display: inline-flex;
 	flex-direction: column;
 }
 
 .device {
-	padding: 1rem;
+	padding: 0.8rem;
+
 	font-size: 0.8rem;
 }
 
@@ -21,7 +22,11 @@
 }
 
 .device:not(:last-child) {
-	border-bottom: rgba(255, 255, 255, 0.1) 1px solid;
+	border-bottom: rgba(255, 255, 255, 0.15) 1px solid;
+}
+
+.device:hover:not(:last-child) {
+	border-bottom: transparent 1px solid;
 }
 
 .device:hover {
@@ -30,16 +35,17 @@
 }
 
 .device:hover:last-child {
-	border-bottom-left-radius: 1rem;
-	border-bottom-right-radius: 1rem;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
 }
 
 .device:hover:first-child {
-	border-top-left-radius: 1rem;
-	border-top-right-radius: 1rem;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
 }
 
 .deviceActive {
 	composes: device;
 	color: limegreen;
+	font-weight: bold;
 }

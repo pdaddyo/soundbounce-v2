@@ -11,7 +11,12 @@ import {spotifySwitchDevice} from '../../redux/modules/spotify';
 class DeviceList extends Component {
 	static propTypes = {
 		devices: PropTypes.array.isRequired,
+		room: PropTypes.object,
 		switchDevice: PropTypes.func
+	};
+
+	static contextTypes = {
+		colors: PropTypes.object
 	};
 
 	clickDevice(deviceId) {
@@ -19,7 +24,9 @@ class DeviceList extends Component {
 	}
 
 	render() {
-		const {devices} = this.props;
+		const {devices, room} = this.props;
+		const primary = (room && room.config) ? room.config.colors.primary : '#ad009f';
+
 		return (
 			<div className={theme.container}>
 				{devices.length === 0 && (
@@ -33,6 +40,7 @@ class DeviceList extends Component {
 				{devices.map(device => (
 					<div className={theme[device.is_active ? 'deviceActive' : 'device']}
 						 key={device.id}
+						 style={device.is_active ? {color: primary} : {}}
 						 onClick={this.clickDevice.bind(this, device.id)}>
 						{device.name}
 					</div>
@@ -43,7 +51,8 @@ class DeviceList extends Component {
 }
 
 const mapStateToProps = state => ({
-	devices: state.spotify.devices
+	devices: state.spotify.devices,
+	room: state.room
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
