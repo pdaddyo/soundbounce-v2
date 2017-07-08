@@ -120,11 +120,11 @@ class RoomView extends Component {
 				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
 					<div className={theme.room} ref='room'>
-						{(!sync.isSynced) && (
-							<div className={theme.play} onClick={syncStart}>
+						<div className={theme.play} onClick={syncStart}>
+							{(!sync.isSynced) && (
 								<Play/>
-							</div>
-						)}
+							)}
+						</div>
 						<FlipMove duration={400}
 								  easing='ease-in-out'
 								  enterAnimation='elevator'>

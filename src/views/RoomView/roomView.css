@@ -58,10 +58,15 @@
 
 .play {
 	position: absolute;
-	top: 1rem;
-	left: 1rem;
 	z-index: 10;
+	width: 8rem;
+	height: 8rem;
 	cursor: pointer;
+	padding: 1rem;
+}
+
+.play:hover {
+	background-color: rgba(200, 200, 200, 0.07);
 }
 
 .otherTabs {
