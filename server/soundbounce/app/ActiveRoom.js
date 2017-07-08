@@ -3,6 +3,7 @@
  */
 import _debug from 'debug';
 import update from 'react-addons-update';
+import config from '../../../config/app';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import roomReducer, {
 	roomFullSync,
@@ -16,6 +17,7 @@ import roomReducer, {
 import {uniq, flatten, take} from 'lodash';
 import shortid from 'shortid';
 import moment from 'moment';
+import Refill from './Refill';
 
 import {TrackActivity} from '../data/schema';
 
@@ -28,14 +30,17 @@ export default class ActiveRoom {
 		this.id = room.get('id');
 		this.name = room.get('name');
 		this.reduxStore = null;
-		this.timeoutId = null;
-		debug = _debug(`soundbounce:activeroom:${this.id}`);
+		this.trackTimeoutId = null;
+		this.refillTimeoutId = null;
+		this.refill = new Refill({room, app});
+		this.debug = _debug(`soundbounce:activeroom:${this.id}`);
 	}
 
 	// called when first user joins a room so room goes active
 	startup() {
 		this.createAndPopulateReduxStore();
 		const {reduxStore, room} = this;
+
 		const existingState = reduxStore.getState();
 		let lastRoomActivityTimestamp = room.get('shutdownAt');
 
@@ -70,8 +75,20 @@ export default class ActiveRoom {
 		room.set('reduxState', reduxStore.getState());
 		room.set('isActive', true);
 		room.set('shutdownAt', null);
+
+		// spin off check to see if room needs a refill
+		this.refillRoom();
+
 		return room.save();
 	}
+
+	refillRoom = () => {
+		this.refill.check();
+		if (this.refillTimeoutId) {
+			clearTimeout(this.refillTimeoutId);
+		}
+		this.refillTimeoutId = setTimeout(this.refillRoom, config.refill.roomRefillDelay);
+	};
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
 	shutdown() {
@@ -79,9 +96,13 @@ export default class ActiveRoom {
 		// remove from the rooms list
 		this.removeFromList();
 		// clear next track timer
-		if (this.timeoutId) {
-			clearTimeout(this.timeoutId);
-			this.timeoutId = null;
+		if (this.trackTimeoutId) {
+			clearTimeout(this.trackTimeoutId);
+			this.trackTimeoutId = null;
+		}
+		if (this.refillTimeoutId) {
+			clearTimeout(this.refillTimeoutId);
+			this.refillTimeoutId = null;
 		}
 		// store the state in the db
 		this.room.set('reduxState', this.reduxStore.getState());
@@ -108,10 +129,10 @@ export default class ActiveRoom {
 		).then(tracks => {
 			const {duration} = tracks[0];
 			const ms = state.nowPlayingStartedAt - moment().valueOf() + duration;
-			if (this.timeoutId) {
-				clearTimeout(this.timeoutId);
+			if (this.trackTimeoutId) {
+				clearTimeout(this.trackTimeoutId);
 			}
-			this.timeoutId = setTimeout(this.nextTrackTimerTick, ms);
+			this.trackTimeoutId = setTimeout(this.nextTrackTimerTick, ms);
 		});
 	};
 
@@ -121,7 +142,7 @@ export default class ActiveRoom {
 		const trackWithVotes = state.playlist[0];
 		const numTracksRemaining = state.playlist.length - 1;
 
-		this.timeoutId = null; // timeout just ticked
+		this.trackTimeoutId = null; // timeout just ticked
 
 		// log play to database
 		TrackActivity.create({
