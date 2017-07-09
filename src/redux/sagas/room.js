@@ -30,7 +30,8 @@ function * watchForSocketRoomJoinOk() {
 		yield call(updateRoomTrackProgress);
 
 		// start sync automatically on socket connect
-		yield put(syncStart());
+	
+		//	yield put(syncStart());
 
 		// this call only ends when we join a differnt room, so will loop around and navigate.
 		yield call(roomTrackTimerLoop);
