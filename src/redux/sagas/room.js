@@ -3,7 +3,7 @@ import {take, put, select, race, call} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import config from '../../../config/app';
 import {actions as socketActions} from '../modules/socket';
-import {syncStop, syncStartOk, syncStart} from '../modules/sync';
+import {syncStop, syncStartOk} from '../modules/sync';
 import {
 	roomTrackProgress,
 	roomNowPlayingChanged,
@@ -30,7 +30,6 @@ function * watchForSocketRoomJoinOk() {
 		yield call(updateRoomTrackProgress);
 
 		// start sync automatically on socket connect
-	
 		//	yield put(syncStart());
 
 		// this call only ends when we join a differnt room, so will loop around and navigate.

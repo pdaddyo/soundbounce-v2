@@ -37,13 +37,13 @@ export default class Refill {
 	check() {
 		checkSpotifyApiAuth().then(() => {
 				const room = this.room.get({plain: true});
+				const promises = [];
 				const {playlist} = room.reduxState;
 				const {refill: {sources, targetPlaylistSize: {from, to}}} = {
 					...defaultRoomConfig,
 					...room.config
 				};
 				this.debug(`Checking if '${room.name}' needs a refill...`);
-				let promises = [];
 				let howManyTracksToAdd = 0;
 
 				if (playlist.length < from) {
@@ -61,7 +61,6 @@ export default class Refill {
 				}
 
 				this.debug(`Trying to find ${howManyTracksToAdd} (ish) tracks to add...`)
-
 				for (let source of sources) {
 					if (source.percent === 0) {
 						return;
