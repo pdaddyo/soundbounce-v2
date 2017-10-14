@@ -15,7 +15,7 @@ import {syncStart} from '../../redux/modules/sync';
 class Track extends Component {
 	static propTypes = {
 		track: PropTypes.object,
-		size: PropTypes.oneOf(['normal', 'hero']),
+		size: PropTypes.oneOf(['normal', 'hero', 'small']),
 		percentComplete: PropTypes.number,
 		onClickVote: PropTypes.func,
 		visible: PropTypes.bool,
@@ -42,28 +42,36 @@ class Track extends Component {
 	render() {
 		const {track, size, onClickVote, percentComplete, visible} = this.props;
 		// helper to append 'Hero' to big size track
-		const sizeTheme = (className) =>
-			theme[size === 'normal' ? className : className + 'Hero'];
+		const sizeTheme = (className) => {
+			switch (size) {
+				case 'normal':
+					return theme[className];
+				case 'hero':
+					return theme[className + 'Hero'];
+				case 'small':
+					return theme[className + 'Small'];
+			}
+		};
 
-		const votes = (
-			<div className={sizeTheme('votes')}>
-				<div className={theme.voteUpButton} onClick={() => {
-					if (track.canVote && onClickVote) {
-						onClickVote(track.id);
-					}
-				}}>
-					{track.canVote && (
-						<ArrowUpThick/>
-					)}
-				</div>
-
-				{track.votes.map(vote => (
-					<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
-						<Avatar user={vote.user}/>
+		const votes = track.votes && (
+				<div className={sizeTheme('votes')}>
+					<div className={theme.voteUpButton} onClick={() => {
+						if (track.canVote && onClickVote) {
+							onClickVote(track.id);
+						}
+					}}>
+						{track.canVote && (
+							<ArrowUpThick/>
+						)}
 					</div>
-				))}
-			</div>
-		);
+
+					{track.votes.map(vote => (
+						<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
+							<Avatar user={vote.user}/>
+						</div>
+					))}
+				</div>
+			);
 
 		const progress = percentComplete > -1 ? (
 			<div className={theme.progressBg}>

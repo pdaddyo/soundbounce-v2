@@ -188,3 +188,19 @@
 	margin-bottom: 0.4em;
 	display: inline-block;
 }
+
+.trackContainer {
+	overflow: hidden;
+	width: 100%;
+}
+
+.trackGroup {
+	margin-bottom: -0.5rem;
+}
+
+.andMore {
+	font-size: 75%;
+	margin-left: 3rem;
+	margin-top: -0.3rem;
+	margin-bottom: 0.5rem;
+}

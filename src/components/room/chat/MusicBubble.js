@@ -9,15 +9,19 @@ import moment from 'moment';
 import Avatar from '../../user/avatar/Avatar';
 
 import theme from './bubbles.css';
+import Track from '../../track/Track';
+/* eslint-disable */
+import {chain, value, uniq, flatten} from 'lodash';
+/* eslint-enable */
 
 class MusicBubble extends Component {
 	static propTypes = {
 		loggedAction: PropTypes.object.isRequired,
-		spotify: PropTypes.object
+		tracks: PropTypes.array
 	};
 
 	render() {
-		const {loggedAction, spotify} = this.props;
+		const {loggedAction, tracks} = this.props;
 		const {sentByCurrentUser} = loggedAction;
 
 		if (!loggedAction || loggedAction['text'] === null) {
@@ -32,29 +36,23 @@ class MusicBubble extends Component {
 			friendlyTimeStamp = 'Just now';
 		}
 
-		let totalTracksAddedInThisMessage = 0;
+		const firstTrack = tracks[0];
+		const andMore = tracks.length > 1
+			? `And ${tracks.length - 1} more track${tracks.length === 2 ? '' : 's'}` : '';
+
 		return (
 			<div className={userTheme('container')}>
 				<div className={userTheme('bubble')}>
-					{loggedAction.payloads.map((action, index) => {
-							const firstTrack = spotify.tracks[action.trackIds[0]];
-							const andMore = action.trackIds.length > 1 ?
-								` and ${action.trackIds.length} more` : '';
-							totalTracksAddedInThisMessage += action.trackIds.length;
+					<div className={theme.trackGroup}>
 
-							return (
-								<div>
-									<div className={theme.albumArt}
-										 style={{backgroundImage: `url(${firstTrack.albumArt})`}}
-									/>
-									<div className={theme.text} key={index}>
-										{firstTrack.name}
-										{andMore}
-									</div>
-								</div>
-							)
-						}
-					)}
+						<div className={theme.trackContainer}>
+							<Track track={firstTrack} size='small'/>
+							<div className={theme.andMore}>
+								{andMore}
+							</div>
+						</div>
+
+					</div>
 				</div>
 				<div className={userTheme('timestamp')}>
 					Added&nbsp;
@@ -69,9 +67,21 @@ class MusicBubble extends Component {
 	}
 }
 
-const mapStateToProps = state => ({
-	spotify: state.spotify
-});
+const mapStateToProps = (state, ownProps) => {
+	const tracks = chain(ownProps.loggedAction.payloads)
+		.map(p => p.trackIds)
+		.flatten()
+		.uniq()
+		.map(trackId => ({
+			...state.spotify.tracks[trackId]
+			// ...state.room.playlist.find(playlistTrack => playlistTrack.id === trackId)
+		}))
+		.value();
+
+	return {
+		tracks
+	};
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});
 
