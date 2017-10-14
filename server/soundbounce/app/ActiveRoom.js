@@ -14,7 +14,7 @@ import roomReducer, {
 	roomNowPlayingEnded,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
-import {uniq, flatten, take} from 'lodash';
+import {uniq, flatten, take, some} from 'lodash';
 import shortid from 'shortid';
 import moment from 'moment';
 import Refill from './Refill';
@@ -264,16 +264,23 @@ export default class ActiveRoom {
 				return;
 			}
 			// limit to 50 in one hit (spotify api limit)
-			trackIds = take(uniq(trackIds), 50)
+			trackIds = take(uniq(trackIds), 50);
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
+				if (tracks.length === 0) {
+					return [];
+				}
 
-				const playlistWasEmptyBefore = this.reduxStore.getState().playlist.length === 0;
+				const state = this.reduxStore.getState();
+				const playlistWasEmptyBefore = state.playlist.length === 0;
+				const alreadyInPlaylist = some(state.playlist, item => item.id === tracks[0].get('id'));
+				debug(`alreadyInPlaylist = ${alreadyInPlaylist}`);
 				this.emitUserEvent(roomTrackAddOrVote({
 					userId: sender ? sender.get('id') : 0,
 					// some tracks may have failed so only
 					// send back ids from the results
 					trackIds: tracks.map(t => t.get('id')),
+					showInChat: !alreadyInPlaylist //Boolean(!state.playlist.find(playlistTrack => playlistTrack.id === trackIds[0]))
 				}), {
 					tracks: tracks.map(t => t.get({plain: true}))
 				});

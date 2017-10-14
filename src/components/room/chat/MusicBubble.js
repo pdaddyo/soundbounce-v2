@@ -56,12 +56,15 @@ class MusicBubble extends Component {
 				</div>
 				<div className={userTheme('timestamp')}>
 					Added&nbsp;
-					{sentByCurrentUser ? '' : ` by ${loggedAction.user.nickname} • `}
+					{sentByCurrentUser || !loggedAction.user
+						? '' : ` by ${loggedAction.user.nickname} • `}
 					{friendlyTimeStamp}
 				</div>
-				<div className={userTheme('avatar')}>
-					<Avatar user={loggedAction.user}/>
-				</div>
+				{loggedAction.user && (
+					<div className={userTheme('avatar')}>
+						<Avatar user={loggedAction.user}/>
+					</div>
+				)}
 			</div>
 		);
 	}
@@ -69,6 +72,7 @@ class MusicBubble extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	const tracks = chain(ownProps.loggedAction.payloads)
+		.filter(p => p.showInChat)
 		.map(p => p.trackIds)
 		.flatten()
 		.uniq()

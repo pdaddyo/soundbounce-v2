@@ -16,6 +16,13 @@ class Avatar extends Component {
 					 style={{backgroundImage: `url(${user.avatar})`}}/>
 			);
 		}
+		if (!user.nickname) {
+			return (
+				<div className={theme.avatarInitial}>
+					<div className={theme.initial}></div>
+				</div>
+			);
+		}
 		return (
 			<div className={theme.avatarInitial}>
 				<div className={theme.initial}>{user.nickname.toUpperCase()[0]}</div>
