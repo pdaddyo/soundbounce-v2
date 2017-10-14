@@ -258,6 +258,7 @@ export default class ActiveRoom {
 
 	// client sending a message to this room
 	handleRoomEventMessage({sender, event}) {
+		const state = this.reduxStore.getState();
 		if (event.type === 'addOrVote') {
 			let {trackIds} = event;
 			if (trackIds.length === 0) {
@@ -271,16 +272,14 @@ export default class ActiveRoom {
 					return [];
 				}
 
-				const state = this.reduxStore.getState();
 				const playlistWasEmptyBefore = state.playlist.length === 0;
 				const alreadyInPlaylist = some(state.playlist, item => item.id === tracks[0].get('id'));
-				debug(`alreadyInPlaylist = ${alreadyInPlaylist}`);
 				this.emitUserEvent(roomTrackAddOrVote({
 					userId: sender ? sender.get('id') : 0,
 					// some tracks may have failed so only
 					// send back ids from the results
 					trackIds: tracks.map(t => t.get('id')),
-					showInChat: !alreadyInPlaylist //Boolean(!state.playlist.find(playlistTrack => playlistTrack.id === trackIds[0]))
+					showInChat: !alreadyInPlaylist
 				}), {
 					tracks: tracks.map(t => t.get({plain: true}))
 				});
@@ -295,7 +294,12 @@ export default class ActiveRoom {
 			if (!('text' in event) || text === null || text === '') {
 				return;
 			}
-			this.emitUserEvent(roomChat({userId: sender.get('id'), text}));
+			const nowPlaylingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
+			this.emitUserEvent(roomChat({
+				userId: sender.get('id'),
+				text,
+				trackIds: nowPlaylingTrackId ? [nowPlaylingTrackId] : []
+			}));
 		}
 	}
 

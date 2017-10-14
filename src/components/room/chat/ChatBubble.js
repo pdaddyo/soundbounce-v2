@@ -173,6 +173,9 @@ class ChatBubble extends Component {
 		if (friendlyTimeStamp.indexOf('seconds') > -1) {
 			friendlyTimeStamp = 'Just now';
 		}
+
+		const track = chat.tracks.length > 0 ? chat.tracks[0] : null;
+
 		return (
 			<div className={userTheme('container')}>
 				<div className={userTheme('bubble')}>
@@ -185,7 +188,10 @@ class ChatBubble extends Component {
 						</div>
 					))}
 				</div>
-				<div className={userTheme('timestamp')}>
+				<div className={userTheme('timestamp')}
+					 title={track &&
+					 `${track.name}
+${track.artists && track.artists.map(artist => artist.name).join(', ')}`}>
 					{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
 					{friendlyTimeStamp}
 				</div>
