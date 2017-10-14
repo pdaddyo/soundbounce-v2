@@ -4,11 +4,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {ROOM_CHAT} from 'redux/modules/shared/room';
+import {ROOM_CHAT, ROOM_TRACK_ADD_OR_VOTE} from 'redux/modules/shared/room';
 import {Picker} from 'emoji-mart';
 import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
+import MusicBubble from './MusicBubble.js';
+
 import {uiUpdate} from 'redux/modules/ui';
 import theme from './chatPanel.css';
 
@@ -122,6 +124,9 @@ class ChatPanel extends Component {
 								case ROOM_CHAT:
 									item = <ChatBubble chat={loggedAction}/>;
 									break;
+								case ROOM_TRACK_ADD_OR_VOTE:
+									//	console.log(loggedAction);
+									item = <MusicBubble loggedAction={loggedAction}/>;
 								// todo: add track, vote, like etc etc
 							}
 							return (

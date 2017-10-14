@@ -11,7 +11,7 @@ import moment from 'moment';
 import Avatar from '../../user/avatar/Avatar';
 import ReactEmoji from 'react-emoji';
 
-import theme from './chatBubble.css';
+import theme from './bubbles.css';
 
 const soloEmojiSize = '30px';
 /*eslint-disable */

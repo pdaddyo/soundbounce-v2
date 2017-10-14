@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {ROOM_CHAT} from 'redux/modules/shared/room';
+import {ROOM_CHAT, ROOM_TRACK_ADD_OR_VOTE} from 'redux/modules/shared/room';
 import {uiUpdate} from 'redux/modules/ui';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
@@ -159,7 +159,8 @@ const mapStateToProps = state => ({
 	currentUser: selectCurrentUser(state),
 	room: state.room,
 	sync: state.sync,
-	actionLogForChatPanel: state.room.actionLog.filter(al => al.type === ROOM_CHAT)
+	actionLogForChatPanel: state.room.actionLog
+		.filter(al => al.type === ROOM_CHAT || al.type === ROOM_TRACK_ADD_OR_VOTE)
 		.map(chatWithUserId => ({
 			...chatWithUserId,
 			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,

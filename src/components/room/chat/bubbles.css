@@ -80,7 +80,6 @@
 .text {
 	margin-bottom: 0.2rem;
 	overflow: hidden;
-	width: 100%;
 	text-overflow: ellipsis;
 }
 
@@ -178,4 +177,14 @@
 	margin-left: 1.5rem;
 	font-size: 0.8rem;
 	margin-bottom: 0.5rem;
+}
+
+.albumArt {
+	width: 2em;
+	height: 2em;
+	background-size: cover;
+	float: left;
+	margin-right: 1em;
+	margin-bottom: 0.4em;
+	display: inline-block;
 }
