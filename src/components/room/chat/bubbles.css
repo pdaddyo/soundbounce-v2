@@ -28,10 +28,19 @@
 	margin-bottom: 0;
 }
 
+.musicBubble {
+	composes: bubble;
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
 .bubbleOtherUser {
 	composes: bubble;
 	margin-left: 1.6rem;
 	margin-right: 0;
+}
+
+.musicBubbleOtherUser {
+	composes: bubbleOtherUser;
 }
 
 .bubble:after {
@@ -48,6 +57,10 @@
 	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
 }
 
+.musicBubble:after {
+	display: none;
+}
+
 .bubbleOtherUser:after {
 	content: ' ';
 	position: absolute;
@@ -60,6 +73,10 @@
 	transform: rotate(225deg);
 	border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
 	box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.musicBubbleOtherUser:after {
+	display: none;
 }
 
 .avatar {

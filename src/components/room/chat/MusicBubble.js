@@ -42,7 +42,7 @@ class MusicBubble extends Component {
 
 		return (
 			<div className={userTheme('container')}>
-				<div className={userTheme('bubble')}>
+				<div className={userTheme('musicBubble')}>
 					<div className={theme.trackGroup}>
 
 						<div className={theme.trackContainer}>
