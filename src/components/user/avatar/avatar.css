@@ -1,6 +1,5 @@
 .avatar {
 	position: relative;
-	filter: grayscale(50%);
 	background-size: cover;
 	width: 2rem;
 	height: 2rem;
@@ -10,7 +9,6 @@
 }
 
 .avatar:hover {
-	filter: grayscale(20%);
 }
 
 .avatarInitial {
