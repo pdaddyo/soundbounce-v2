@@ -40,7 +40,9 @@
 }
 
 .musicBubbleOtherUser {
-	composes: bubbleOtherUser;
+	composes: musicBubble;
+	margin-left: 1.6rem;
+	margin-right: 0;
 }
 
 .bubble:after {
