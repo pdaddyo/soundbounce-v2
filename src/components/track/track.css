@@ -71,6 +71,7 @@
 	composes: artistsAndTrackName;
 	font-size: 0.9rem;
 	margin-left: 1rem;
+	min-width: auto;
 }
 
 .artists {
@@ -87,6 +88,9 @@
 .artistsSmall {
 	font-size: 75%;
 	composes: artists;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .name {
@@ -101,12 +105,15 @@
 .nameSmall {
 	composes: name;
 	font-size: 80%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .votes {
 	display: flex;
 	flex-direction: row-reverse;
-	margin: 0.5rem 0.5rem 0.5rem auto;
+	margin: 0.2rem 0.5rem 0.2rem auto;
 	opacity: 0.9;
 	flex-shrink: 0;
 }
@@ -175,7 +182,7 @@
 
 .buttonsSmall {
 	composes: buttons;
-	margin-left: auto;
+	margin-right: -3.5rem;
 }
 
 .button {
