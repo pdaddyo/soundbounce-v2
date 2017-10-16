@@ -6,7 +6,7 @@
 
 export default {
 	// incrementing this forces clients to download new client code in order to connect
-	buildVersion: 9,
+	buildVersion: 10,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
 		pollPlayerDelay: 5000,
