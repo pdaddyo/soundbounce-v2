@@ -12,6 +12,8 @@ import Avatar from '../../user/avatar/Avatar';
 import ReactEmoji from 'react-emoji';
 
 import theme from './bubbles.css';
+import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
+import {syncStart} from '../../../redux/modules/sync';
 
 const soloEmojiSize = '30px';
 /*eslint-disable */
@@ -23,7 +25,9 @@ class ChatBubble extends Component {
 		chat: PropTypes.object.isRequired,
 		linkUnfurlingRequestStart: PropTypes.func,
 		toggleUnfurl: PropTypes.func,
-		unfurling: PropTypes.object
+		unfurling: PropTypes.object,
+		previewStart: PropTypes.func,
+		previewStop: PropTypes.func
 	};
 
 	emojify(text) {
@@ -158,6 +162,22 @@ class ChatBubble extends Component {
 		return returnArray;
 	}
 
+	// preview of the track that was playing when this chat was sent
+	previewMouseDown = evt => {
+		const {chat: {tracks, payloads}} = this.props;
+		if (tracks.length < 1) {
+			return;
+		}
+		const {offset} = payloads[0];
+		this.props.previewStart(tracks[0].id, offset);
+		document.addEventListener('mouseup', this.previewMouseUp);
+	};
+
+	previewMouseUp = evt => {
+		document.removeEventListener('mouseup', this.previewMouseUp);
+		this.props.previewStop();
+	};
+
 	render() {
 		const {chat} = this.props;
 		const {sentByCurrentUser} = chat;
@@ -191,7 +211,8 @@ class ChatBubble extends Component {
 				<div className={userTheme('timestamp')}
 					 title={track &&
 					 `${track.name}
-${track.artists && track.artists.map(artist => artist.name).join(', ')}`}>
+${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
+					 onMouseDown={this.previewMouseDown}>
 					{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
 					{friendlyTimeStamp}
 				</div>
@@ -213,8 +234,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	toggleUnfurl: (url) => {
 		dispatch(linkUnfurlingToggleHide({url}));
+	},
+	previewStart: (trackId, offset) => {
+		dispatch(spotifyPreviewTrack(trackId, offset));
+	},
+	previewStop: () => {
+		dispatch(syncStart());
 	}
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBubble);

@@ -298,7 +298,8 @@ export default class ActiveRoom {
 			this.emitUserEvent(roomChat({
 				userId: sender.get('id'),
 				text,
-				trackIds: nowPlaylingTrackId ? [nowPlaylingTrackId] : []
+				trackIds: nowPlaylingTrackId ? [nowPlaylingTrackId] : [],
+				offset: event.nowPlayingProgress
 			}));
 		}
 	}

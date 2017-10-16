@@ -99,9 +99,9 @@ export const spotifyPlayTrack = ({trackId, offset}) => ({
 	payload: {trackId, offset}
 });
 
-export const spotifyPreviewTrack = (trackId) => ({
+export const spotifyPreviewTrack = (trackId, offset = 0) => ({
 	type: SPOTIFY_PREVIEW_TRACK,
-	payload: {trackId}
+	payload: {trackId, offset}
 });
 
 export const spotifyDisableShuffle = () => ({

@@ -218,12 +218,12 @@ function * watchForRoomNowPlayingChanged() {
 
 function * watchForPreviewTrack() {
 	while (true) {
-		const {payload: {trackId}} = yield take(spotifyActions.SPOTIFY_PREVIEW_TRACK);
+		const {payload: {trackId, offset}} = yield take(spotifyActions.SPOTIFY_PREVIEW_TRACK);
 		const {tracks} = yield select(state => state.spotify);
 		yield call(spotifyPlayTracksThenSeek, {
 			trackIds: [trackId],
 			// seek to 1/3 through for preview
-			seekPosition: Math.round(tracks[trackId].duration / 3)
+			seekPosition: offset || Math.round(tracks[trackId].duration / 3)
 		});
 	}
 }

@@ -77,13 +77,14 @@ class RoomView extends Component {
 	}
 
 	onChatSend() {
-		const {roomChatText, clearChatText, emitRoomEvent} = this.props;
+		const {roomChatText, clearChatText, emitRoomEvent, room} = this.props;
 		if (roomChatText === '') {
 			return;
 		}
 		emitRoomEvent({
 			type: 'chat',
-			text: roomChatText
+			text: roomChatText,
+			nowPlayingProgress: room.nowPlayingProgress
 		});
 		clearChatText();
 	}
