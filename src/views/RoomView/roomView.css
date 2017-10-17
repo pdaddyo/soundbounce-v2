@@ -32,16 +32,16 @@
      */
 	.room {
 		composes: room;
-		right: 22.5rem;
+		right: 24.5rem;
 	}
 
 	.chat {
 		composes: chat;
-		width: 21.5rem;
+		width: 23.5rem;
 	}
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
 	/* narrower chat when narrower window
     todo: mobile versions of this kind of thing
      */
