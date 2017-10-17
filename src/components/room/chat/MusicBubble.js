@@ -12,16 +12,23 @@ import theme from './bubbles.css';
 import Track from '../../track/Track';
 /* eslint-disable */
 import {chain, value, uniq, flatten} from 'lodash';
+import {uiUpdate} from '../../../redux/modules/ui';
 /* eslint-enable */
 
 class MusicBubble extends Component {
 	static propTypes = {
 		loggedAction: PropTypes.object.isRequired,
-		tracks: PropTypes.array
+		tracks: PropTypes.array,
+		showMoreTracks: PropTypes.func,
+		hideMoreTracks: PropTypes.func,
+		moreTracksVisible: PropTypes.bool
 	};
 
 	render() {
-		const {loggedAction, tracks} = this.props;
+		const {
+			loggedAction, tracks,
+			showMoreTracks, hideMoreTracks, moreTracksVisible
+		} = this.props;
 		const {sentByCurrentUser} = loggedAction;
 
 		if (!loggedAction || loggedAction['text'] === null) {
@@ -40,24 +47,44 @@ class MusicBubble extends Component {
 		const andMore = tracks.length > 1
 			? `And ${tracks.length - 1} more track${tracks.length === 2 ? '' : 's'}` : '';
 
+		const showLess = tracks.length > 1
+			? 'Show less' : '';
+
 		return (
 			<div className={userTheme('container')}>
 				<div className={userTheme('musicBubble')}>
 					<div className={theme.trackGroup}>
 
-						<div className={theme.trackContainer}>
-							<Track track={firstTrack} size='small'/>
-							<div className={theme.andMore}>
-								{andMore}
+						{!moreTracksVisible && (
+							<div className={theme.trackContainer}>
+								<Track track={firstTrack} size='small'/>
+								<div className={theme.andMore}
+									 onClick={() => {
+										 showMoreTracks(firstTrack.id);
+									 }}>
+									{andMore}
+								</div>
 							</div>
-						</div>
+						)}
 
+						{moreTracksVisible && (
+							<div className={theme.trackContainer}>
+								{tracks.map(track =>
+									<Track track={track} size='small'/>
+								)}
+								<div className={theme.andMore}
+									 onClick={() => {
+										 hideMoreTracks(firstTrack.id);
+									 }}>
+									{showLess}
+								</div>
+							</div>
+						)}
 					</div>
 				</div>
 				<div className={userTheme('timestamp')}>
-					Added&nbsp;
-					{sentByCurrentUser || !loggedAction.user
-						? '' : ` by ${loggedAction.user.nickname} • `}
+					Added
+					{sentByCurrentUser ? ' ' : ` by ${loggedAction.user.nickname} • `}
 					{friendlyTimeStamp}
 				</div>
 				{loggedAction.user && (
@@ -83,11 +110,23 @@ const mapStateToProps = (state, ownProps) => {
 		.value();
 
 	return {
-		tracks
+		tracks,
+		moreTracksVisible: state.ui[`music-bubble-expand-${tracks[0].id}`]
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({});
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	showMoreTracks: (firstTrackId) => {
+		dispatch(uiUpdate({
+			key: `music-bubble-expand-${firstTrackId}`, newState: true
+		}));
+	},
+	hideMoreTracks: (firstTrackId) => {
+		dispatch(uiUpdate({
+			key: `music-bubble-expand-${firstTrackId}`, newState: false
+		}));
+	}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MusicBubble);
 
