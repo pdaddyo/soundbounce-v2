@@ -29,7 +29,7 @@ export default class RoomTopBar extends Component {
 				<div className={theme.search}>
 					<TextInput className={theme.input}
 							   uiKey='inRoomSearch'
-							   placeholder='Contribute track to room'/>
+							   placeholder='+ Contribute track to room'/>
 					<div className={theme.searchIcon}>
 						<SearchIcon/>
 					</div>

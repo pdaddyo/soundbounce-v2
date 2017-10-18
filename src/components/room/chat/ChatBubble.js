@@ -16,6 +16,8 @@ import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
 import {syncStart} from '../../../redux/modules/sync';
 
 const soloEmojiSize = '30px';
+const maxDescriptionLength = 250;
+
 /*eslint-disable */
 const linkRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/g;
 /*eslint-enable */
@@ -103,10 +105,15 @@ class ChatBubble extends Component {
 												 onClick={() => toggleUnfurl(url)}
 											/>
 										)}
+
 										<span><a className={theme.unfurlTitle}
 												 href={url}
 												 target='_blank'>
-											{title}
+											{title === url ? (
+												<span style={{fontStyle: 'italic'}}>
+													Preview
+												</span>
+											) : title}
 										</a>
 											{!hidden && (
 												<span className={theme.showHide}
@@ -135,8 +142,12 @@ class ChatBubble extends Component {
 												</div>
 											)}
 											{description && (
-												<div className={theme.unfurlDescription}>
-													{description}
+												<div className={theme.unfurlDescription}
+													 title={description}>
+													{
+														description.substr(0, maxDescriptionLength)
+														+ (description.length > maxDescriptionLength ? '...' : '')}
+
 												</div>
 											)}
 

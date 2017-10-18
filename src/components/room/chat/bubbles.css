@@ -163,9 +163,9 @@
 }
 
 .unfurlTitle {
-	font-size: 0.9rem;
-	font-weight: bold;
-	line-height: 1.2rem;
+	font-size: 0.8rem;
+	font-weight: normal;
+	line-height: 1.1rem;
 }
 
 .unfurlTitle:hover {
@@ -182,6 +182,7 @@
 	color: rgba(200, 200, 200, 0.6);
 	padding-left: 0.5rem;
 	cursor: pointer;
+	letter-spacing: 0.2rem;
 }
 
 .showHide:hover {
