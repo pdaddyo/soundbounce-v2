@@ -3,6 +3,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import rgba from 'shared/rgba';
 
 export default class ScrollStyle extends Component {
 	static propTypes = {
@@ -25,10 +26,12 @@ export default class ScrollStyle extends Component {
 		const {size, colorConfigName, alpha} = this.props;
 
 		const {colors} = this.context; // gets these from the <ColorContextProvider> up the tree
-		if (!colors || !colors[colorConfigName]) {
-			return null;
+
+		let color = '#999999';
+		if (colors && colors[colorConfigName]) {
+			color = colors[colorConfigName];
 		}
-		const color = colors.rgba(colors[colorConfigName], alpha);
+		color = rgba(color, alpha);
 		return (
 			<style type="text/css">{`
 			::-webkit-scrollbar {
@@ -46,10 +49,10 @@ export default class ScrollStyle extends Component {
 				border-radius: 0;
 			}
 			::-webkit-scrollbar-thumb:hover {
-				background: ${colors.rgba(colors[colorConfigName], 0.4)};
+				background: ${rgba(color, 0.4)};
 			}
 				::-webkit-scrollbar-thumb:active {
-				background: ${colors.rgba(colors[colorConfigName], 0.4)};
+				background: ${rgba(color, 0.4)};
 			}
 				::-webkit-scrollbar-track {
 				background: transparent;

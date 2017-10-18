@@ -3,6 +3,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import rgba from 'shared/rgba';
 
 export default class ColorContextProvider extends Component {
 
@@ -17,12 +18,6 @@ export default class ColorContextProvider extends Component {
 
 	getChildContext() {
 		// converts a hex colour to an rgba with alpha
-		const rgba = (hex, alpha) => {
-			const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-			return result
-				? `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`
-				: null;
-		};
 
 		return {colors: {rgba, ...this.props.colors}};
 	}

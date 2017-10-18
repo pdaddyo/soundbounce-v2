@@ -10,6 +10,7 @@ import defaultRoomConfig from '../../../server/soundbounce/data/defaultRoomConfi
 import TopBar from 'components/home/homeTopBar/HomeTopBar';
 
 import theme from './homeView.css';
+import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 
 const Room = ({room: {name, track, config: {colors}, id}}) => (
 	<Link to={`/room/${id}`} key={id}>
@@ -62,9 +63,11 @@ class HomeView extends Component {
 
 		return (
 			<div className={theme.container}>
+				<ScrollStyle size={0.6} alpha={0.25}/>
 				<TopBar/>
 				<button onClick={this.clickCreateRoom}
-				className={theme.buttonCreateRoom}>Create new room</button>
+						className={theme.buttonCreateRoom}>Create new room
+				</button>
 				<div className={theme.home}>
 					{activeRooms.map(room => (
 						<Room room={room} key={room.id}/>

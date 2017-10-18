@@ -4,6 +4,11 @@
 
 .home {
 	padding-left: 2rem;
+	position: absolute;
+	bottom: 0;
+	right: 1rem;
+	top: 6rem;
+	overflow: auto;
 }
 
 .room {
