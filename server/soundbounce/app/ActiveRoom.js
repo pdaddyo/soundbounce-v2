@@ -279,7 +279,7 @@ export default class ActiveRoom {
 					// some tracks may have failed so only
 					// send back ids from the results
 					trackIds: tracks.map(t => t.get('id')),
-					showInChat: !alreadyInPlaylist
+					isAdd: !alreadyInPlaylist
 				}), {
 					tracks: tracks.map(t => t.get({plain: true}))
 				});

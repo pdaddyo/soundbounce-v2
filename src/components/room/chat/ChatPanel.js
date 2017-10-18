@@ -125,14 +125,13 @@ class ChatPanel extends Component {
 									item = <ChatBubble chat={loggedAction}/>;
 									break;
 								case ROOM_TRACK_ADD_OR_VOTE:
-									//	console.log(loggedAction);
 									if (loggedAction.payloads
-											.filter(p => p.showInChat && p.userId).length > 0) {
+											.filter(p => p.isAdd && p.userId).length > 0) {
 										item = <MusicBubble loggedAction={loggedAction}/>;
 									} else {
 										item = <span></span>;
 									}
-								// todo: add track, vote, like etc etc
+									break;
 							}
 							return (
 								<div key={loggedAction.id}>

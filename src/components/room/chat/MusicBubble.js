@@ -99,7 +99,7 @@ class MusicBubble extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	const tracks = chain(ownProps.loggedAction.payloads)
-		.filter(p => p.showInChat)
+		.filter(p => p.isAdd)
 		.map(p => p.trackIds)
 		.flatten()
 		.uniq()
