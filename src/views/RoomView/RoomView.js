@@ -7,6 +7,7 @@ import {uiUpdate} from 'redux/modules/ui';
 import {selectCurrentUser} from 'redux/modules/users';
 import {socketEmitRoomEvent, socketEmitRoomJoin} from 'redux/modules/socket';
 import {syncStart} from 'redux/modules/sync';
+import drop from 'lodash/drop';
 import ChatPanel from 'components/room/chat/ChatPanel';
 import ColorContextProvider from 'components/context/color/ColorContextProvider';
 import Track from 'components/track/Track';
@@ -114,6 +115,8 @@ class RoomView extends Component {
 		if (playlist.length > 0) {
 			progressPercent = room.nowPlayingProgress / playlist[0].duration * 100;
 		}
+		const nowPlayingTrack = playlist.length === 0 ? null : playlist[0];
+
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<ScrollStyle size={0.6} alpha={0.25}/>
@@ -123,27 +126,39 @@ class RoomView extends Component {
 					<div className={theme.room} ref='room'>
 						<div className={theme.play} onClick={syncStart}>
 							{(!sync.isSynced) && (
-								<Play/>
+								<div className={theme.playSurround}>
+									<Play/>
+								</div>
 							)}
 						</div>
-						<FlipMove duration={400}
-								  easing='ease-in-out'
-								  enterAnimation='elevator'>
-							{playlist.map((track, index) => (
-								<Track key={track.id}
-									   track={track}
-									   percentComplete={index === 0 ? progressPercent : -1}
-									   onClickVote={this.onClickVote}
-									   size={index === 0 ? 'hero' : 'normal'}
-									   visible={index === 0 ? true : roomTab === 'next-up'}/>
-							))}
-						</FlipMove>
+						{nowPlayingTrack && (
+							<Track track={nowPlayingTrack}
+								   percentComplete={progressPercent}
+								   size='hero'
+							/>
+						)}
 						<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
-						<div className={theme.otherTabs}>
-							{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
-							{roomTab === 'about' && <About room={room} currentUser={currentUser}/>}
-							{roomTab === 'top' &&
-							<div>Top Tracks / Artists / Contributors coming soon!</div>}
+						<div className={theme.roomPlaylistContentArea}>
+							<div style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
+								<FlipMove duration={400}
+										  easing='ease-in-out'
+										  enterAnimation='elevator'>
+									{drop(playlist, 1).map((track, index) => (
+										<Track key={track.id}
+											   track={track}
+											   onClickVote={this.onClickVote}
+											   size='normal'
+											   visible={roomTab === 'next-up'}/>
+									))}
+								</FlipMove>
+							</div>
+							<div className={theme.otherTabs}>
+								{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
+								{roomTab === 'about' &&
+								<About room={room} currentUser={currentUser}/>}
+								{roomTab === 'top' &&
+								<div>Top Tracks / Artists / Contributors coming soon!</div>}
+							</div>
 						</div>
 					</div>
 					<div className={theme.chat}>

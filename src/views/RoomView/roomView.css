@@ -9,7 +9,7 @@
 
 .room {
 	position: absolute;
-	overflow: auto;
+	overflow: hidden;
 	left: 2rem;
 	top: 0;
 	bottom: 0;
@@ -69,8 +69,25 @@
 	background-color: rgba(200, 200, 200, 0.07);
 }
 
-.otherTabs {
-	position: absolute;
-	top: 17rem;
+.playSurround {
+	border-radius: 50%;
+	background-color: rgba(0, 0, 0, 0.3);
+}
 
+.playSurround:hover {
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.otherTabs {
+
+}
+
+.roomPlaylistContentArea {
+	position: absolute;
+	overflow: auto;
+	top: 16rem;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	min-height: 0;
 }
