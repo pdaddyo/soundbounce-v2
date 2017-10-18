@@ -119,7 +119,7 @@ class RoomView extends Component {
 
 		return (
 			<ColorContextProvider colors={room.config.colors}>
-				<ScrollStyle size={0.6} alpha={0.25}/>
+				<ScrollStyle size={0.6} alpha={0.35}/>
 				<Gradient />
 				<TopBar room={room}/>
 				<div className={theme.roomAndChat}>
