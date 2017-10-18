@@ -39,3 +39,19 @@
 	border-bottom: solid 0.3rem;
 	margin-bottom: 0;
 }
+
+.buttonCreateRoom {
+	position: absolute;
+	top: 2.1rem;
+	right: 2.5rem;
+	background: rgba(255, 255, 255, 0.2);
+	color: rgba(255, 255, 255, 0.85);
+	padding: 0.5rem 0.7rem;
+	font-size: 0.8rem;
+	border: none;
+	cursor: pointer;
+}
+
+.buttonCreateRoom:hover {
+	background: rgba(255, 255, 255, 0.3);
+}

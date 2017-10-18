@@ -63,6 +63,8 @@ class HomeView extends Component {
 		return (
 			<div className={theme.container}>
 				<TopBar/>
+				<button onClick={this.clickCreateRoom}
+				className={theme.buttonCreateRoom}>Create new room</button>
 				<div className={theme.home}>
 					{activeRooms.map(room => (
 						<Room room={room} key={room.id}/>
@@ -71,7 +73,7 @@ class HomeView extends Component {
 						<Room room={room} key={room.id}/>
 					))}
 					<br/>
-					<button onClick={this.clickCreateRoom}>Create new room</button>
+
 				</div>
 			</div>
 		);
