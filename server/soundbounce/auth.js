@@ -73,7 +73,8 @@ export default (app) => {
 			request.post(authOptions, (error, response, body) => {
 					if (!error && response.statusCode === 200) {
 						const accessToken = body.access_token,
-							refreshToken = body.refresh_token;
+							refreshToken = body.refresh_token,
+							expires = body['expires_in'];
 
 						const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
 						if (redirectUrl) {
@@ -97,7 +98,8 @@ export default (app) => {
 									res.redirect((redirectUrl || '/') + '#' +
 										querystring.stringify({
 											access_token: accessToken,
-											refresh_token: refreshToken
+											refresh_token: refreshToken,
+											expires
 										}));
 								})
 
@@ -109,5 +111,32 @@ export default (app) => {
 				}
 			);
 		}
+	});
+
+	app.get('/spotify-token-refresh', (req, res) => {
+		const {token} = req.query;
+		const authOptions = {
+			url: 'https://accounts.spotify.com/api/token',
+			form: {
+				refresh_token: token,
+				grant_type: 'refresh_token'
+			},
+			headers: {
+				'Authorization': 'Basic ' +
+				(new Buffer(secrets.spotify.clientId + ':' + secrets.spotify.clientSecret).toString('base64'))
+			},
+			json: true
+		};
+
+		request.post(authOptions, (error, response, body) => {
+				if (!error && response.statusCode === 200) {
+					res.write(JSON.stringify(body));
+					res.end();
+				}
+				else {
+					res.redirect('/error/invalid-token');
+				}
+			}
+		);
 	});
 };

@@ -62,9 +62,9 @@ export const spotifyAuthRequired = () => ({
 	type: SPOTIFY_AUTH_REQUIRED
 });
 
-export const spotifyAuthInit = ({accessToken, refreshToken}) => ({
+export const spotifyAuthInit = ({accessToken, refreshToken, expires}) => ({
 	type: SPOTIFY_AUTH_INIT,
-	payload: {accessToken, refreshToken}
+	payload: {accessToken, refreshToken, expires}
 });
 
 export const spotifyAuthOK = (profile) => ({

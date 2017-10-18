@@ -26,11 +26,11 @@ function * beginLogin() {
 	// pull the spotify access tokens from the hash fragment of the url
 	const {hash, href} = window.location;
 	if (hash) {
-		const matches = hash.match(/access_token=(.+)&refresh_token=(.+)/);
+		const matches = hash.match(/access_token=(.+)&refresh_token=(.+)&expires=(.+)/);
 		if (matches) {
-			const [, accessToken, refreshToken] = matches;
+			const [, accessToken, refreshToken, expires] = matches;
 			// we have a hash in our url, so initialise in redux
-			yield put(spotifyAuthInit({accessToken, refreshToken}));
+			yield put(spotifyAuthInit({accessToken, refreshToken, expires}));
 			// now get the user's profile information since token might be fake / expired
 			// this will throw if there's a problem.
 			const profile = yield call(getMyProfile);
@@ -302,6 +302,35 @@ function * watchForAuthRequired() {
 	}
 }
 
+function * waitForAuthExpires() {
+	let {payload: {expires, refreshToken, accessToken}} =
+		yield take(spotifyActions.SPOTIFY_AUTH_INIT);
+
+	while (true) {
+		// wait for the token to almost expire (999 instead of 1000)
+		yield delay(expires * 999);
+		// request new token
+		yield fetch('/spotify-token-refresh?token=' + escape(refreshToken))
+			.then(response => response.text().then(text => ({
+					json: text.length > 0 ? JSON.parse(text) : null, // only parse if present
+					response
+				}))
+			).then(({json}) => {
+				/*eslint-disable */
+				// fyi linter doesn't like the camel case names
+				const {access_token, expires_in, refresh_token} = json;
+				accessToken = access_token;
+				expires = expires_in;
+				if (refresh_token) {
+					// refresh token is not always supplied
+					refreshToken = refresh_token;
+				}
+				/*eslint-enable */
+			});
+		yield put(spotifyAuthInit({accessToken, refreshToken, expires}));
+	}
+}
+
 function * watchForDevicesRequest() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
@@ -335,6 +364,7 @@ export default function * spotifyInit() {
 	try {
 		yield [
 			watchForAuthRequired(),
+			waitForAuthExpires(),
 			watchForRoomNowPlayingChanged(),
 			watchForDevicesRequest(),
 			watchForSwitchDevice(),
