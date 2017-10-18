@@ -5,19 +5,19 @@ export default {
 		primary: '#ad009f'
 	},
 	refill: {
-		targetPlaylistSize: {from: 75, to: 125},
+		targetPlaylistSize: {from: 50, to: 75},
 		sources: [
 			{
 				type: 'room-history',
-				percent: 50
+				percent: 100
 			},
 			{
 				type: 'suggestions-from-room-history',
-				percent: 25
+				percent: 0
 			},
 			{
 				type: 'suggestions-from-current-playlist',
-				percent: 25
+				percent: 0
 			}
 		]
 	}
