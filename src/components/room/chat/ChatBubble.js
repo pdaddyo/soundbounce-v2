@@ -96,6 +96,15 @@ class ChatBubble extends Component {
 								thumbnailSrc = json.links.thumbnail[0].href;
 							}
 
+							const unsafeHtmlContent = (
+								<div className={theme.unfurlHtml}
+									 dangerouslySetInnerHTML={
+										 {
+											 __html: json['html']
+										 }
+									 }/>
+							);
+
 							returnArray.push(
 								<div className={theme.unfurl} key={url}>
 									<div className={theme.unfurlTitleArea}>
@@ -137,31 +146,32 @@ class ChatBubble extends Component {
 										<div className={theme.unfurlThumbDescription}>
 											{thumbnailSrc && (
 												<div>
-													<img className={theme.unfurlThumbnail}
-														 src={thumbnailSrc}/>
+													<a href={url}
+													   target='_blank'>
+														<img className={theme.unfurlThumbnail}
+															 src={thumbnailSrc}/>
+													</a>
 												</div>
 											)}
 											{description && (
 												<div className={theme.unfurlDescription}
 													 title={description}>
-													{
-														description.substr(0, maxDescriptionLength)
-														+ (description.length > maxDescriptionLength ? '...' : '')}
-
+													{description.substr(0, maxDescriptionLength)}
+													{description.length > maxDescriptionLength ? '...' : ''}
 												</div>
 											)}
-
 										</div>
 
 									)}
 
 									{(showHtml && !hidden) && (
-										<div className={theme.unfurlHtml}
-											 dangerouslySetInnerHTML={
-												 {
-													 __html: json['html']
-												 }
-											 }/>
+										title === url ? (
+											// wrap content in link if there's no title (since it's likely a plain image)
+											<a href={url}
+											   target='_blank'>
+												{unsafeHtmlContent}
+											</a>
+										) : unsafeHtmlContent
 									)}
 								</div>
 							);
