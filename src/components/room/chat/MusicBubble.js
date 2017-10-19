@@ -70,7 +70,7 @@ class MusicBubble extends Component {
 						{moreTracksVisible && (
 							<div className={theme.trackContainer}>
 								{tracks.map(track =>
-									<Track track={track} size='small'/>
+									<Track key={track.id} track={track} size='small'/>
 								)}
 								<div className={theme.andMore}
 									 onClick={() => {
