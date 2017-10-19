@@ -8,9 +8,11 @@ import Avatar from '../user/avatar/Avatar';
 import theme from './track.css';
 import DotsVertical from '../svg/icons/DotsVertical';
 import ArrowUpThick from '../svg/icons/ArrowUpThick';
-import {spotifyPreviewTrack} from '../../redux/modules/spotify';
+import {spotifyPreviewTrack, spotifySearchRequest} from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
 import {syncStart} from '../../redux/modules/sync';
+import {uiUpdate} from '../../redux/modules/ui';
+import intersperse from 'shared/intersperse';
 
 class Track extends Component {
 	static propTypes = {
@@ -20,7 +22,13 @@ class Track extends Component {
 		onClickVote: PropTypes.func,
 		visible: PropTypes.bool,
 		previewStart: PropTypes.func,
-		previewStop: PropTypes.func
+		previewStop: PropTypes.func,
+		currentRoomId: PropTypes.string,
+		performSearch: PropTypes.func
+	};
+
+	static contextTypes = {
+		router: PropTypes.object
 	};
 
 	static defaultProps = {
@@ -40,8 +48,13 @@ class Track extends Component {
 	};
 
 	render() {
-		const {track, size, onClickVote, percentComplete, visible} = this.props;
-		// helper to append 'Hero' to big size track
+		const {
+			track, size, onClickVote, percentComplete,
+			visible, currentRoomId, performSearch
+		} = this.props;
+		const {router} = this.context;
+
+		// helper to append 'Hero' or 'Small' to the theme items
 		const sizeTheme = (className) => {
 			switch (size) {
 				case 'normal':
@@ -121,7 +134,15 @@ class Track extends Component {
 						{track.name}
 					</div>
 					<div className={sizeTheme('artists')}>
-						{track.artists && track.artists.map(artist => artist.name).join(', ')}
+						{track.artists && intersperse(track.artists.map(artist => (
+							<span className={theme.artist}
+								  onClick={() => {
+									  router.push(`/room/${currentRoomId}/search`);
+									  performSearch(`artist:"${artist.name}"`);
+								  }}>
+								{artist.name}
+							</span>
+						)), ', ')}
 					</div>
 					{size === 'hero' && votes}
 				</div>
@@ -138,7 +159,9 @@ class Track extends Component {
 	}
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+	currentRoomId: state.room.id
+});
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	previewStart: (trackId) => {
@@ -146,6 +169,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	previewStop: () => {
 		dispatch(syncStart());
+	},
+	performSearch: (query) => {
+		dispatch(uiUpdate({key: 'inRoomSearch', newState: query}));
+		dispatch(spotifySearchRequest(query));
 	}
 });
 

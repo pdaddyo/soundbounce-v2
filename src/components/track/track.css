@@ -80,6 +80,11 @@
 	color: rgba(255, 255, 255, 0.65);
 }
 
+.artist:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .artistsHero {
 	font-size: 75%;
 	composes: artists;
