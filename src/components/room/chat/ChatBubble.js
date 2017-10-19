@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {linkUnfurlingRequestStart, linkUnfurlingToggleHide} from '../../../redux/modules/unfurling';
 import Linkify from 'react-linkify';
-
+import every from 'lodash/every';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Avatar from '../../user/avatar/Avatar';
@@ -15,7 +15,8 @@ import theme from './bubbles.css';
 import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
 import {syncStart} from '../../../redux/modules/sync';
 
-const soloEmojiSize = '30px';
+const maxEmojiToDrawLarge = 5;
+const largeEmojiSize = '30px';
 const maxDescriptionLength = 250;
 
 /*eslint-disable */
@@ -34,13 +35,13 @@ class ChatBubble extends Component {
 
 	emojify(text) {
 		const emojifiedText = ReactEmoji.emojify(text);
-		// check if this is just an emoji with no other text
+		// check if this is just emojis with no other text
 		if (Array.isArray(emojifiedText) &&
-			emojifiedText.length === 1 &&
-			typeof emojifiedText[0] !== 'string') {
-			// we have a single emoji here, so render it bigger!
+			emojifiedText.length <= maxEmojiToDrawLarge &&
+			every(emojifiedText, item => typeof item !== 'string')) {
+			// we have just emoji here, so render it bigger!
 			return ReactEmoji.emojify(text,
-				{attributes: {width: soloEmojiSize, height: soloEmojiSize}}
+				{attributes: {width: largeEmojiSize, height: largeEmojiSize}}
 			);
 		}
 		return emojifiedText;
