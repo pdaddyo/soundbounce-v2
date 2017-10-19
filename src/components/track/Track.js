@@ -136,6 +136,7 @@ class Track extends Component {
 					<div className={sizeTheme('artists')}>
 						{track.artists && intersperse(track.artists.map(artist => (
 							<span className={theme.artist}
+								  key={artist.id}
 								  onClick={() => {
 									  router.push(`/room/${currentRoomId}/search`);
 									  performSearch(`artist:"${artist.name}"`);
