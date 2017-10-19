@@ -95,8 +95,10 @@ class Track extends Component {
 
 		const albumArt = track.albumArt ||
 			(track.album.images.length > 1
-					? track.album.images[1].url : (track.album.images.length === 1 ?
-						track.album.images[0].url : null)
+					? track.album.images[1].url : (
+						track.album.images.length === 1
+							? track.album.images[0].url : null
+					)
 			);
 
 		return (

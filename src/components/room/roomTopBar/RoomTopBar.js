@@ -49,7 +49,7 @@ class RoomTopBar extends Component {
 					{params.roomTab === 'search' ? (
 						<div className={theme.closeIcon}
 							 onClick={() => {
-								 this.props.clearSearch();
+								 clearSearch();
 								 this.context.router.push(`/room/${room.id}`);
 							 }}>
 							✖
