@@ -8,7 +8,7 @@
 	text-align: left;
 	background-color: rgba(20, 20, 20, 0.95);
 	background-clip: padding-box;
-	border: 1px solid rgba(0, 0, 0, 1);
+	border: 1px solid rgba(0, 0, 0, 0.95);
 	border-radius: .25rem;
 	outline: none;
 	opacity: 0;

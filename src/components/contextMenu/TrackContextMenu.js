@@ -14,23 +14,23 @@ export default class TrackContextMenu extends Component {
 	render() {
 		return (
 			<ContextMenu id='track'>
-				<MenuItem data={"some_data"} onClick={this.handleClick}>
+				<MenuItem onClick={this.handleClick}>
 					Vote to skip
 				</MenuItem>
 				<MenuItem divider/>
 				<SubMenu title='Save to playlist'>
-					<MenuItem data={"some_data"} onClick={this.handleClick}>
+					<MenuItem onClick={this.handleClick}>
 						Starred
 					</MenuItem>
-					<MenuItem data={"some_data"} onClick={this.handleClick}>
+					<MenuItem onClick={this.handleClick}>
 						DnB forever
 					</MenuItem>
 				</SubMenu>
 				<MenuItem divider/>
-				<MenuItem data={"some_data"} onClick={this.handleClick}>
+				<MenuItem onClick={this.handleClick}>
 					View artist
 				</MenuItem>
-				<MenuItem data={"some_data"} onClick={this.handleClick}>
+				<MenuItem onClick={this.handleClick}>
 					View album
 				</MenuItem>
 
