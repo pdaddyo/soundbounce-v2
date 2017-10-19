@@ -85,7 +85,7 @@ class Track extends Component {
 									 onClickVote(track.id);
 								 }
 							 }}>
-							<ArrowUpThick size={1.5}/>
+							<ArrowUpThick size={1.6}/>
 						</div>
 					</div>
 				);
