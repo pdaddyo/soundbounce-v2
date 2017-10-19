@@ -36,6 +36,7 @@ class TrackContextMenu extends Component {
 						{
 							take(myPlaylists, 15).map(playlist => (
 								<MenuItem data={{trigger, playlist}}
+										  key={playlist.id}
 										  onClick={handleClickSaveToPlaylist}>
 									{ellipsize(playlist.name, 50)}
 								</MenuItem>
