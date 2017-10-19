@@ -61,6 +61,10 @@ export default class Refill {
 				}
 
 				this.debug(`Trying to find ${howManyTracksToAdd} (ish) tracks to add...`)
+
+				if (howManyTracksToAdd < 1) {
+					return;
+				}
 				for (let source of sources) {
 					if (source.percent === 0) {
 						return;
