@@ -18,10 +18,13 @@ class SearchResults extends Component {
 			<div className={theme.container}>
 				{
 					tracks.map((track, index) => (
-						<Track key={track.id}
+						<div className={theme.trackContainer}
+							 key={track.id}>
+						<Track
 							   track={{...track, votes: [], canVote: true}}
 							   onClickVote={onClickVote}
-							   size='normal'/>
+							   size='small'/>
+						</div>
 					))
 				}
 			</div>

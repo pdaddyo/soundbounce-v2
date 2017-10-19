@@ -55,11 +55,12 @@ class Track extends Component {
 
 		let votes = track.votes && (
 				<div className={sizeTheme('votes')}>
-					<div className={theme.voteUpButton} onClick={() => {
-						if (track.canVote && onClickVote) {
-							onClickVote(track.id);
-						}
-					}}>
+					<div className={theme.voteUpButton}
+						 onClick={() => {
+							 if (track.canVote && onClickVote) {
+								 onClickVote(track.id);
+							 }
+						 }}>
 						{track.canVote && (
 							<ArrowUpThick/>
 						)}
@@ -75,15 +76,20 @@ class Track extends Component {
 
 		if (size === 'small') {
 			votes = null;
-			/*
-			 (
-			 <div className={sizeTheme('votes')}>
-			 <div className={theme.voteUpButton}>
-			 <ArrowUpThick size={1}/>
-			 </div>
-			 </div>
-			 );
-			 */
+			if (track.canVote) {
+				votes = (
+					<div className={sizeTheme('votes')}>
+						<div className={theme.voteUpButton}
+							 onClick={() => {
+								 if (track.canVote && onClickVote) {
+									 onClickVote(track.id);
+								 }
+							 }}>
+							<ArrowUpThick size={1.5}/>
+						</div>
+					</div>
+				);
+			}
 		}
 
 		const progress = percentComplete > -1 ? (

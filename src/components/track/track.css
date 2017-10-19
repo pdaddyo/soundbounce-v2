@@ -86,7 +86,7 @@
 }
 
 .artistsSmall {
-	font-size: 75%;
+	font-size: 80%;
 	composes: artists;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -104,7 +104,7 @@
 
 .nameSmall {
 	composes: name;
-	font-size: 80%;
+	font-size: 75%;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
