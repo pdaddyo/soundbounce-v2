@@ -53,7 +53,7 @@ export default class RoomMenu extends Component {
 					listeners.length === 1 ? '' : 's'
 				}</MenuItem>
 				<MenuItem tab='about'>About</MenuItem>
-				<MenuItem tab='top'>Top Rated</MenuItem>
+				<MenuItem tab='stats'>Stats</MenuItem>
 			</div>
 		);
 	}

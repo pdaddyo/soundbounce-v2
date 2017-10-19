@@ -16,6 +16,7 @@ import TopBar from 'components/room/roomTopBar/RoomTopBar';
 import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 import Gradient from 'components/room/backgrounds/Gradient';
 import FlipMove from 'react-flip-move';
+import SearchResults from 'components/room/searchResults/SearchResults';
 
 import theme from './roomView.css';
 import Play from 'components/svg/icons/Play';
@@ -121,46 +122,54 @@ class RoomView extends Component {
 			<ColorContextProvider colors={room.config.colors}>
 				<ScrollStyle size={0.6} alpha={0.35}/>
 				<Gradient />
-				<TopBar room={room}/>
+				<TopBar room={room} params={params}/>
 				<div className={theme.roomAndChat}>
-					<div className={theme.room} ref='room'>
-						<div className={theme.play} onClick={syncStart}>
-							{(!sync.isSynced) && (
-								<div className={theme.playSurround}>
-									<Play/>
-								</div>
+					{roomTab !== 'search' ? (
+						<div className={theme.room} ref='room'>
+							<div className={theme.play} onClick={syncStart}>
+								{(!sync.isSynced) && (
+									<div className={theme.playSurround}>
+										<Play/>
+									</div>
+								)}
+							</div>
+							{nowPlayingTrack && (
+								<Track track={nowPlayingTrack}
+									   percentComplete={progressPercent}
+									   size='hero'
+								/>
 							)}
-						</div>
-						{nowPlayingTrack && (
-							<Track track={nowPlayingTrack}
-								   percentComplete={progressPercent}
-								   size='hero'
-							/>
-						)}
-						<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
-						<div className={theme.roomPlaylistContentArea}>
-							<div style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
-								<FlipMove duration={400}
-										  easing='ease-in-out'
-										  enterAnimation='elevator'>
-									{drop(playlist, 1).map((track, index) => (
-										<Track key={track.id}
-											   track={track}
-											   onClickVote={this.onClickVote}
-											   size='normal'
-											   visible={roomTab === 'next-up'}/>
-									))}
-								</FlipMove>
+							<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
+							<div className={theme.roomPlaylistContentArea}>
+								<div style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
+									<FlipMove duration={400}
+											  easing='ease-in-out'
+											  enterAnimation='elevator'>
+										{drop(playlist, 1).map((track, index) => (
+											<Track key={track.id}
+												   track={track}
+												   onClickVote={this.onClickVote}
+												   size='normal'
+												   visible={roomTab === 'next-up'}/>
+										))}
+									</FlipMove>
+								</div>
+								<div className={theme.otherTabs}>
+									{roomTab === 'listeners' &&
+									<Listeners userIds={room.listeners}/>}
+									{roomTab === 'about' &&
+									<About room={room} currentUser={currentUser}/>}
+									{roomTab === 'stats' &&
+									<div>Top Tracks / Artists / Contributors coming soon!</div>}
+								</div>
 							</div>
-							<div className={theme.otherTabs}>
-								{roomTab === 'listeners' && <Listeners userIds={room.listeners}/>}
-								{roomTab === 'about' &&
-								<About room={room} currentUser={currentUser}/>}
-								{roomTab === 'top' &&
-								<div>Top Tracks / Artists / Contributors coming soon!</div>}
-							</div>
+
 						</div>
-					</div>
+					) : (
+						<div className={theme.room} ref='room'>
+							<SearchResults onClickVote={this.onClickVote}/>
+						</div>
+					)}
 					<div className={theme.chat}>
 						<ChatPanel onChatSend={this.onChatSend.bind(this)}
 								   actionLog={actionLogForChatPanel}/>

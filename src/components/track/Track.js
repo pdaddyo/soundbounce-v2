@@ -92,11 +92,18 @@ class Track extends Component {
 				</div>
 			</div>
 		) : null;
+
+		const albumArt = track.albumArt ||
+			(track.album.images.length > 1
+					? track.album.images[1].url : (track.album.images.length === 1 ?
+						track.album.images[0].url : null)
+			);
+
 		return (
 			<div className={sizeTheme('track')}
 				 style={{visibility: visible ? 'visible' : 'hidden'}}>
 				<div className={sizeTheme('artwork')}
-					 style={{backgroundImage: `url(${track.albumArt})`}}
+					 style={{backgroundImage: `url(${albumArt})`}}
 					 onMouseDown={this.artworkMouseDown}
 				>
 					{progress}

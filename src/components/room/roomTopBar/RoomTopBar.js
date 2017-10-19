@@ -7,20 +7,30 @@ import TextInput from 'components/ui/textInput/TextInput';
 import SearchIcon from 'components/svg/icons/Search';
 import RoomLeave from 'components/svg/icons/RoomLeave';
 import {Link} from 'react-router';
+import debounce from 'lodash/debounce';
 
 import theme from './roomTopBar.css';
+import {spotifySearchRequest} from '../../../redux/modules/spotify';
+import {connect} from 'react-redux';
+import {uiUpdate} from '../../../redux/modules/ui';
 
-export default class RoomTopBar extends Component {
+class RoomTopBar extends Component {
 	static propTypes = {
-		room: PropTypes.object
+		room: PropTypes.object,
+		params: PropTypes.any,
+		performSearch: PropTypes.func,
+		clearSearch: PropTypes.func
 	};
 
 	static contextTypes = {
-		colors: PropTypes.object
+		colors: PropTypes.object,
+		router: PropTypes.object
 	};
 
+	debouncedSearch = debounce((query) => this.props.performSearch(query), 250);
+
 	render() {
-		const {room} = this.props;
+		const {room, params, clearSearch} = this.props;
 		const {colors} = this.context;
 		const {rgba, primary} = colors;
 
@@ -29,10 +39,26 @@ export default class RoomTopBar extends Component {
 				<div className={theme.search}>
 					<TextInput className={theme.input}
 							   uiKey='inRoomSearch'
+							   onFocus={() => {
+								   this.context.router.push(`/room/${room.id}/search`);
+							   }}
+							   onChange={(evt) => {
+								   this.debouncedSearch(evt.target.value);
+							   }}
 							   placeholder='+ Contribute track to room'/>
-					<div className={theme.searchIcon}>
-						<SearchIcon/>
-					</div>
+					{params.roomTab === 'search' ? (
+						<div className={theme.closeIcon}
+							 onClick={() => {
+								 this.props.clearSearch();
+								 this.context.router.push(`/room/${room.id}`);
+							 }}>
+							✖
+						</div>
+					) : (
+						<div className={theme.searchIcon}>
+							<SearchIcon/>
+						</div>
+					)}
 				</div>
 				<div className={theme.topBarRight} style={{color: rgba(primary, 0.9)}}>
 					<div className={theme.roomName}>
@@ -48,3 +74,17 @@ export default class RoomTopBar extends Component {
 		);
 	}
 }
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	performSearch: (query) => {
+		dispatch(spotifySearchRequest(query));
+	},
+	clearSearch: () => {
+		dispatch(uiUpdate({key: 'inRoomSearch', newState: ''}));
+	}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoomTopBar);
+

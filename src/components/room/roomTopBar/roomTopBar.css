@@ -25,6 +25,16 @@
 	opacity: 0.6;
 }
 
+.closeIcon {
+	position: absolute;
+	right: 0.5rem;
+	top: 0.2rem;
+	cursor: pointer;
+	opacity: 0.8;
+	font-size: 1.5rem;
+
+}
+
 .searchIcon:hover {
 	opacity: 0.8;
 }

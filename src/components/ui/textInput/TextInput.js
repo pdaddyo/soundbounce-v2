@@ -10,6 +10,9 @@ class TextInput extends Component {
 	static propTypes = {
 		uiKey: PropTypes.string.isRequired,
 		onEnterPressed: PropTypes.func,
+		onFocus: PropTypes.func,
+		onKeyDown: PropTypes.func,
+		onChange: PropTypes.func,
 		updateText: PropTypes.func,
 		text: PropTypes.string,
 		className: PropTypes.string,
@@ -18,6 +21,9 @@ class TextInput extends Component {
 
 	onChange = (evt) => {
 		this.props.updateText(evt.target.value);
+		if (this.props.onChange) {
+			this.props.onChange(evt);
+		}
 	};
 
 	onKeyDown = (evt) => {
@@ -27,10 +33,14 @@ class TextInput extends Component {
 			onEnterPressed(text);
 			updateText('');
 		}
+
+		if (this.props.onKeyDown) {
+			this.props.onKeyDown(evt);
+		}
 	};
 
 	render() {
-		const {text, className, placeholder, uiKey} = this.props;
+		const {text, className, placeholder, uiKey, onFocus} = this.props;
 		return (
 			<input type='text'
 				   name={uiKey}
@@ -40,7 +50,9 @@ class TextInput extends Component {
 				   onChange={this.onChange}
 				   placeholder={placeholder}
 				   maxLength={255}
-				   onKeyDown={this.onKeyDown}/>
+				   onKeyDown={this.onKeyDown}
+				   onFocus={onFocus}
+			/>
 		);
 	}
 }

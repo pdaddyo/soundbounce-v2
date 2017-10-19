@@ -11,6 +11,7 @@ import {
 	spotifyPlayTrack,
 	spotifyDisableShuffle,
 	spotifyDevicesUpdate,
+	spotifySearchUpdate,
 	actions as spotifyActions
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
@@ -292,9 +293,8 @@ function * spotifyApiCall({url, method, body}) {
 function * watchForAuthRequired() {
 	while (true) {
 		yield take(spotifyActions.SPOTIFY_AUTH_REQUIRED);
-		// for now we'll redirect to the login page on the server which will bring us back
+		// redirect to the login page on the server which will bring us back
 		// auth'd with a token in the url hash
-		// todo: use refresh token instead of redirect if available
 		if (window.location.pathname.indexOf('/error/') === 0) {
 			return;
 		}
@@ -360,6 +360,20 @@ function * watchForSwitchDevice() {
 	}
 }
 
+function * watchForSearchRequest() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+
+	// listen for requests to fetch search results
+	while (true) {
+		const {payload: {query}} = yield take(spotifyActions.SPOTIFY_SEARCH_REQUEST);
+		const apiResult = yield call(spotifyApiCall, {
+			url: `/v1/search?q=${escape(query)}&type=track&limit=50`
+		});
+		yield put(spotifySearchUpdate({query, apiResult}));
+	}
+}
+
 export default function * spotifyInit() {
 	try {
 		yield [
@@ -369,6 +383,7 @@ export default function * spotifyInit() {
 			watchForDevicesRequest(),
 			watchForSwitchDevice(),
 			watchForPreviewTrack(),
+			watchForSearchRequest(),
 			beginLogin(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()

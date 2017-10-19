@@ -18,6 +18,8 @@ export const SPOTIFY_PLAYER_STATE_REQUEST = 'SPOTIFY_PLAYER_STATE_REQUEST';
 export const SPOTIFY_PLAYER_STATE_UPDATE = 'SPOTIFY_PLAYER_STATE_UPDATE';
 export const SPOTIFY_DEVICES_REQUEST = 'SPOTIFY_DEVICES_REQUEST';
 export const SPOTIFY_DEVICES_UPDATE = 'SPOTIFY_DEVICES_UPDATE';
+export const SPOTIFY_SEARCH_REQUEST = 'SPOTIFY_SEARCH_REQUEST';
+export const SPOTIFY_SEARCH_UPDATE = 'SPOTIFY_SEARCH_UPDATE';
 export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
 export const SPOTIFY_PREVIEW_TRACK = 'SPOTIFY_PREVIEW_TRACK';
 export const SPOTIFY_SWITCH_DEVICE = 'SPOTIFY_SWITCH_DEVICE';
@@ -34,6 +36,8 @@ export const actions = {
 	SPOTIFY_PROFILE_REQUEST,
 	SPOTIFY_DEVICES_REQUEST,
 	SPOTIFY_DEVICES_UPDATE,
+	SPOTIFY_SEARCH_REQUEST,
+	SPOTIFY_SEARCH_UPDATE,
 	SPOTIFY_PLAYER_STATE_REQUEST,
 	SPOTIFY_PLAYER_STATE_UPDATE,
 	SPOTIFY_PLAY_TRACK,
@@ -52,6 +56,7 @@ const defaultState = {
 	isLoggedIn: false,
 	player: {},
 	devices: [],
+	searchResults: {}, // {query, apiResult}
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -92,6 +97,16 @@ export const spotifyDevicesRequest = () => ({
 export const spotifyDevicesUpdate = (devices) => ({
 	type: SPOTIFY_DEVICES_UPDATE,
 	payload: {devices}
+});
+
+export const spotifySearchRequest = (query) => ({
+	type: SPOTIFY_SEARCH_REQUEST,
+	payload: {query}
+});
+
+export const spotifySearchUpdate = ({query, apiResult}) => ({
+	type: SPOTIFY_SEARCH_UPDATE,
+	payload: {query, apiResult}
 });
 
 export const spotifyPlayTrack = ({trackId, offset}) => ({
@@ -170,6 +185,23 @@ const ACTION_HANDLERS = {
 		...state,
 		devices: payload.devices
 	}),
+	[SPOTIFY_SEARCH_UPDATE]: (state, {payload}) => {
+		// merge any track data from search results
+		const {query, apiResult} = payload;
+		if (!apiResult) {
+			return state;
+		}
+		const {tracks} = apiResult;
+		const newState = {
+			...state,
+			searchResults: {...state.searchResults, [query]: apiResult}
+		};
+
+		if (tracks && tracks.items) {
+			return mergeTracks({state: newState, tracks: tracks.items});
+		}
+		return newState;
+	},
 	[ROOM_FULL_SYNC]: (state, {payload}) => {
 		// merge any track data from room sync
 		return mergeTracks({state, tracks: payload.fullSync.tracks});
