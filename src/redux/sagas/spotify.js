@@ -34,7 +34,6 @@ function * beginLogin() {
 			const [, accessToken, refreshToken, expires] = matches;
 			// we have a hash in our url, so initialise in redux
 			yield put(spotifyAuthInit({accessToken, refreshToken, expires}));
-			console.log(accessToken);
 			// now get the user's profile information since token might be fake / expired
 			// this will throw if there's a problem.
 			const profile = yield call(getMyProfile);
