@@ -13,8 +13,10 @@ import {connect} from 'react-redux';
 import {syncStart} from '../../redux/modules/sync';
 import {uiUpdate} from '../../redux/modules/ui';
 import intersperse from 'shared/intersperse';
+import {ContextMenuTrigger} from 'react-contextmenu';
 
 class Track extends Component {
+
 	static propTypes = {
 		track: PropTypes.object,
 		size: PropTypes.oneOf(['normal', 'hero', 'small']),
@@ -36,6 +38,9 @@ class Track extends Component {
 		percentComplete: -1,
 		visible: true
 	};
+
+	// trigger for context menu
+	contextTrigger = null;
 
 	artworkMouseDown = evt => {
 		this.props.previewStart(this.props.track.id);
@@ -121,41 +126,47 @@ class Track extends Component {
 			);
 
 		return (
-			<div className={sizeTheme('track')}
-				 style={{visibility: visible ? 'visible' : 'hidden'}}>
-				<div className={sizeTheme('artwork')}
-					 style={{backgroundImage: `url(${albumArt})`}}
-					 onMouseDown={this.artworkMouseDown}
-				>
-					{progress}
-				</div>
-				<div className={sizeTheme('artistsAndTrackName')}>
-					<div className={sizeTheme('name')}>
-						{track.name}
+			<ContextMenuTrigger id="track" ref={ctx => this.contextTrigger = ctx}>
+				<div className={sizeTheme('track')}
+					 style={{visibility: visible ? 'visible' : 'hidden'}}>
+					<div className={sizeTheme('artwork')}
+						 style={{backgroundImage: `url(${albumArt})`}}
+						 onMouseDown={this.artworkMouseDown}>
+						{progress}
 					</div>
-					<div className={sizeTheme('artists')}>
-						{track.artists && intersperse(track.artists.map(artist => (
-							<span className={theme.artist}
-								  key={artist.id}
-								  onClick={() => {
-									  router.push(`/room/${currentRoomId}/search`);
-									  performSearch(`artist:"${artist.name}"`);
-								  }}>
+					<div className={sizeTheme('artistsAndTrackName')}>
+						<div className={sizeTheme('name')}>
+							{track.name}
+						</div>
+						<div className={sizeTheme('artists')}>
+							{track.artists && intersperse(track.artists.map(artist => (
+								<span className={theme.artist}
+									  key={artist.id}
+									  onClick={() => {
+										  router.push(`/room/${currentRoomId}/search`);
+										  performSearch(`artist:"${artist.name}"`);
+									  }}>
 								{artist.name}
+								</span>
+							)), ', ')}
+						</div>
+						{size === 'hero' && votes}
+					</div>
+					{(size === 'normal' || size === 'small') && votes}
+					{size !== 'small' && (
+						<div className={sizeTheme('buttons')}>
+							<span className={theme.button}
+								  onClick={e => {
+									  if (this.contextTrigger) {
+										  this.contextTrigger.handleContextClick(e);
+									  }
+								  }}>
+								<DotsVertical color={'rgba(255,255,255, 0.8'}/>
 							</span>
-						)), ', ')}
-					</div>
-					{size === 'hero' && votes}
+						</div>
+					)}
 				</div>
-				{(size === 'normal' || size === 'small') && votes}
-				{size !== 'small' && (
-					<div className={sizeTheme('buttons')}>
-					<span className={theme.button}>
-						<DotsVertical color={'rgba(255,255,255, 0.8'}/>
-					</span>
-					</div>
-				)}
-			</div>
+			</ContextMenuTrigger>
 		);
 	}
 }

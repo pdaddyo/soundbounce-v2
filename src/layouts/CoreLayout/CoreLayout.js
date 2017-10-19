@@ -4,8 +4,10 @@ import {selectCurrentUser} from 'redux/modules/users';
 import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
 
+
 import theme from './layout.css';
-import Dots from '../../components/room/backgrounds/Dots';
+import Dots from 'components/room/backgrounds/Dots';
+import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 
 class CoreLayout extends Component {
 	static propTypes = {
@@ -28,6 +30,7 @@ class CoreLayout extends Component {
 				<div className={theme.container}>
 					{children}
 				</div>
+				<TrackContextMenu/>
 			</div>
 		);
 	}
