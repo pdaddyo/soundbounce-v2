@@ -26,10 +26,9 @@ class TrackContextMenu extends Component {
 		const {myPlaylists, handleClickSaveToPlaylist, id, trigger} = this.props;
 		return (
 			<ContextMenu id={id}>
-				<MenuItem onClick={this.handleClick}>
-					Vote to skip
+				<MenuItem disabled={true}>
+					{trigger && ellipsize(trigger.trackName, 40)}
 				</MenuItem>
-
 				{myPlaylists && <MenuItem divider/>}
 				{myPlaylists && (
 					<SubMenu title='Save to playlist'>
@@ -46,11 +45,12 @@ class TrackContextMenu extends Component {
 				)}
 				<MenuItem divider/>
 				<MenuItem onClick={this.handleClick}>
-					View artist
+					Vote to skip
 				</MenuItem>
 				<MenuItem onClick={this.handleClick}>
 					View album
 				</MenuItem>
+
 
 			</ContextMenu>
 		);
