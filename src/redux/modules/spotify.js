@@ -24,6 +24,9 @@ export const SPOTIFY_PLAY_TRACK = 'SPOTIFY_PLAY_TRACK';
 export const SPOTIFY_PREVIEW_TRACK = 'SPOTIFY_PREVIEW_TRACK';
 export const SPOTIFY_SWITCH_DEVICE = 'SPOTIFY_SWITCH_DEVICE';
 export const SPOTIFY_DISABLE_SHUFFLE = 'SPOTIFY_DISABLE_SHUFFLE';
+export const SPOTIFY_MY_PLAYLISTS_REQUEST = 'SPOTIFY_MY_PLAYLISTS_REQUEST';
+export const SPOTIFY_MY_PLAYLISTS_UPDATE = 'SPOTIFY_MY_PLAYLISTS_UPDATE';
+export const SPOTIFY_ADD_TRACK_TO_PLAYLIST = 'SPOTIFY_ADD_TRACK_TO_PLAYLIST';
 
 export const actions = {
 	SPOTIFY_AUTH_REQUIRED,
@@ -43,7 +46,10 @@ export const actions = {
 	SPOTIFY_PLAY_TRACK,
 	SPOTIFY_PREVIEW_TRACK,
 	SPOTIFY_SWITCH_DEVICE,
-	SPOTIFY_DISABLE_SHUFFLE
+	SPOTIFY_DISABLE_SHUFFLE,
+	SPOTIFY_MY_PLAYLISTS_REQUEST,
+	SPOTIFY_MY_PLAYLISTS_UPDATE,
+	SPOTIFY_ADD_TRACK_TO_PLAYLIST
 };
 
 // ------------------------------------
@@ -57,6 +63,7 @@ const defaultState = {
 	player: {},
 	devices: [],
 	searchResults: {}, // {query, apiResult}
+	myPlaylists: [],
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -128,6 +135,21 @@ export const spotifySwitchDevice = (deviceId) => ({
 	payload: {deviceId}
 });
 
+export const spotifyMyPlaylistsRequest = (options) => ({
+	type: SPOTIFY_MY_PLAYLISTS_REQUEST,
+	payload: options
+});
+
+export const spotifyMyPlaylistsUpdate = (playlists) => ({
+	type: SPOTIFY_MY_PLAYLISTS_UPDATE,
+	payload: {playlists}
+});
+
+export const spotifyAddTrackToPlaylist = ({playlistId, trackId}) => ({
+	type: SPOTIFY_ADD_TRACK_TO_PLAYLIST,
+	payload: {playlistId, trackId}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -148,76 +170,83 @@ const mergeTracks = ({state, tracks}) => {
 };
 
 const ACTION_HANDLERS = {
-	[SPOTIFY_AUTH_INIT]: (state, {payload}) => ({
-		...state,
-		accessToken: payload.accessToken,
-		refreshToken: payload.refreshToken
-	}),
-	[SPOTIFY_AUTH_OK]: (state, {payload}) => ({
-		...state,
-		isLoggedIn: true
-	}),
-	[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => {
-		const {item} = payload.playerState;
-		const newState = {
+		[SPOTIFY_AUTH_INIT]: (state, {payload}) => ({
 			...state,
-			player: payload.playerState
-		};
+			accessToken: payload.accessToken,
+			refreshToken: payload.refreshToken
+		}),
+		[SPOTIFY_AUTH_OK]: (state, {payload}) => ({
+			...state,
+			isLoggedIn: true
+		}),
+		[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => {
+			const {item} = payload.playerState;
+			const newState = {
+				...state,
+				player: payload.playerState
+			};
 
-		// this might be a new track that we haven't seen before, check if it's in our
-		// track state already
-		if (item && item.type !== 'track') {
-			// we're only set up to deal with spotify playing tracks
-			throw new Error(`Unexpected spotify player item type (${item.type})`);
-		}
+			// this might be a new track that we haven't seen before, check if it's in our
+			// track state already
+			if (item && item.type !== 'track') {
+				// we're only set up to deal with spotify playing tracks
+				throw new Error(`Unexpected spotify player item type (${item.type})`);
+			}
 
-		if (!state.tracks[item.id]) {
-			// add track to state
-			newState.tracks = update(state.tracks, {[item.id]: {$set: item}});
-		} else {
-			// update existing info with our info (we may have requested more details already, so
-			// don't want to overwrite the existing track.
-			newState.tracks[item.id] = {...newState.tracks[item.id], ...item};
-		}
-		return newState;
-	},
-	[SPOTIFY_DEVICES_UPDATE]: (state, {payload}) => ({
-		...state,
-		devices: payload.devices
-	}),
-	[SPOTIFY_SEARCH_UPDATE]: (state, {payload}) => {
-		// merge any track data from search results
-		const {query, apiResult} = payload;
-		if (!apiResult) {
+			if (!state.tracks[item.id]) {
+				// add track to state
+				newState.tracks = update(state.tracks, {[item.id]: {$set: item}});
+			} else {
+				// update existing info with our info (we may have requested more details already, so
+				// don't want to overwrite the existing track.
+				newState.tracks[item.id] = {...newState.tracks[item.id], ...item};
+			}
+			return newState;
+		},
+		[SPOTIFY_DEVICES_UPDATE]: (state, {payload}) => ({
+			...state,
+			devices: payload.devices
+		}),
+		[SPOTIFY_SEARCH_UPDATE]: (state, {payload}) => {
+			// merge any track data from search results
+			const {query, apiResult} = payload;
+			if (!apiResult) {
+				return state;
+			}
+			const {tracks} = apiResult;
+			const newState = {
+				...state,
+				searchResults: {...state.searchResults, [query]: apiResult}
+			};
+
+			if (tracks && tracks.items) {
+				return mergeTracks({state: newState, tracks: tracks.items});
+			}
+			return newState;
+		},
+		[SPOTIFY_MY_PLAYLISTS_UPDATE]: (state, {payload: {playlists}}) => (
+			{
+				...state,
+				myPlaylists: [...state.myPlaylists, ...playlists]
+			}
+		),
+		[ROOM_FULL_SYNC]: (state, {payload}) => {
+			// merge any track data from room sync
+			return mergeTracks({state, tracks: payload.fullSync.tracks});
+		},
+		[SOCKET_HOME_DATA_OK]: (state, {payload}) => {
+			// merge any track data from room sync
+			return mergeTracks({state, tracks: payload.home.tracks});
+		},
+		[SOCKET_ROOM_EVENT]: (state, {payload}) => {
+			// merge any track data from adds / votes if present
+			if (payload.tracks) {
+				return mergeTracks({state, tracks: payload.tracks});
+			}
 			return state;
 		}
-		const {tracks} = apiResult;
-		const newState = {
-			...state,
-			searchResults: {...state.searchResults, [query]: apiResult}
-		};
-
-		if (tracks && tracks.items) {
-			return mergeTracks({state: newState, tracks: tracks.items});
-		}
-		return newState;
-	},
-	[ROOM_FULL_SYNC]: (state, {payload}) => {
-		// merge any track data from room sync
-		return mergeTracks({state, tracks: payload.fullSync.tracks});
-	},
-	[SOCKET_HOME_DATA_OK]: (state, {payload}) => {
-		// merge any track data from room sync
-		return mergeTracks({state, tracks: payload.home.tracks});
-	},
-	[SOCKET_ROOM_EVENT]: (state, {payload}) => {
-		// merge any track data from adds / votes if present
-		if (payload.tracks) {
-			return mergeTracks({state, tracks: payload.tracks});
-		}
-		return state;
 	}
-};
+;
 
 // ------------------------------------
 // Reducer

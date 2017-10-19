@@ -12,6 +12,8 @@ import {
 	spotifyDisableShuffle,
 	spotifyDevicesUpdate,
 	spotifySearchUpdate,
+	spotifyMyPlaylistsUpdate,
+	spotifyMyPlaylistsRequest,
 	actions as spotifyActions
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
@@ -32,6 +34,7 @@ function * beginLogin() {
 			const [, accessToken, refreshToken, expires] = matches;
 			// we have a hash in our url, so initialise in redux
 			yield put(spotifyAuthInit({accessToken, refreshToken, expires}));
+			console.log(accessToken);
 			// now get the user's profile information since token might be fake / expired
 			// this will throw if there's a problem.
 			const profile = yield call(getMyProfile);
@@ -374,6 +377,37 @@ function * watchForSearchRequest() {
 	}
 }
 
+function * loadMyPlaylists() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+
+	yield put(spotifyMyPlaylistsRequest());
+
+	// grab playlists
+	const {items} = yield call(spotifyApiCall, {
+		url: '/v1/me/playlists?limit=50'
+	});
+
+	if (items) {
+		yield put(spotifyMyPlaylistsUpdate(items));
+	}
+}
+
+function * watchForAddTrackToPlaylist() {
+	// listen for requests to fetch search results
+	while (true) {
+		const {payload: {playlistId, trackId}} = yield take(spotifyActions.SPOTIFY_ADD_TRACK_TO_PLAYLIST);
+		const userId = yield select(state => state.users.currentUserId);
+		yield call(spotifyApiCall, {
+			url: `/v1/users/${escape(userId)}/playlists/${playlistId}/tracks`,
+			method: 'POST',
+			body: JSON.stringify({uris: [`spotify:track:${trackId}`], position: 0})
+		});
+
+		// todo: toast style notifications to say it's added
+	}
+}
+
 export default function * spotifyInit() {
 	try {
 		yield [
@@ -385,6 +419,8 @@ export default function * spotifyInit() {
 			watchForPreviewTrack(),
 			watchForSearchRequest(),
 			beginLogin(),
+			loadMyPlaylists(),
+			watchForAddTrackToPlaylist(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
 		];

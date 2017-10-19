@@ -23,9 +23,10 @@
 
 .react-contextmenu-item {
 	padding: 3px 20px;
-	font-weight: 400;
+	font-weight: 300;
 	line-height: 1.5;
 	color: rgba(255, 255, 255, 0.9);
+	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
 	text-align: inherit;
 	white-space: nowrap;
 	background: 0 0;
@@ -75,7 +76,3 @@
 	right: 7px;
 }
 
-.example-multiple-targets::after {
-	content: attr(data-count);
-	display: block;
-}

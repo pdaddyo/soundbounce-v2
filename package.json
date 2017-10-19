@@ -89,7 +89,7 @@
 		"cookie-parser": "^1.4.3",
 		"cookies-js": "^1.2.2",
 		"debug": "^2.2.0",
-		"ellipsize": "0.0.2",
+		"ellipsize": "^0.0.3",
 		"emoji-mart": "^0.5.0",
 		"enzyme": "^2.8.2",
 		"es6-promise": "^3.1.2",
