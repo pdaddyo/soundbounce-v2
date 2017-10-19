@@ -38,7 +38,7 @@ class ChatBubble extends Component {
 		// check if this is just emojis with no other text
 		if (Array.isArray(emojifiedText) &&
 			emojifiedText.length <= maxEmojiToDrawLarge &&
-			every(emojifiedText, item => typeof item !== 'string')) {
+			every(emojifiedText, item => typeof item !== 'string' || item.trim() === '')) {
 			// we have just emoji here, so render it bigger!
 			return ReactEmoji.emojify(text,
 				{attributes: {width: largeEmojiSize, height: largeEmojiSize}}
