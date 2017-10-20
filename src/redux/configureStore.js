@@ -8,7 +8,13 @@ import {browserHistory} from 'react-router';
 
 export default function configureStore(initialState = {}) {
 	const sagaMiddleware = createSagaMiddleware();
-	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+	let composeEnhancers = compose;
+	if (window.__REDUX_DEVTOOLS_EXTENSION__) {
+		composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+			maxAge: 32,
+			actionsBlacklist: ['ROOM_TRACK_PROGRESS']
+		});
+	}
 	const middleware = composeEnhancers(
 		applyMiddleware(sagaMiddleware, routerMiddleware(browserHistory))
 	);
