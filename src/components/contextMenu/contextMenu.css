@@ -3,7 +3,7 @@
 	min-width: 160px;
 	padding: 5px 0;
 	margin: 2px 0 0;
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 	color: rgba(255, 255, 255, 0.9);
 	text-align: left;
 	background-color: rgba(20, 20, 20, 0.95);
@@ -45,9 +45,9 @@
 
 .react-contextmenu-item.react-contextmenu-item--disabled,
 .react-contextmenu-item.react-contextmenu-item--disabled:hover {
-	color: #878a8c;
+	color: rgba(255, 255, 255, 0.6);
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.9);
 	background-color: transparent;
-	border-color: rgba(0, 0, 0, .15);
 }
 
 .react-contextmenu-item--divider {

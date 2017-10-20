@@ -128,8 +128,8 @@ class Track extends Component {
 		return (
 			<ContextMenuTrigger id='track'
 								ref={ctx => this.contextTrigger = ctx}
+								track={track}
 								trackId={track.id}
-								trackName={`${track.name} by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
 								collect={c => c}
 								holdToDisplay={-1}>
 				<div className={sizeTheme('track')}
