@@ -188,8 +188,9 @@ class ChatBubble extends Component {
 	// preview of the track that was playing when this chat was sent
 	previewMouseDown = evt => {
 		// ignore right click
-		if (evt.button && evt.button === 2)
+		if (evt.button && evt.button === 2) {
 			return;
+		}
 		const {chat: {tracks, payloads}} = this.props;
 		if (tracks.length < 1) {
 			return;
