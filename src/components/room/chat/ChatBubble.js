@@ -21,7 +21,7 @@ const largeEmojiSize = '30px';
 const maxDescriptionLength = 250;
 
 /*eslint-disable */
-const linkRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/g;
+const linkRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 /*eslint-enable */
 
 class ChatBubble extends Component {
@@ -223,6 +223,15 @@ class ChatBubble extends Component {
 
 		const track = chat.tracks.length > 0 ? chat.tracks[0] : null;
 
+		const timeStamp = (
+			<div className={userTheme('timestamp')}
+				 title={track &&
+				 `${track.name}
+by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
+				 onMouseDown={this.previewMouseDown}>
+				{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
+				{friendlyTimeStamp}
+			</div>);
 		return (
 			<div className={userTheme('container')}>
 				<div className={userTheme('bubble')}>
@@ -235,21 +244,17 @@ class ChatBubble extends Component {
 						</div>
 					))}
 				</div>
-				<ContextMenuTrigger id='track'
-									track={track}
-									trackId={track.id}
-									collect={c => c}
-									holdToDisplay={-1}>
+				{track ? (
+					// allow right click if we have a track associated
+					<ContextMenuTrigger id='track'
+										track={track}
+										trackId={track.id}
+										collect={c => c}
+										holdToDisplay={-1}>
+						{timeStamp}
+					</ContextMenuTrigger>
+				) : timeStamp}
 
-					<div className={userTheme('timestamp')}
-						 title={track &&
-						 `${track.name}
-${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
-						 onMouseDown={this.previewMouseDown}>
-						{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
-						{friendlyTimeStamp}
-					</div>
-				</ContextMenuTrigger>
 				<div className={userTheme('avatar')}>
 					<Avatar user={chat.user}/>
 				</div>
