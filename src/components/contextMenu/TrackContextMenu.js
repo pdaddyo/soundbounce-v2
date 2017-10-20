@@ -27,8 +27,7 @@ class TrackContextMenu extends Component {
 		if (!trigger) {
 			return (
 				<ContextMenu id={id}>
-					<MenuItem disabled={true}>
-					</MenuItem>
+					<MenuItem disabled={true}/>
 				</ContextMenu>
 			);
 		}
