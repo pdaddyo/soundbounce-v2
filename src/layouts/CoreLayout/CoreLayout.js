@@ -1,19 +1,29 @@
 import React, {PropTypes, Component} from 'react';
 import {connect} from 'react-redux';
 import {selectCurrentUser} from 'redux/modules/users';
+import NotifyContainer from 'react-alert';
 import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
-
+import Dots from 'components/room/backgrounds/Dots';
 
 import theme from './layout.css';
-import Dots from 'components/room/backgrounds/Dots';
-import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 
 class CoreLayout extends Component {
 	static propTypes = {
 		children: PropTypes.any,
 		currentUser: PropTypes.object
 	};
+
+	static childContextTypes = {
+		notify: PropTypes.object
+	};
+
+	getChildContext() {
+		return {notify: this.notifyRef};
+	}
+
+	// store ref to the notify container
+	notifyRef = null;
 
 	render() {
 		const {children, currentUser} = this.props;
@@ -30,7 +40,13 @@ class CoreLayout extends Component {
 				<div className={theme.container}>
 					{children}
 				</div>
-				<TrackContextMenu/>
+				<NotifyContainer ref={a => this.notifyRef = a}
+								 offset={20}
+								 position='bottom left'
+								 theme='dark'
+								 time={5000}
+								 transition='scale'/>
+
 			</div>
 		);
 	}

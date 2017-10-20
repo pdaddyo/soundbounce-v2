@@ -17,11 +17,12 @@ import ScrollStyle from '../../components/ui/scroll/ScrollStyle';
 import Gradient from 'components/room/backgrounds/Gradient';
 import FlipMove from 'react-flip-move';
 import SearchResults from 'components/room/searchResults/SearchResults';
-
-import theme from './roomView.css';
 import Play from 'components/svg/icons/Play';
 import Listeners from 'components/room/listeners/Listeners';
 import About from 'components/room/about/About';
+import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
+
+import theme from './roomView.css';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -120,6 +121,7 @@ class RoomView extends Component {
 
 		return (
 			<ColorContextProvider colors={room.config.colors}>
+				<TrackContextMenu/>
 				<ScrollStyle size={0.6} alpha={0.35}/>
 				<Gradient />
 				<TopBar room={room} params={params}/>

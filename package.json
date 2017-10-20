@@ -116,6 +116,7 @@
 		"react-addons-pure-render-mixin": "^15.5.2",
 		"react-addons-test-utils": "^15.5.1",
 		"react-addons-update": "^15.3.2",
+		"react-alert": "^2.4.0",
 		"react-contextmenu": "^2.8.0",
 		"react-dom": "^15.0.0",
 		"react-emoji": "^0.5.0",

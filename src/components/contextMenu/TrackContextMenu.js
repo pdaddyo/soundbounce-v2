@@ -19,12 +19,14 @@ class TrackContextMenu extends Component {
 		id: PropTypes.any
 	};
 
-	handleClick(e, data) {
-		console.log(data);
-	}
+	static contextTypes = {
+		notify: PropTypes.object
+	};
 
 	render() {
 		const {myPlaylists, handleClickSaveToPlaylist, id, trigger} = this.props;
+		const {notify} = this.context;
+
 		if (!trigger) {
 			return (
 				<ContextMenu id={id}>
@@ -45,6 +47,11 @@ class TrackContextMenu extends Component {
 		const songUri = `spotify:track:${track.id}`;
 		const songLink = `https://open.spotify.com/track/${track.id}`;
 
+		const copyAndNotify = url => {
+			copy(url);
+			notify.show('Link copied to clipboard', {type: 'success'});
+		};
+
 		if (album) {
 			const albumUri = `spotify:album:${album.id}`;
 			const albumLink = `https://open.spotify.com/album/${album.id}`;
@@ -58,7 +65,7 @@ class TrackContextMenu extends Component {
 					<MenuItem data={{album}}
 							  onClick={() => {
 								  console.log(track);
-								  alert('todo...');
+								  notify.show('Sorry, feature not ready yet');
 							  }}>
 						Browse in Soundbounce
 					</MenuItem>
@@ -71,11 +78,11 @@ class TrackContextMenu extends Component {
 					</MenuItem>
 					<MenuItem divider/>
 					<MenuItem data={{album}}
-							  onClick={() => copy(albumLink)}>
+							  onClick={() => copyAndNotify(albumLink)}>
 						Copy Album Link
 					</MenuItem>
 					<MenuItem data={{album}}
-							  onClick={() => copy(albumUri)}>
+							  onClick={() => copyAndNotify(albumUri)}>
 						Copy Spotify URI
 					</MenuItem>
 				</SubMenu>
@@ -90,7 +97,7 @@ class TrackContextMenu extends Component {
 				{albumMenu}
 				<MenuItem divider/>
 				<MenuItem onClick={() => {
-					alert('todo...');
+					notify.show('Sorry, feature not yet implemented!');
 				}}>
 					Vote to skip
 				</MenuItem>
@@ -117,15 +124,13 @@ class TrackContextMenu extends Component {
 				</MenuItem>
 				<MenuItem divider/>
 				<MenuItem data={{album}}
-						  onClick={() => copy(songLink)}>
+						  onClick={() => copyAndNotify(songLink)}>
 					Copy Song Link
 				</MenuItem>
 				<MenuItem data={{album}}
-						  onClick={() => copy(songUri)}>
+						  onClick={() => copyAndNotify(songUri)}>
 					Copy Spotify URI
 				</MenuItem>
-
-
 			</ContextMenu>
 		);
 	}
