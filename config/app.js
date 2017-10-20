@@ -8,7 +8,7 @@ export default {
 	buildVersion: 27,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
-		pollPlayerDelay: 5000,
+		pollPlayerDelay: 8000,
 		apiRetryDelay: 3000,
 		maxRetry: 5,
 		// when playing a track, don't then send a follow-up seek command if position < ms
