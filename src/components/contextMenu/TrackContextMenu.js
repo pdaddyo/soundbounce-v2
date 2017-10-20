@@ -25,10 +25,15 @@ class TrackContextMenu extends Component {
 	render() {
 		const {myPlaylists, handleClickSaveToPlaylist, id, trigger} = this.props;
 		if (!trigger) {
-			return null;
+			return (
+				<ContextMenu id={id}>
+					<MenuItem disabled={true}>
+					</MenuItem>
+				</ContextMenu>
+			);
 		}
-		const {track} = trigger;
 
+		const {track} = trigger;
 		let album = track.album;
 		if (!album && track.json) {
 			album = track.json.album;
