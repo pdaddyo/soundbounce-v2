@@ -7,11 +7,28 @@
 	z-index: 1000;
 	overflow: auto;
 	display: none;
-	background: rgba(0, 0, 0, .3);
+	background: rgba(0, 0, 0, .6);
 }
 
 .mm-popup--visible {
 	display: block;
+}
+
+.mm-popup__box {
+	width: 450px;
+	position: absolute;
+	top: 10%;
+	left: 50%;
+	margin-left: -225px;
+	background: #222;
+	box-shadow: 0px 5px 20px 0px rgba(126, 137, 140, 0.20);
+	border-radius: 5px;
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	border-right: 1px solid rgba(100, 110, 120, 0.1);
+	border-bottom: 1px solid rgba(100, 110, 120, 0.1);
+	border-left: 1px solid rgba(255, 255, 255, 0.1);
+	overflow: hidden;
+	z-index: 100;
 }
 
 .mm-popup__close {
@@ -38,7 +55,12 @@
 	height: 30px;
 	border-radius: 3px;
 	background: rgba(0, 0, 0, 0.5);
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-top: 1px solid rgba(255, 255, 255, 0.15);
+	border-right: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-left: 1px solid rgba(255, 255, 255, 0.15);
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.20);
+
 	outline: none;
 	-moz-box-sizing: border-box !important;
 	-webkit-box-sizing: border-box !important;
@@ -67,7 +89,7 @@
 	border: 1px solid #666;
 	text-align: center;
 	display: inline-block;
-	font-size: 12px;
+	font-size: 0.8rem;
 	font-weight: 400;
 	color: rgba(255, 255, 255, 0.7);
 	background: transparent;
@@ -91,20 +113,6 @@
 	background-color: #c5545c;
 	border-color: #c5545c;
 	color: #fff;
-}
-
-.mm-popup__box {
-	width: 350px;
-	position: absolute;
-	top: 10%;
-	left: 50%;
-	margin-left: -175px;
-	background: #222;
-	box-shadow: 0px 5px 20px 0px rgba(126, 137, 140, 0.20);
-	border-radius: 5px;
-	border: 1px solid #222;
-	overflow: hidden;
-	z-index: 100;
 }
 
 .mm-popup__box__header {

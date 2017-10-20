@@ -38,7 +38,8 @@ class HomeView extends Component {
 	clickCreateRoom = (evt) => {
 		const {createRoom} = this.props;
 		Popup.plugins().prompt({
-			title: 'Create room',
+			title: 'New room',
+			okButtonText: 'Create room',
 			placeholder: 'Type room name',
 			callback: roomName => {
 				if (!roomName) {
