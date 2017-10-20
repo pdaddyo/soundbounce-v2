@@ -14,6 +14,7 @@ import ReactEmoji from 'react-emoji';
 import theme from './bubbles.css';
 import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
 import {syncStart} from '../../../redux/modules/sync';
+import {ContextMenuTrigger} from 'react-contextmenu';
 
 const maxEmojiToDrawLarge = 5;
 const largeEmojiSize = '30px';
@@ -186,6 +187,9 @@ class ChatBubble extends Component {
 
 	// preview of the track that was playing when this chat was sent
 	previewMouseDown = evt => {
+		// ignore right click
+		if (evt.button && evt.button === 2)
+			return;
 		const {chat: {tracks, payloads}} = this.props;
 		if (tracks.length < 1) {
 			return;
@@ -230,14 +234,21 @@ class ChatBubble extends Component {
 						</div>
 					))}
 				</div>
-				<div className={userTheme('timestamp')}
-					 title={track &&
-					 `${track.name}
+				<ContextMenuTrigger id='track'
+									track={track}
+									trackId={track.id}
+									collect={c => c}
+									holdToDisplay={-1}>
+
+					<div className={userTheme('timestamp')}
+						 title={track &&
+						 `${track.name}
 ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
-					 onMouseDown={this.previewMouseDown}>
-					{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
-					{friendlyTimeStamp}
-				</div>
+						 onMouseDown={this.previewMouseDown}>
+						{sentByCurrentUser ? '' : `${chat.user.nickname} • `}
+						{friendlyTimeStamp}
+					</div>
+				</ContextMenuTrigger>
 				<div className={userTheme('avatar')}>
 					<Avatar user={chat.user}/>
 				</div>
