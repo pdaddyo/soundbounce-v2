@@ -7,6 +7,7 @@ import {spotifyAddTrackToPlaylist} from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
 import take from 'lodash/take';
 import ellipsize from 'ellipsize';
+import copy from 'clipboard-copy';
 
 import '!!style!css!./contextMenu.css';
 
@@ -39,47 +40,54 @@ class TrackContextMenu extends Component {
 		}
 		const title = `${track.name} by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`;
 
+		let albumMenu = null;
+
+		const songUri = `spotify:track:${track.id}`;
+		const songLink = `https://open.spotify.com/track/${track.id}`;
+
+		if (album) {
+			const albumUri = `spotify:album:${album.id}`;
+			const albumLink = `https://open.spotify.com/album/${album.id}`;
+
+			albumMenu = (
+				<SubMenu title='Album'>
+					<MenuItem disabled={true}>
+						{trigger && ellipsize(`${album.name}`, 40)}
+					</MenuItem>
+					<MenuItem divider/>
+					<MenuItem data={{album}}
+							  onClick={() => {
+								  console.log(track);
+								  alert('todo...');
+							  }}>
+						Browse in Soundbounce
+					</MenuItem>
+
+					<MenuItem data={{album}}
+							  onClick={() => {
+								  document.location = albumUri;
+							  }}>
+						View in Spotify
+					</MenuItem>
+					<MenuItem divider/>
+					<MenuItem data={{album}}
+							  onClick={() => copy(albumLink)}>
+						Copy Album Link
+					</MenuItem>
+					<MenuItem data={{album}}
+							  onClick={() => copy(albumUri)}>
+						Copy Spotify URI
+					</MenuItem>
+				</SubMenu>
+			);
+		}
 		return (
 			<ContextMenu id={id}>
 				<MenuItem disabled={true}>
 					<span title={title}>{trigger && ellipsize(title, 40)}</span>
 				</MenuItem>
 				<MenuItem divider/>
-				{album && (
-					<SubMenu title='Album'>
-						<MenuItem disabled={true}>
-							{trigger && ellipsize(`${album.name}`, 40)}
-						</MenuItem>
-						<MenuItem divider/>
-						<MenuItem data={{album}}
-								  onClick={() => {
-									  console.log(track);
-									  alert('todo...');
-								  }}>
-							Browse in Soundbounce
-						</MenuItem>
-
-						<MenuItem data={{album}}
-								  onClick={() => {
-									  document.location = `spotify:album:${album.id}`;
-								  }}>
-							View in Spotify
-						</MenuItem>
-						<MenuItem divider/>
-						<MenuItem data={{album}}
-								  onClick={() => {
-									  alert('todo...');
-								  }}>
-							Copy Album Link
-						</MenuItem>
-						<MenuItem data={{album}}
-								  onClick={() => {
-									  alert('todo...');
-								  }}>
-							Copy Spotify URI
-						</MenuItem>
-					</SubMenu>
-				)}
+				{albumMenu}
 				<MenuItem divider/>
 				<MenuItem onClick={() => {
 					alert('todo...');
@@ -109,15 +117,11 @@ class TrackContextMenu extends Component {
 				</MenuItem>
 				<MenuItem divider/>
 				<MenuItem data={{album}}
-						  onClick={() => {
-							  alert('todo...');
-						  }}>
+						  onClick={() => copy(songLink)}>
 					Copy Song Link
 				</MenuItem>
 				<MenuItem data={{album}}
-						  onClick={() => {
-							  alert('todo...');
-						  }}>
+						  onClick={() => copy(songUri)}>
 					Copy Spotify URI
 				</MenuItem>
 
