@@ -6,6 +6,7 @@ import {Link} from 'react-router';
 import {socketEmitRoomCreate, socketRequestHomeData} from 'redux/modules/socket';
 import {selectCurrentUser} from 'redux/modules/users';
 import defaultRoomConfig from '../../../server/soundbounce/data/defaultRoomConfig';
+import Popup from 'react-popup';
 
 import TopBar from 'components/home/homeTopBar/HomeTopBar';
 
@@ -35,21 +36,23 @@ class HomeView extends Component {
 	};
 
 	clickCreateRoom = (evt) => {
-		const {createRoom, currentUser} = this.props;
-		// todo: better ui here!
-		const roomName = prompt('Enter your room name (this will be nice ui later!)',
-			`${currentUser.nickname}'s room`);
-		if (!roomName) {
-			return;
-		}
-		const color = prompt('Enter your color', '#ad009f');
-		createRoom({
-			name: roomName,
-			config: {
-				...defaultRoomConfig,
-				colors: {
-					primary: color
+		const {createRoom} = this.props;
+		Popup.plugins().prompt({
+			title: 'Create room',
+			placeholder: 'Type room name',
+			callback: roomName => {
+				if (!roomName) {
+					return;
 				}
+				createRoom({
+					name: roomName,
+					config: {
+						...defaultRoomConfig,
+						colors: {
+							primary: '#0090FF'
+						}
+					}
+				});
 			}
 		});
 	};

@@ -5611,7 +5611,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10:
+prop-types@^15.5.10, prop-types@^15.5.6:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -5619,7 +5619,7 @@ prop-types@^15.5.10:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
+prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
   version "15.5.8"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.8.tgz#6b7b2e141083be38c8595aa51fc55775c7199394"
   dependencies:
@@ -5886,6 +5886,10 @@ react-linkify@^0.2.1:
     linkify-it "^1.2.0"
     prop-types "^15.5.8"
     tlds "^1.57.0"
+
+react-popup@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-popup/-/react-popup-0.8.0.tgz#ea8f3e5f009b0bb5b41c471d9fd740de8c278cd7"
 
 react-progress-bar-plus@^1.0.0:
   version "1.2.0"

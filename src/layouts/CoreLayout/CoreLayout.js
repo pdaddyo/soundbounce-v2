@@ -5,6 +5,7 @@ import NotifyContainer from 'react-alert';
 import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
 import Dots from 'components/room/backgrounds/Dots';
+import Popup from 'components/popup/Popup';
 
 import theme from './layout.css';
 
@@ -15,11 +16,14 @@ class CoreLayout extends Component {
 	};
 
 	static childContextTypes = {
-		notify: PropTypes.object
+		notify: PropTypes.object,
+		popup: PropTypes.object
 	};
 
 	getChildContext() {
-		return {notify: this.notifyRef};
+		return {
+			notify: this.notifyRef
+		};
 	}
 
 	// store ref to the notify container
@@ -46,7 +50,7 @@ class CoreLayout extends Component {
 								 theme='dark'
 								 time={5000}
 								 transition='scale'/>
-
+				<Popup/>
 			</div>
 		);
 	}
