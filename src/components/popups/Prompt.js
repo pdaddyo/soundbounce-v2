@@ -1,9 +1,8 @@
 /**
- * Created by paulbarrass on 20/10/2017.
+ * Created by paulbarrass on 21/10/2017.
  */
 import React, {Component, PropTypes} from 'react';
 import Popup from 'react-popup';
-import '!!style!css!./popup.css';
 
 class Prompt extends Component {
 	static propTypes = {
@@ -88,5 +87,3 @@ Popup.registerPlugin('prompt', function ({
 		}
 	});
 });
-
-export default Popup;

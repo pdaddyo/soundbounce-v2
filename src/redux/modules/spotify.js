@@ -27,6 +27,8 @@ export const SPOTIFY_DISABLE_SHUFFLE = 'SPOTIFY_DISABLE_SHUFFLE';
 export const SPOTIFY_MY_PLAYLISTS_REQUEST = 'SPOTIFY_MY_PLAYLISTS_REQUEST';
 export const SPOTIFY_MY_PLAYLISTS_UPDATE = 'SPOTIFY_MY_PLAYLISTS_UPDATE';
 export const SPOTIFY_ADD_TRACK_TO_PLAYLIST = 'SPOTIFY_ADD_TRACK_TO_PLAYLIST';
+export const SPOTIFY_AUDIO_ANALYSIS_REQUEST = 'SPOTIFY_AUDIO_ANALYSIS_REQUEST';
+export const SPOTIFY_AUDIO_ANALYSIS_UPDATE = 'SPOTIFY_AUDIO_ANALYSIS_UPDATE';
 
 export const actions = {
 	SPOTIFY_AUTH_REQUIRED,
@@ -49,7 +51,9 @@ export const actions = {
 	SPOTIFY_DISABLE_SHUFFLE,
 	SPOTIFY_MY_PLAYLISTS_REQUEST,
 	SPOTIFY_MY_PLAYLISTS_UPDATE,
-	SPOTIFY_ADD_TRACK_TO_PLAYLIST
+	SPOTIFY_ADD_TRACK_TO_PLAYLIST,
+	SPOTIFY_AUDIO_ANALYSIS_REQUEST,
+	SPOTIFY_AUDIO_ANALYSIS_UPDATE
 };
 
 // ------------------------------------
@@ -64,6 +68,7 @@ const defaultState = {
 	devices: [],
 	searchResults: {}, // {query, apiResult}
 	myPlaylists: [],
+	trackAnalysis: {}, // stored by track id
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -150,6 +155,16 @@ export const spotifyAddTrackToPlaylist = ({playlistId, trackId}) => ({
 	payload: {playlistId, trackId}
 });
 
+export const spotifyAudioAnalysisRequest = ({trackId}) => ({
+	type: SPOTIFY_AUDIO_ANALYSIS_REQUEST,
+	payload: {trackId}
+});
+
+export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysis}) => ({
+	type: SPOTIFY_AUDIO_ANALYSIS_UPDATE,
+	payload: {trackId, audioFeatures, audioAnalysis}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -223,6 +238,14 @@ const ACTION_HANDLERS = {
 				return mergeTracks({state: newState, tracks: tracks.items});
 			}
 			return newState;
+		},
+		[SPOTIFY_AUDIO_ANALYSIS_UPDATE]: (state, {payload}) => {
+			const {trackId, audioAnalysis, audioFeatures} = payload;
+			return {
+				...state,
+				audioAnalysis: {...state.audioAnalysis, [trackId]: audioAnalysis},
+				audioFeatures: {...state.audioFeatures, [trackId]: audioFeatures}
+			};
 		},
 		[SPOTIFY_MY_PLAYLISTS_UPDATE]: (state, {payload: {playlists}}) => (
 			{

@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import take from 'lodash/take';
 import ellipsize from 'ellipsize';
 import copy from 'clipboard-copy';
+import Popup from 'react-popup';
 
 import '!!style!css!./contextMenu.css';
 
@@ -115,6 +116,14 @@ class TrackContextMenu extends Component {
 						}
 					</SubMenu>
 				)}
+
+				<MenuItem onClick={() => {
+					Popup.plugins().analysis({
+						track
+					});
+				}}>
+					Audio Analysis
+				</MenuItem>
 
 				<MenuItem data={{track}}
 						  onClick={() => {

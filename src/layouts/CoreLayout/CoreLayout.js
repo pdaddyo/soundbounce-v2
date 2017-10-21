@@ -5,7 +5,7 @@ import NotifyContainer from 'react-alert';
 import MainNavigation from 'components/navigation/MainNavigation';
 import BlurredNowPlaying from 'components/player/BlurredNowPlaying';
 import Dots from 'components/room/backgrounds/Dots';
-import Popup from 'components/popup/Popup';
+import Popup from 'components/popups/Popups';
 
 import theme from './layout.css';
 
