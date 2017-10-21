@@ -3,7 +3,10 @@
  */
 import React, {Component, PropTypes} from 'react';
 import Popup from 'react-popup';
-import {spotifyAudioAnalysisRequest} from '../../redux/modules/spotify';
+import {
+	selectPlaylistTracksAndVotes,
+	spotifyAudioAnalysisRequest
+} from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
 import {XYFrame} from 'semiotic';
 import {curveMonotoneX} from 'd3-shape';
@@ -11,12 +14,15 @@ import minBy from 'lodash/minBy';
 
 import theme from './analysis.css';
 
+const width = 410;
+const height = 80;
 class Analysis extends Component {
 	static propTypes = {
 		track: PropTypes.object,
 		analysis: PropTypes.object,
 		features: PropTypes.object,
-		fetchAnalysis: PropTypes.func
+		fetchAnalysis: PropTypes.func,
+		progressPercent: PropTypes.number
 	};
 
 	componentDidMount() {
@@ -26,7 +32,7 @@ class Analysis extends Component {
 	}
 
 	render() {
-		const {analysis, features} = this.props;
+		const {analysis, features, progressPercent} = this.props;
 		if (!analysis) {
 			return <div></div>;
 		}
@@ -47,10 +53,17 @@ class Analysis extends Component {
 							  'valence',
 							  'tempo'];
 
+		let progressIndicator = null;
+		if (progressPercent > 0) {
+			const xPos = progressPercent / 100 * width;
+
+			progressIndicator = <line x1={xPos} y1="0" x2={xPos} y2={height}
+									  style={{stroke: 'rgba(255,255,255,0.8)', strokeWidth: 2}}/>;
+		}
 		return (
 			<div>
 				<XYFrame
-					size={[410, 100]}
+					size={[width, height]}
 					lines={[
 						{
 							id: 'loudness',
@@ -68,18 +81,18 @@ class Analysis extends Component {
 							}))
 						}
 					]}
-					lineRenderMode={() => 'sketchy'}
 					lineDataAccessor={'data'}
 					lineStyle={d => d.id === 'loudnessNeg' ? ({
 						fill: '#00BFFF',
-						fillOpacity: 0.2,
+						fillOpacity: 0.7,
 						stroke: '#FA0B84',
-						strokeWidth: '1px'
+						strokeWidth: '2px'
 					}) : {}}
 
 					lineType={{type: 'difference', interpolator: curveMonotoneX}}
 					xAccessor={'start'}
 					yAccessor={'loudness_start'}
+					foregroundGraphics={progressIndicator}
 				/>
 				{features && (
 					<div className={theme.featuresContainer}>
@@ -99,10 +112,19 @@ class Analysis extends Component {
 	}
 }
 
-const mapStateToProps = (state, ownProps) => ({
-	analysis: state.spotify.audioAnalysis[ownProps.track.id],
-	features: state.spotify.audioFeatures[ownProps.track.id]
-});
+const mapStateToProps = (state, ownProps) => {
+	const playlist = selectPlaylistTracksAndVotes(state);
+	// pass current position in if now playing track
+	let progressPercent = -1;
+	if (playlist.length > 0 && playlist[0].id === ownProps.track.id) {
+		progressPercent = state.room.nowPlayingProgress / playlist[0].duration * 100;
+	}
+	return {
+		analysis: state.spotify.audioAnalysis[ownProps.track.id],
+		features: state.spotify.audioFeatures[ownProps.track.id],
+		progressPercent
+	};
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchAnalysis: () => {

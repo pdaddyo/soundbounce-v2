@@ -23,6 +23,7 @@ import About from 'components/room/about/About';
 import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 
 import theme from './roomView.css';
+import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -195,18 +196,7 @@ const mapStateToProps = state => ({
 			tracks: chatWithUserId.payload.trackIds
 				? chatWithUserId.payload.trackIds.map(id => state.spotify.tracks[id]) : []
 		})),
-	playlist: state.room.playlist.map((playTrack, index) => ({
-		...playTrack,
-		// map the track details and voting user's details from state
-		...state.spotify.tracks[playTrack.id],
-		votes: playTrack.votes.map(vote => ({
-			...vote,
-			user: state.users.users[vote.userId]
-		})),
-		canVote: index === 0
-			? false
-			: !playTrack.votes.find(vote => vote.userId === state.users.currentUserId)
-	})),
+	playlist: selectPlaylistTracksAndVotes(state),
 	roomChatText: state.ui['roomChat']
 });
 

@@ -73,6 +73,25 @@ const defaultState = {
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
+
+// ------------------------------------
+// Selectors
+// ------------------------------------
+export const selectPlaylistTracksAndVotes = (state) => (
+	state.room.playlist.map((playTrack, index) => ({
+		...playTrack,
+		// map the track details and voting user's details from state
+		...state.spotify.tracks[playTrack.id],
+		votes: playTrack.votes.map(vote => ({
+			...vote,
+			user: state.users.users[vote.userId]
+		})),
+		canVote: index === 0
+			? false
+			: !playTrack.votes.find(vote => vote.userId === state.users.currentUserId)
+	}))
+);
+
 // ------------------------------------
 // Action Creators
 // ------------------------------------
