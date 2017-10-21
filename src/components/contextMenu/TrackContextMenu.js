@@ -97,25 +97,27 @@ class TrackContextMenu extends Component {
 				<MenuItem divider/>
 				{albumMenu}
 				<MenuItem divider/>
-				<MenuItem onClick={() => {
-					notify.show('Sorry, feature not yet implemented!');
-				}}>
-					Vote to skip
-				</MenuItem>
-
 				{myPlaylists && (
 					<SubMenu title='Add to playlist'>
 						{
 							take(myPlaylists, 50).map(playlist => (
 								<MenuItem data={{trigger, playlist}}
 										  key={playlist.id}
-										  onClick={handleClickSaveToPlaylist}>
+										  onClick={(e, data) => {
+											  handleClickSaveToPlaylist(e, data);
+											  notify.show(`Track added to ${playlist.name}`, {type: 'success'});
+										  }}>
 									{ellipsize(playlist.name, 50)}
 								</MenuItem>
 							))
 						}
 					</SubMenu>
 				)}
+				<MenuItem onClick={() => {
+					notify.show('Sorry, feature not yet implemented!');
+				}}>
+					Vote to skip
+				</MenuItem>
 
 				<MenuItem onClick={() => {
 					Popup.plugins().analysis({
