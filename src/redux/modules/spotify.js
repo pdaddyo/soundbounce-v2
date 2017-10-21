@@ -68,7 +68,8 @@ const defaultState = {
 	devices: [],
 	searchResults: {}, // {query, apiResult}
 	myPlaylists: [],
-	trackAnalysis: {}, // stored by track id
+	audioAnalysis: {}, // stored by track id
+	audioFeatures: {}, // stored by track id
 	tracks: {}  // tracks stored by key object key 'id'
 };
 
@@ -155,7 +156,7 @@ export const spotifyAddTrackToPlaylist = ({playlistId, trackId}) => ({
 	payload: {playlistId, trackId}
 });
 
-export const spotifyAudioAnalysisRequest = ({trackId}) => ({
+export const spotifyAudioAnalysisRequest = (trackId) => ({
 	type: SPOTIFY_AUDIO_ANALYSIS_REQUEST,
 	payload: {trackId}
 });

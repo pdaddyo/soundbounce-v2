@@ -1,6 +1,6 @@
 import {delay} from 'redux-saga';
 import config from '../../../config/app';
-import {select, put, call, take} from 'redux-saga/effects';
+import {select, put, call, take, all} from 'redux-saga/effects';
 import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
@@ -14,7 +14,7 @@ import {
 	spotifySearchUpdate,
 	spotifyMyPlaylistsUpdate,
 	spotifyMyPlaylistsRequest,
-	actions as spotifyActions
+	actions as spotifyActions, spotifyAudioAnalysisUpdate
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
 import {syncStartFail, syncStop, syncStartOk, actions as syncActions} from '../modules/sync';
@@ -402,8 +402,21 @@ function * watchForAddTrackToPlaylist() {
 			method: 'POST',
 			body: JSON.stringify({uris: [`spotify:track:${trackId}`], position: 0})
 		});
+	}
+}
 
-		// todo: toast style notifications to say it's added
+function * watchForAudioAnalysisRequests() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+
+	// listen for requests to fetch audio analysis / features
+	while (true) {
+		const {payload: {trackId}} = yield take(spotifyActions.SPOTIFY_AUDIO_ANALYSIS_REQUEST);
+		const [audioFeatures, audioAnalysis] = yield all([
+			call(spotifyApiCall, {url: `/v1/audio-features/${trackId}`}),
+			call(spotifyApiCall, {url: `/v1/audio-analysis/${trackId}`})
+		]);
+		yield put(spotifyAudioAnalysisUpdate({trackId, audioFeatures, audioAnalysis}));
 	}
 }
 
@@ -420,6 +433,7 @@ export default function * spotifyInit() {
 			beginLogin(),
 			loadMyPlaylists(),
 			watchForAddTrackToPlaylist(),
+			watchForAudioAnalysisRequests(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
 		];
