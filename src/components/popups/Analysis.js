@@ -9,6 +9,8 @@ import {XYFrame} from 'semiotic';
 import {curveMonotoneX} from 'd3-shape';
 import minBy from 'lodash/minBy';
 
+import theme from './analysis.css';
+
 class Analysis extends Component {
 	static propTypes = {
 		track: PropTypes.object,
@@ -24,20 +26,31 @@ class Analysis extends Component {
 	}
 
 	render() {
-		const {analysis} = this.props;
+		const {analysis, features} = this.props;
 		if (!analysis) {
 			return <div></div>;
 		}
 
 		const segments = analysis.segments.filter((item, index) =>
-			(index % (Math.floor(analysis.segments.length / 70)) === 1)
+			(index % (Math.floor(analysis.segments.length / 100)) === 1)
 		);
 		const peakLoudness = minBy(segments, 'loudness_start').loudness_start;
+
+		const featuresKeys = ['danceability',
+							  'energy',
+							  'key',
+							  'loudness',
+							  'speechiness',
+							  'acousticness',
+							  'instrumentalness',
+							  'liveness',
+							  'valence',
+							  'tempo'];
 
 		return (
 			<div>
 				<XYFrame
-					size={[410, 150]}
+					size={[410, 100]}
 					lines={[
 						{
 							id: 'loudness',
@@ -68,6 +81,19 @@ class Analysis extends Component {
 					xAccessor={'start'}
 					yAccessor={'loudness_start'}
 				/>
+				{features && (
+					<div className={theme.featuresContainer}>
+						{
+							featuresKeys.map(key => (
+								<div className={theme.features}
+									 key={key}>
+									<label>{key}</label>
+									<span>{features[key]}</span>
+								</div>
+							))
+						}
+					</div>
+				)}
 			</div>
 		);
 	}
