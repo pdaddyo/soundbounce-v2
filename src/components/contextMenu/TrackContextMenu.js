@@ -5,7 +5,6 @@ import React, {Component, PropTypes} from 'react';
 import {connectMenu, ContextMenu, MenuItem, SubMenu} from 'react-contextmenu';
 import {spotifyAddTrackToPlaylist} from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
-import take from 'lodash/take';
 import ellipsize from 'ellipsize';
 import copy from 'clipboard-copy';
 import Popup from 'react-popup';

@@ -383,20 +383,17 @@ function * watchForSearchRequest() {
 function * loadMyPlaylists() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
-
 	yield put(spotifyMyPlaylistsRequest());
 	let url = '/v1/me/playlists?limit=50';
-
 	while (url) {
 		// grab playlists
-		const apiResult = yield call(spotifyApiCall, {url})
+		const apiResult = yield call(spotifyApiCall, {url});
 		const {items} = apiResult;
 		url = apiResult.next;
 		if (items) {
 			yield put(spotifyMyPlaylistsUpdate(items));
 		}
 	}
-
 }
 
 function * watchForAddTrackToPlaylist() {
