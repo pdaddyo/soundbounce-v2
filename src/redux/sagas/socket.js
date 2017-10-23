@@ -65,6 +65,13 @@ function * watchForSocketRequestHomeData() {
 	}
 }
 
+function * watchForRoomStatsRequest() {
+	while (true) {
+		const {payload} = yield take(socketActions.SOCKET_ROOM_STATS_REQUEST);
+		socketClient.emit('room:stats', payload);
+	}
+}
+
 function * watchForSocketOnRoomCreateOk() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_CREATE_OK);
@@ -82,7 +89,8 @@ export default function * socketInit() {
 			watchForSocketEmitRoomJoin(),
 			watchForSocketEmitRoomEvent(),
 			watchForSocketOnRoomCreateOk(),
-			watchForSocketRequestHomeData()
+			watchForSocketRequestHomeData(),
+			watchForRoomStatsRequest()
 		];
 	} catch (err) {
 		console.log('unhandled socket saga error: ' + err);

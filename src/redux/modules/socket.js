@@ -14,6 +14,8 @@ export const SOCKET_ROOM_JOIN_OK = 'SOCKET_ROOM_JOIN_OK';
 export const SOCKET_AUTH_OK = 'SOCKET_ON_AUTH_OK';
 export const SOCKET_REQUEST_HOME_DATA = 'SOCKET_REQUEST_HOME_DATA';
 export const SOCKET_HOME_DATA_OK = 'SOCKET_HOME_DATA_OK';
+export const SOCKET_ROOM_STATS_REQUEST = 'SOCKET_ROOM_STATS_REQUEST';
+export const SOCKET_ROOM_STATS_OK = 'SOCKET_ROOM_STATS_OK';
 
 export const actions = {
 	SOCKET_CONNECT_BEGIN,
@@ -28,7 +30,9 @@ export const actions = {
 	SOCKET_ROOM_JOIN_OK,
 	SOCKET_AUTH_OK,
 	SOCKET_REQUEST_HOME_DATA,
-	SOCKET_HOME_DATA_OK
+	SOCKET_HOME_DATA_OK,
+	SOCKET_ROOM_STATS_REQUEST,
+	SOCKET_ROOM_STATS_OK
 };
 
 // ------------------------------------
@@ -103,6 +107,16 @@ export const socketRequestHomeData = () => ({
 export const socketHomeDataOk = (home) => ({
 	type: SOCKET_HOME_DATA_OK,
 	payload: {home}
+});
+
+export const socketRoomStatsRequest = (roomId) => ({
+	type: SOCKET_ROOM_STATS_REQUEST,
+	payload: {roomId}
+});
+
+export const socketRoomStatsOk = ({roomId, stats}) => ({
+	type: SOCKET_ROOM_STATS_OK,
+	payload: {roomId, stats}
 });
 
 // ------------------------------------

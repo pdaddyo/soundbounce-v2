@@ -17,6 +17,7 @@ import {
 import {homeSetData} from 'redux/modules/home';
 import {roomFullSync, roomNavigating} from 'redux/modules/shared/room';
 import {syncSetServerOffset} from '../redux/modules/sync';
+import {socketRoomStatsOk} from '../redux/modules/socket';
 
 class SocketClient {
 	setStore(store) {
@@ -78,6 +79,9 @@ class SocketClient {
 		});
 		socket.on('room:event', (payload) => {
 			dispatch(socketRoomEvent(payload));
+		});
+		socket.on('room:stats:ok', (payload) => {
+			dispatch(socketRoomStatsOk(payload));
 		});
 		socket.on('home:data:ok', (home) => {
 			dispatch(socketHomeDataOk(home));

@@ -3,6 +3,7 @@
 import update from 'react-addons-update';
 import config from '../../../../config/app';
 import moment from 'moment';
+import {SOCKET_ROOM_STATS_OK} from '../socket';
 
 // ------------------------------------
 // Constants
@@ -275,7 +276,12 @@ const ACTION_HANDLERS = {
 	[ROOM_TRACK_PROGRESS]: (state, {payload}) => ({
 		...state,
 		nowPlayingProgress: payload.nowPlayingProgress
+	}),
+	[SOCKET_ROOM_STATS_OK]: (state, {payload}) => ({
+		...state,
+		stats: payload.stats
 	})
+
 };
 
 // ------------------------------------

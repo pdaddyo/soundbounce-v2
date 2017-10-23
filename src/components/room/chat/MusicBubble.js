@@ -56,10 +56,8 @@ class MusicBubble extends Component {
 			<div className={userTheme('container')}>
 				<div className={userTheme('musicBubble')}>
 					<div className={emoji ? theme.trackGroupEmoji : theme.trackGroup}>
-
 						{!moreTracksVisible && (
 							<div className={theme.trackContainer}>
-
 								<Track track={firstTrack}
 									   size='small'/>
 								{andMore && (
@@ -72,9 +70,7 @@ class MusicBubble extends Component {
 								)}
 							</div>
 						)}
-
 						{moreTracksVisible && (
-
 							<div className={theme.tracksContainer}>
 								{tracks.map(track =>
 									<div className={theme.trackContainer}

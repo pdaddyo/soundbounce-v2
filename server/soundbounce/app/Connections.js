@@ -147,5 +147,16 @@ export default class Connections {
 
 				});
 		});
+
+		socket.on('room:stats', ({roomId}) => {
+			app.io.to(socket.allSocketsForThisUser).emit('room:stats:ok', {
+				stats: {
+					topTracks: [],
+					topArtists: [],
+					topUsers: []
+				},
+				roomId
+			});
+		});
 	}
 }

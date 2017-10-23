@@ -25,6 +25,7 @@ import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 import theme from './roomView.css';
 import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
 import {ROOM_REACTION} from '../../redux/modules/shared/room';
+import Stats from 'components/room/stats/Stats';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -173,7 +174,7 @@ class RoomView extends Component {
 									{roomTab === 'about' &&
 									<About room={room} currentUser={currentUser}/>}
 									{roomTab === 'stats' &&
-									<div>Top Tracks / Artists / Contributors coming soon!</div>}
+									<Stats room={room}/>}
 								</div>
 							</div>
 
