@@ -232,6 +232,10 @@ function * watchForPreviewTrack() {
 }
 
 function * spotifyApiCall({url, method, body}) {
+	let baseUrl = webApiBaseUrl;
+	if (url.indexOf('https') === 0) {
+		baseUrl = '';
+	}
 	const {accessToken} = yield select(state => state.spotify);
 	if (!accessToken) {
 		// wait for spotify auth to initialise if we don't have an access token yet
@@ -241,7 +245,7 @@ function * spotifyApiCall({url, method, body}) {
 	yield put({type: spotifyActions.SPOTIFY_API_REQUEST_START, payload: {url}});
 	try {
 		for (let retryCount = 0; retryCount < maxRetry; retryCount++) {
-			const {json, response} = yield fetch(webApiBaseUrl + url, {
+			const {json, response} = yield fetch(baseUrl + url, {
 				method: method || 'GET',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
@@ -381,15 +385,18 @@ function * loadMyPlaylists() {
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 
 	yield put(spotifyMyPlaylistsRequest());
+	let url = '/v1/me/playlists?limit=50';
 
-	// grab playlists
-	const {items} = yield call(spotifyApiCall, {
-		url: '/v1/me/playlists?limit=50'
-	});
-
-	if (items) {
-		yield put(spotifyMyPlaylistsUpdate(items));
+	while (url) {
+		// grab playlists
+		const apiResult = yield call(spotifyApiCall, {url})
+		const {items} = apiResult;
+		url = apiResult.next;
+		if (items) {
+			yield put(spotifyMyPlaylistsUpdate(items));
+		}
 	}
+
 }
 
 function * watchForAddTrackToPlaylist() {

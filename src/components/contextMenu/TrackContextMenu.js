@@ -100,7 +100,7 @@ class TrackContextMenu extends Component {
 				{myPlaylists && (
 					<SubMenu title='Add to playlist'>
 						{
-							take(myPlaylists, 50).map(playlist => (
+							myPlaylists.map(playlist => (
 								<MenuItem data={{trigger, playlist}}
 										  key={playlist.id}
 										  onClick={(e, data) => {
