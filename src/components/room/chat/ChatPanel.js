@@ -154,14 +154,16 @@ class ChatPanel extends Component {
 							   placeholder='Type message'
 							   onEnterPressed={this.chatEnterPressed}/>
 					{emojiPickerVisible && (
-						<Picker set='twitter'
-								emojiSize={20}
+						<Picker set='emojione'
+								emojiSize={24}
 								perLine={9}
 								sheetSize={64}
+								skin={1}
+								tooltip={true}
 								autoFocus={true}
 								include={['search', 'recent', 'people',
 										  'nature', 'foods', 'activity',
-										  'objects', 'symbols']}
+										  'objects']}
 								title='Pick an emoji'
 								emoji='point_up'
 								onClick={this.clickEmojiInPanel}
