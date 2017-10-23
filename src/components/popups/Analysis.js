@@ -17,7 +17,9 @@ import meanBy from 'lodash/meanBy';
 import theme from './analysis.css';
 
 const width = 410;
-const height = 80;
+const height = 60;
+const desiredChunkCount = 200;
+
 class Analysis extends Component {
 	static propTypes = {
 		track: PropTypes.object,
@@ -36,13 +38,16 @@ class Analysis extends Component {
 	render() {
 		const {analysis, features, progressPercent} = this.props;
 		if (!analysis) {
-			return <div></div>;
+			return <div>Analysing...</div>;
 		}
 
-		// split analyis segments into around 100 chunks for our graph
-		const chunkedSegments = chunk(analysis.segments,
-			Math.floor(analysis.segments.length / 100)
-		);
+		let chunkSize = Math.floor(analysis.segments.length / desiredChunkCount);
+		if (chunkSize < 1) {
+			chunkSize = 1;
+		}
+
+		// split analysis segments into around 100 chunks for our graph
+		const chunkedSegments = chunk(analysis.segments, chunkSize);
 
 		// for each chunk, work out the mean (avg) loudness
 		const segments = chunkedSegments.map(chunk => ({
