@@ -5,3 +5,7 @@
 	height: 0;
 	clear: both;
 }
+
+body {
+	-webkit-font-smoothing: subpixel-antialiased;
+}
