@@ -31,6 +31,7 @@
 .musicBubble {
 	composes: bubble;
 	background-color: rgba(255, 255, 255, 0.03);
+	min-height: 2.25rem;
 }
 
 .bubbleOtherUser {
@@ -211,8 +212,13 @@
 }
 
 .trackContainer {
+
 	overflow: hidden;
 	width: 100%;
+}
+
+.trackContainer:not(:first-child) {
+	margin-top: 0.5rem;
 }
 
 .trackGroup {
@@ -223,7 +229,7 @@
 .andMore {
 	font-size: 75%;
 	margin-left: 3rem;
-	margin-top: -0.3rem;
+	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 	cursor: pointer;
 }
@@ -233,15 +239,15 @@
 }
 
 .trackGroupEmoji {
-	margin-left: 2.5rem;
+	margin-left: 2.4rem;
 }
 
 @keyframes emojiAnimation {
 	0% {
-		transform: scale(0.1);;
+		transform: scale(0.1);
 	}
 	100% {
-		transform: scale(1);
+		transform: scale(0.9);
 	}
 }
 
@@ -251,7 +257,7 @@
 	width: 2rem;
 	height: 2rem;
 	position: absolute;
-	left: 0.8rem;
+	left: 0.7rem;
 	top: 0.7rem;
 	transform: scale(0.1);
 }

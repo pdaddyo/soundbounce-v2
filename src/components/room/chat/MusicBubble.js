@@ -45,10 +45,10 @@ class MusicBubble extends Component {
 
 		const firstTrack = tracks[0];
 		const andMore = tracks.length > 1
-			? `And ${tracks.length - 1} more track${tracks.length === 2 ? '' : 's'}` : '';
+			? `and ${tracks.length - 1} more track${tracks.length === 2 ? '' : 's'}...` : '';
 
 		const showLess = tracks.length > 1
-			? 'Show less' : '';
+			? 'show fewer' : '';
 
 		const emoji = loggedAction.payloads[0].emoji;
 
@@ -56,39 +56,47 @@ class MusicBubble extends Component {
 			<div className={userTheme('container')}>
 				<div className={userTheme('musicBubble')}>
 					<div className={emoji ? theme.trackGroupEmoji : theme.trackGroup}>
-						{emoji && (
-							<img src='https://twemoji.maxcdn.com/svg/2764.svg'
-								 className={theme.emoji}/>
-						)}
+
 						{!moreTracksVisible && (
 							<div className={theme.trackContainer}>
 
 								<Track track={firstTrack}
 									   size='small'/>
-								<div className={theme.andMore}
-									 onClick={() => {
-										 showMoreTracks(firstTrack.id);
-									 }}>
-									{andMore}
-								</div>
+								{andMore && (
+									<div className={theme.andMore}
+										 onClick={() => {
+											 showMoreTracks(loggedAction.id);
+										 }}>
+										{andMore}
+									</div>
+								)}
 							</div>
 						)}
 
 						{moreTracksVisible && (
-							<div className={theme.trackContainer}>
 
+							<div className={theme.tracksContainer}>
 								{tracks.map(track =>
-									<Track key={track.id}
-										   track={track}
-										   size='small'/>
+									<div className={theme.trackContainer}>
+										<Track key={track.id}
+											   track={track}
+											   size='small'/>
+									</div>
 								)}
-								<div className={theme.andMore}
-									 onClick={() => {
-										 hideMoreTracks(firstTrack.id);
-									 }}>
-									{showLess}
-								</div>
+								{andMore && (
+									<div className={theme.andMore}
+										 onClick={() => {
+											 hideMoreTracks(loggedAction.id);
+										 }}>
+										{showLess}
+									</div>
+								)}
 							</div>
+						)}
+
+						{emoji && (
+							<img src='https://twemoji.maxcdn.com/svg/2764.svg'
+								 className={theme.emoji}/>
 						)}
 					</div>
 				</div>
@@ -121,19 +129,19 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		tracks,
 		moreTracksVisible: tracks.length === 0
-			? false : state.ui[`music-bubble-expand-${tracks[0].id}`]
+			? false : state.ui[`music-bubble-expand-${ownProps.loggedAction.id}`]
 	};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	showMoreTracks: (firstTrackId) => {
+	showMoreTracks: (actionId) => {
 		dispatch(uiUpdate({
-			key: `music-bubble-expand-${firstTrackId}`, newState: true
+			key: `music-bubble-expand-${actionId}`, newState: true
 		}));
 	},
-	hideMoreTracks: (firstTrackId) => {
+	hideMoreTracks: (actionId) => {
 		dispatch(uiUpdate({
-			key: `music-bubble-expand-${firstTrackId}`, newState: false
+			key: `music-bubble-expand-${actionId}`, newState: false
 		}));
 	}
 });
