@@ -77,9 +77,9 @@ class MusicBubble extends Component {
 
 							<div className={theme.tracksContainer}>
 								{tracks.map(track =>
-									<div className={theme.trackContainer}>
-										<Track key={track.id}
-											   track={track}
+									<div className={theme.trackContainer}
+										 key={track.id}>
+										<Track track={track}
 											   size='small'/>
 									</div>
 								)}
