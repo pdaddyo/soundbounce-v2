@@ -14,14 +14,15 @@ import {syncStart} from '../../redux/modules/sync';
 import {uiUpdate} from '../../redux/modules/ui';
 import intersperse from 'shared/intersperse';
 import {ContextMenuTrigger} from 'react-contextmenu';
+import Heart from '../svg/icons/Heart';
 
 class Track extends Component {
-
 	static propTypes = {
 		track: PropTypes.object,
 		size: PropTypes.oneOf(['normal', 'hero', 'small']),
 		percentComplete: PropTypes.number,
 		onClickVote: PropTypes.func,
+		onClickReaction: PropTypes.func,
 		visible: PropTypes.bool,
 		previewStart: PropTypes.func,
 		previewStop: PropTypes.func,
@@ -54,7 +55,7 @@ class Track extends Component {
 
 	render() {
 		const {
-			track, size, onClickVote, percentComplete,
+			track, size, onClickVote, onClickReaction, percentComplete,
 			visible, currentRoomId, performSearch
 		} = this.props;
 		const {router} = this.context;
@@ -71,8 +72,14 @@ class Track extends Component {
 			}
 		};
 
+		if (!track) {
+			return null;
+		}
+
 		let votes = track.votes && (
 				<div className={sizeTheme('votes')}>
+
+
 					<div className={theme.voteUpButton}
 						 onClick={() => {
 							 if (track.canVote && onClickVote) {
@@ -84,11 +91,13 @@ class Track extends Component {
 						)}
 					</div>
 
+
 					{track.votes.map(vote => (
 						<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
 							<Avatar user={vote.user}/>
 						</div>
 					))}
+
 				</div>
 			);
 
@@ -155,12 +164,26 @@ class Track extends Component {
 								</span>
 							)), ', ')}
 						</div>
+
 						{size === 'hero' && votes}
+
 					</div>
+
+
 					{(size === 'normal' || size === 'small') && votes}
 					{size !== 'small' && (
 						<div className={sizeTheme('buttons')}>
-							<span className={theme.button}
+							{percentComplete > -1 && (
+								<div className={theme.reactionButton}
+									 onClick={() => {
+										 if (onClickReaction) {
+											 onClickReaction({trackId: track.id, emoji: 'heart'});
+										 }
+									 }}>
+									<Heart />
+								</div>
+							)}
+							<span className={theme.dotsButton}
 								  onClick={e => {
 									  if (this.contextTrigger) {
 										  this.contextTrigger.handleContextClick(e);

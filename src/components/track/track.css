@@ -166,6 +166,14 @@
 	cursor: pointer;
 }
 
+.reactionButton {
+	composes: voteUpButton;
+	padding: 0.3rem;
+	margin-left: 0;
+	transform: none;
+	width: 1.5rem;
+}
+
 .voteUpButton:hover {
 	opacity: 0.7;
 }
@@ -174,10 +182,15 @@
 	margin-right: 1rem;
 	opacity: 0;
 	flex-shrink: 0;
+	display: flex;
 }
 
 .track:hover .buttons {
 	opacity: 1;
+}
+
+.trackHero .buttons {
+	opacity: 1 !important;
 }
 
 .buttonsHero {
@@ -191,13 +204,17 @@
 }
 
 .button {
-	opacity: 0.8;
+	opacity: 0.7;
 	cursor: pointer;
 	padding: 0.3rem;
 }
 
 .button:hover {
 	opacity: 0.95;
+}
+
+.dotsButton {
+	composes: button;
 }
 
 .progress {

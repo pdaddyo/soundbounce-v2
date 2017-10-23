@@ -50,13 +50,19 @@ class MusicBubble extends Component {
 		const showLess = tracks.length > 1
 			? 'Show less' : '';
 
+		const emoji = loggedAction.payloads[0].emoji;
+
 		return (
 			<div className={userTheme('container')}>
 				<div className={userTheme('musicBubble')}>
-					<div className={theme.trackGroup}>
-
+					<div className={emoji ? theme.trackGroupEmoji : theme.trackGroup}>
+						{emoji && (
+							<img src='https://twemoji.maxcdn.com/svg/2764.svg'
+								 className={theme.emoji}/>
+						)}
 						{!moreTracksVisible && (
 							<div className={theme.trackContainer}>
+
 								<Track track={firstTrack}
 									   size='small'/>
 								<div className={theme.andMore}
@@ -70,6 +76,7 @@ class MusicBubble extends Component {
 
 						{moreTracksVisible && (
 							<div className={theme.trackContainer}>
+
 								{tracks.map(track =>
 									<Track key={track.id}
 										   track={track}
@@ -86,8 +93,8 @@ class MusicBubble extends Component {
 					</div>
 				</div>
 				<div className={userTheme('timestamp')}>
-					Added
-					{sentByCurrentUser ? ' ' : ` by ${loggedAction.user.nickname} • `}
+					{emoji ? 'Reacted' : 'Added'}
+					{sentByCurrentUser ? ' ' : ` by ${loggedAction.user.nickname} `}
 					{friendlyTimeStamp}
 				</div>
 				{loggedAction.user && (
@@ -102,7 +109,6 @@ class MusicBubble extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	const tracks = chain(ownProps.loggedAction.payloads)
-		.filter(p => p.isAdd)
 		.map(p => p.trackIds)
 		.flatten()
 		.uniq()
@@ -114,7 +120,8 @@ const mapStateToProps = (state, ownProps) => {
 
 	return {
 		tracks,
-		moreTracksVisible: state.ui[`music-bubble-expand-${tracks[0].id}`]
+		moreTracksVisible: tracks.length === 0
+			? false : state.ui[`music-bubble-expand-${tracks[0].id}`]
 	};
 };
 

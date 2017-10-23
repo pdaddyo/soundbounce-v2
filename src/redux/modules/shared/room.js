@@ -15,6 +15,7 @@ export const ROOM_NOW_PLAYING_CHANGED = 'ROOM_NOW_PLAYING_CHANGED';
 export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
+export const ROOM_REACTION = 'ROOM_REACTION';
 export const ROOM_TRACK_PROGRESS = 'ROOM_TRACK_PROGRESS';
 export const ROOM_NAVIGATING = 'ROOM_NAVIGATING';
 
@@ -27,6 +28,7 @@ export const actions = {
 	ROOM_TRACK_ADD_OR_VOTE,
 	ROOM_TRACK_LIKE,
 	ROOM_CHAT,
+	ROOM_REACTION,
 	ROOM_TRACK_PROGRESS,
 	ROOM_NAVIGATING
 };
@@ -72,6 +74,11 @@ export const roomTrackAddOrVote = ({userId, trackIds, reason = '', isAdd}) => ({
 export const roomChat = ({userId, text, trackIds, offset}) => ({
 	type: ROOM_CHAT,
 	payload: {userId, text, trackIds, offset}
+});
+
+export const roomReaction = ({userId, emoji, trackIds, offset}) => ({
+	type: ROOM_REACTION,
+	payload: {userId, emoji, trackIds, offset}
 });
 
 export const roomNowPlayingChanged = ({trackIds, seekPosition}) => ({
@@ -213,6 +220,10 @@ const ACTION_HANDLERS = {
 		return state;
 	},
 	[ROOM_CHAT]: (state, action) => ({
+		...state,
+		actionLog: appendToActionLog({actionLog: state.actionLog, action})
+	}),
+	[ROOM_REACTION]: (state, action) => ({
 		...state,
 		actionLog: appendToActionLog({actionLog: state.actionLog, action})
 	}),

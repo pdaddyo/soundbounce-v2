@@ -217,6 +217,7 @@
 
 .trackGroup {
 	margin-bottom: -0.3rem;
+	position: relative;
 }
 
 .andMore {
@@ -229,4 +230,16 @@
 
 .andMore:hover {
 	text-decoration: underline;
+}
+
+.trackGroupEmoji {
+	margin-left: 2.5rem;
+}
+
+.emoji {
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	left: 1rem;
+	top: 0.7rem;
 }

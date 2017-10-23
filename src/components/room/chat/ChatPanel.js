@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {ROOM_CHAT, ROOM_TRACK_ADD_OR_VOTE} from 'redux/modules/shared/room';
+import {ROOM_CHAT, ROOM_REACTION, ROOM_TRACK_ADD_OR_VOTE} from 'redux/modules/shared/room';
 import {Picker} from 'emoji-mart';
 import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';
@@ -120,7 +120,8 @@ class ChatPanel extends Component {
 				<div className={theme.chatScroll} ref='scroll'>
 					<div className={theme.actionLog}>
 						{actionLog.map((loggedAction) => {
-							let item = <div>SB ERROR: Unknown actionLog item type?</div>;
+							let item = <div>SB ERROR: Unknown actionLog item
+								type {loggedAction.type}</div>;
 							switch (loggedAction.type) {
 								case ROOM_CHAT:
 									item = <ChatBubble chat={loggedAction}/>;
@@ -132,6 +133,10 @@ class ChatPanel extends Component {
 									} else {
 										item = <span></span>;
 									}
+									break;
+								case ROOM_REACTION:
+									item = <MusicBubble loggedAction={loggedAction}/>;
+									// item = <div>{JSON.stringify(loggedAction)}</div>;
 									break;
 							}
 							return (

@@ -11,6 +11,7 @@ import roomReducer, {
 	roomUserJoin,
 	roomUserLeave,
 	roomChat,
+	roomReaction,
 	roomNowPlayingEnded,
 	actions as roomActions
 } from '../../../src/redux/modules/shared/room';
@@ -294,11 +295,20 @@ export default class ActiveRoom {
 			if (!('text' in event) || text === null || text === '') {
 				return;
 			}
-			const nowPlaylingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
+			const nowPlayingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
 			this.emitUserEvent(roomChat({
 				userId: sender.get('id'),
 				text,
-				trackIds: nowPlaylingTrackId ? [nowPlaylingTrackId] : [],
+				trackIds: nowPlayingTrackId ? [nowPlayingTrackId] : [],
+				offset: event.nowPlayingProgress
+			}));
+		}
+		if (event.type === 'reaction') {
+			const {emoji, trackId} = event;
+			this.emitUserEvent(roomReaction({
+				userId: sender.get('id'),
+				emoji,
+				trackIds: [trackId],
 				offset: event.nowPlayingProgress
 			}));
 		}

@@ -24,6 +24,7 @@ import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 
 import theme from './roomView.css';
 import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
+import {ROOM_REACTION} from '../../redux/modules/shared/room';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -100,6 +101,14 @@ class RoomView extends Component {
 		});
 	};
 
+	onClickReaction = ({trackId, emoji}) => {
+		this.props.emitRoomEvent({
+			type: 'reaction',
+			trackId,
+			emoji
+		});
+	};
+
 	render() {
 		const {
 			room, params, actionLogForChatPanel, playlist, sync,
@@ -140,6 +149,7 @@ class RoomView extends Component {
 								<Track track={nowPlayingTrack}
 									   percentComplete={progressPercent}
 									   size='hero'
+									   onClickReaction={this.onClickReaction}
 								/>
 							)}
 							<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
@@ -184,21 +194,25 @@ class RoomView extends Component {
 }
 
 const mapStateToProps = state => ({
-	currentUser: selectCurrentUser(state),
-	room: state.room,
-	sync: state.sync,
-	actionLogForChatPanel: state.room.actionLog
-		.filter(al => al.type === ROOM_CHAT || al.type === ROOM_TRACK_ADD_OR_VOTE)
-		.map(chatWithUserId => ({
-			...chatWithUserId,
-			sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
-			user: state.users.users[chatWithUserId.payload.userId],
-			tracks: chatWithUserId.payload.trackIds
-				? chatWithUserId.payload.trackIds.map(id => state.spotify.tracks[id]) : []
-		})),
-	playlist: selectPlaylistTracksAndVotes(state),
-	roomChatText: state.ui['roomChat']
-});
+		currentUser: selectCurrentUser(state),
+		room: state.room,
+		sync: state.sync,
+		actionLogForChatPanel: state.room.actionLog
+			.filter(
+				al => al.type === ROOM_CHAT ||
+				al.type === ROOM_REACTION ||
+				(al.type === ROOM_TRACK_ADD_OR_VOTE && al.payload.isAdd))
+			.map(chatWithUserId => ({
+				...chatWithUserId,
+				sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
+				user: state.users.users[chatWithUserId.payload.userId],
+				tracks: chatWithUserId.payload.trackIds
+					? chatWithUserId.payload.trackIds.map(id => state.spotify.tracks[id]) : []
+			})),
+		playlist: selectPlaylistTracksAndVotes(state),
+		roomChatText: state.ui['roomChat']
+	})
+;
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	emitRoomEvent: (event) => {
