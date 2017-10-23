@@ -28,12 +28,18 @@ function * watchForSocketRoomJoinOk() {
 		yield take(roomActions.ROOM_FULL_SYNC);
 		// don't wait for next timer to update the progress
 		yield call(updateRoomTrackProgress);
-
 		// start sync automatically on socket connect
 		//	yield put(syncStart());
-
 		// this call only ends when we join a differnt room, so will loop around and navigate.
 		yield call(roomTrackTimerLoop);
+	}
+}
+
+function * watchForFullSyncAndUpdateTitle() {
+	while (true) {
+		yield take(roomActions.ROOM_FULL_SYNC);
+		const {name} = yield select(state => state.room);
+		window.document.title = name;
 	}
 }
 
@@ -119,6 +125,7 @@ export default function * socketInit() {
 		yield [
 			watchForSocketRoomJoinOk(),
 			watchForSocketRoomEvent(),
+			watchForFullSyncAndUpdateTitle(),
 			pollRoomTrackProgress()
 		];
 	} catch (err) {
