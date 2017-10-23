@@ -10,6 +10,7 @@ import TextInput from 'components/ui/textInput/TextInput';
 import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
 import MusicBubble from './MusicBubble.js';
+import takeRight from 'lodash/takeRight';
 
 import {uiUpdate} from 'redux/modules/ui';
 import theme from './chatPanel.css';
@@ -113,7 +114,7 @@ class ChatPanel extends Component {
 
 	render() {
 		const {emojiPickerVisible} = this.props;
-		const actionLog = ChatPanel.groupSimilarActionLogItems(this.props.actionLog);
+		const actionLog = takeRight(ChatPanel.groupSimilarActionLogItems(this.props.actionLog), 40);
 		return (
 			<div className={theme.panel}>
 				<div className={theme.chatScroll} ref='scroll'>
