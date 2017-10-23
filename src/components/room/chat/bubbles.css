@@ -236,10 +236,26 @@
 	margin-left: 2.5rem;
 }
 
+@keyframes emojiAnimation {
+	0% {
+		transform: scale(0.1);;
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 .emoji {
+	animation: emojiAnimation ease-in-out 400ms;
+	animation-fill-mode: forwards;
 	width: 2rem;
 	height: 2rem;
 	position: absolute;
-	left: 1rem;
+	left: 0.8rem;
 	top: 0.7rem;
+	transform: scale(0.1);
 }
+
+
+
+
