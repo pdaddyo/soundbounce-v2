@@ -11,6 +11,8 @@ import {connect} from 'react-redux';
 import {XYFrame} from 'semiotic';
 import {curveMonotoneX} from 'd3-shape';
 import minBy from 'lodash/minBy';
+import chunk from 'lodash/chunk';
+import meanBy from 'lodash/meanBy';
 
 import theme from './analysis.css';
 
@@ -37,10 +39,18 @@ class Analysis extends Component {
 			return <div></div>;
 		}
 
-		const segments = analysis.segments.filter((item, index) =>
-			(index % (Math.floor(analysis.segments.length / 100)) === 1)
+		// split analyis segments into around 100 chunks for our graph
+		const chunkedSegments = chunk(analysis.segments,
+			Math.floor(analysis.segments.length / 100)
 		);
-		const peakLoudness = minBy(segments, 'loudness_start').loudness_start;
+
+		// for each chunk, work out the mean (avg) loudness
+		const segments = chunkedSegments.map(chunk => ({
+			loudness: meanBy(chunk, 'loudness_max'),
+			start: chunk[0].start
+		}));
+
+		const peakLoudness = minBy(segments, 'loudness').loudness;
 
 		const featuresKeys = ['danceability',
 							  'energy',
@@ -70,14 +80,14 @@ class Analysis extends Component {
 							color: '#FA0B84',
 							data: segments.map(s => ({
 								start: s.start,
-								loudness_start: peakLoudness - s.loudness_start
+								loudness: peakLoudness - s.loudness
 							}))
 						},
 						{
 							id: 'loudnessNeg', color: '#00BFFF',
 							data: segments.map(s => ({
 								start: s.start,
-								loudness_start: -peakLoudness + s.loudness_start
+								loudness: -peakLoudness + s.loudness
 							}))
 						}
 					]}
@@ -91,7 +101,7 @@ class Analysis extends Component {
 
 					lineType={{type: 'difference', interpolator: curveMonotoneX}}
 					xAccessor={'start'}
-					yAccessor={'loudness_start'}
+					yAccessor={'loudness'}
 					foregroundGraphics={progressIndicator}
 				/>
 				{features && (
