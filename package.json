@@ -120,6 +120,7 @@
 		"react-alert": "^2.4.0",
 		"react-contextmenu": "^2.8.0",
 		"react-dom": "^15.0.0",
+		"react-emoji-input": "^0.2.0",
 		"react-emojione": "^5.0.0",
 		"react-flip-move": "^2.9.3",
 		"react-linkify": "^0.2.1",

@@ -2420,7 +2420,11 @@ emoji-mart@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-0.5.0.tgz#9da3e29123c1203237d8b0606ad7006195b1c859"
 
-emojis-list@^2.0.0:
+emojis-keywords@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/emojis-keywords/-/emojis-keywords-2.0.0.tgz#9d42a916cec88710dab231cddf784c7d1a1e3409"
+
+emojis-list@^2.0.0, emojis-list@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
 
@@ -6133,6 +6137,15 @@ react-draggable@3.0.3:
     classnames "^2.2.5"
     prop-types "^15.5.10"
 
+react-emoji-input@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-emoji-input/-/react-emoji-input-0.2.0.tgz#6b6bc8507ce4d95326ebbf5579372fbe1a331bc1"
+  dependencies:
+    emojis-keywords "^2.0.0"
+    emojis-list "^2.1.0"
+    lodash "^4.17.4"
+    textarea-caret "^3.0.2"
+
 react-emojione@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-emojione/-/react-emojione-5.0.0.tgz#230fef5e85aa9e1183b9506a15fff37d59ef472f"
@@ -7338,6 +7351,10 @@ terraformer@~1.0.5:
 text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
+
+textarea-caret@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/textarea-caret/-/textarea-caret-3.0.2.tgz#f360c48699aa1abf718680a43a31a850665c2caf"
 
 throttleit@^1.0.0:
   version "1.0.0"

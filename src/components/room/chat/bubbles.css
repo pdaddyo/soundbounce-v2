@@ -252,7 +252,7 @@
 }
 
 .emoji {
-	animation: emojiAnimation ease-in-out 400ms;
+	animation: emojiAnimation ease-out 300ms;
 	animation-fill-mode: forwards;
 	width: 2rem;
 	height: 2rem;

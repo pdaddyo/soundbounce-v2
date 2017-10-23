@@ -11,6 +11,7 @@ import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
 import MusicBubble from './MusicBubble.js';
 import takeRight from 'lodash/takeRight';
+// import EmojiInput from 'react-emoji-input';  <<- todo implement this
 
 import {uiUpdate} from 'redux/modules/ui';
 import theme from './chatPanel.css';
@@ -136,7 +137,6 @@ class ChatPanel extends Component {
 									break;
 								case ROOM_REACTION:
 									item = <MusicBubble loggedAction={loggedAction}/>;
-									// item = <div>{JSON.stringify(loggedAction)}</div>;
 									break;
 							}
 							return (
