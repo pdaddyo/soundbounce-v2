@@ -114,9 +114,9 @@ export const socketRoomStatsRequest = (roomId) => ({
 	payload: {roomId}
 });
 
-export const socketRoomStatsOk = ({roomId, stats}) => ({
+export const socketRoomStatsOk = ({roomId, stats, tracks}) => ({
 	type: SOCKET_ROOM_STATS_OK,
-	payload: {roomId, stats}
+	payload: {roomId, stats, tracks}
 });
 
 // ------------------------------------

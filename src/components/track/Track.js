@@ -126,13 +126,13 @@ class Track extends Component {
 			</div>
 		) : null;
 
-		const albumArt = track.albumArt ||
+		const albumArt = track.albumArt || (track.album &&
 			(track.album.images.length > 1
 					? track.album.images[1].url : (
 						track.album.images.length === 1
 							? track.album.images[0].url : null
 					)
-			);
+			));
 
 		return (
 			<ContextMenuTrigger id='track'

@@ -1,7 +1,7 @@
 import update from 'react-addons-update';
 
 import {ROOM_FULL_SYNC} from './shared/room';
-import {SOCKET_ROOM_EVENT, SOCKET_HOME_DATA_OK} from './socket';
+import {SOCKET_ROOM_EVENT, SOCKET_HOME_DATA_OK, SOCKET_ROOM_STATS_OK} from './socket';
 
 // ------------------------------------
 // Constants
@@ -72,7 +72,6 @@ const defaultState = {
 	audioFeatures: {}, // stored by track id
 	tracks: {}  // tracks stored by key object key 'id'
 };
-
 
 // ------------------------------------
 // Selectors
@@ -283,6 +282,13 @@ const ACTION_HANDLERS = {
 		},
 		[SOCKET_ROOM_EVENT]: (state, {payload}) => {
 			// merge any track data from adds / votes if present
+			if (payload.tracks) {
+				return mergeTracks({state, tracks: payload.tracks});
+			}
+			return state;
+		},
+		[SOCKET_ROOM_STATS_OK]: (state, {payload}) => {
+			// merge any track data from stats load if present
 			if (payload.tracks) {
 				return mergeTracks({state, tracks: payload.tracks});
 			}

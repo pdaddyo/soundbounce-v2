@@ -281,7 +281,6 @@ const ACTION_HANDLERS = {
 		...state,
 		stats: payload.stats
 	})
-
 };
 
 // ------------------------------------

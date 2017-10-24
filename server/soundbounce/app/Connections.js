@@ -1,7 +1,9 @@
 import config from '../../../config/app';
 import _debug from 'debug';
 const debug = _debug('soundbounce:connections');
-import {Room, RoomActivities} from '../data/schema';
+import {Room, TrackActivity} from '../data/schema';
+import sequelize from 'sequelize';
+
 export default class Connections {
 	constructor(app) {
 		this.app = app;
@@ -149,14 +151,28 @@ export default class Connections {
 		});
 
 		socket.on('room:stats', ({roomId}) => {
-			app.io.to(socket.allSocketsForThisUser).emit('room:stats:ok', {
-				stats: {
-					topTracks: [],
-					topArtists: [],
-					topUsers: []
-				},
-				roomId
-			});
+			TrackActivity.findAll({
+				group: ['trackId'],
+				attributes: ['trackId', [sequelize.fn('count', sequelize.col('trackId')), 'trackCount']],
+				where: {roomId: {$eq: roomId}},
+				order: [[sequelize.fn('count', sequelize.col('trackId')), 'DESC']],
+				limit: 20
+			}).then(result => this.app.tracks.findTracksInDb(
+				result.map(r => r.get('trackId')))
+				.then(tracks => {
+					app.io.to(socket.allSocketsForThisUser).emit('room:stats:ok', {
+						stats: {
+							topTracks: result.map(r => ({
+								id: r.get('trackId'),
+								plays: r.get('trackCount')
+							})),
+							topArtists: [],
+							topUsers: []
+						},
+						tracks: tracks.map(track => track.get({plain: true})),
+						roomId
+					})
+				}));
 		});
 	}
 }
