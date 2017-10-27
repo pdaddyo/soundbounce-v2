@@ -46,6 +46,15 @@ function * watchForFullSyncAndUpdateTitle() {
 function * watchForSocketRoomEvent() {
 	while (true) {
 		const {payload} = yield take(socketActions.SOCKET_ROOM_EVENT);
+
+		// if this is an emoji message, reset that emoji first.
+		if (payload.reduxAction.type === 'ROOM_EMOJI_ANIMATION') {
+			yield put({
+				...payload.reduxAction,
+				payload: {...payload.reduxAction.payload, animation: 'none'}
+			});
+		}
+
 		// dispatch this redux action that we received over the socket
 		yield put(payload.reduxAction);
 	}

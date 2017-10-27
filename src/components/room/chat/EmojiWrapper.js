@@ -8,21 +8,27 @@ class EmojiWrapper extends Component {
 		children: PropTypes.any,
 		onClickEmojiAnimation: PropTypes.func,
 		emojiId: PropTypes.string,
-		animation: PropTypes.string
+		animation: PropTypes.string,
+		canClick: PropTypes.bool
+	};
+
+	handleClick = evt => {
+		const {onClickEmojiAnimation, emojiId, canClick} = this.props;
+
+		if (canClick) {
+			onClickEmojiAnimation({emojiId, animation: 'wobble'});
+		}
 	};
 
 	render() {
-		let {onClickEmojiAnimation, animation = 'none', emojiId, children} = this.props;
-
+		const {animation = 'none', children} = this.props;
 		return (
-			<span onClick={() => {
-				onClickEmojiAnimation({emojiId, animation: 'wobble'});
-			}}
+			<span onClick={this.handleClick}
+				  ref='span'
 				  className={theme[animation]}>
 				{children}
-	</span>
-		)
-			;
+			</span>
+		);
 	}
 }
 
