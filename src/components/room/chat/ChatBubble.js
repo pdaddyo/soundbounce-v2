@@ -48,7 +48,7 @@ class ChatBubble extends Component {
 	};
 
 	emojify(text, chatId) {
-		const {onClickEmojiAnimation} = this.props;
+		const {onClickEmojiAnimation, chat} = this.props;
 		let emojifiedText = emojify(text, emojiOptions);
 		// check if this is just emojis with no other text
 		if (Array.isArray(emojifiedText) &&
@@ -73,6 +73,7 @@ class ChatBubble extends Component {
 			}
 			return <EmojiWrapper key={index}
 								 emojiId={`${chatId}-${index}`}
+								 canClick={chat.sentByCurrentUser}
 								 onClickEmojiAnimation={onClickEmojiAnimation}>{item}</EmojiWrapper>;
 		};
 
