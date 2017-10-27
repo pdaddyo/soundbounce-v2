@@ -16,6 +16,15 @@
 	}
 }
 
+@keyframes emojiGrow {
+	0% {
+		transform: scale(0.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 .none {
 	animation: none !important;
 }
@@ -23,4 +32,9 @@
 .wobble {
 	composes: wrapper;
 	animation: emojiWobble ease-out 400ms 1;
+}
+
+.grow {
+	composes: wrapper;
+	animation: emojiGrow ease-out 400ms 1;
 }
