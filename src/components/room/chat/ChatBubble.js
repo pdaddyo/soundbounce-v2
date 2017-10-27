@@ -15,6 +15,7 @@ import theme from './bubbles.css';
 import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
 import {syncStart} from '../../../redux/modules/sync';
 import {ContextMenuTrigger} from 'react-contextmenu';
+import EmojiWrapper from './EmojiWrapper';
 
 const maxEmojiToDrawLarge = 5;
 const largeEmojiSize = 32;
@@ -39,20 +40,22 @@ class ChatBubble extends Component {
 	static propTypes = {
 		chat: PropTypes.object.isRequired,
 		linkUnfurlingRequestStart: PropTypes.func,
+		onClickEmojiAnimation: PropTypes.func,
 		toggleUnfurl: PropTypes.func,
 		unfurling: PropTypes.object,
 		previewStart: PropTypes.func,
 		previewStop: PropTypes.func
 	};
 
-	emojify(text) {
-		const emojifiedText = emojify(text, emojiOptions);
+	emojify(text, chatId) {
+		const {onClickEmojiAnimation} = this.props;
+		let emojifiedText = emojify(text, emojiOptions);
 		// check if this is just emojis with no other text
 		if (Array.isArray(emojifiedText) &&
 			emojifiedText.length <= maxEmojiToDrawLarge &&
 			every(emojifiedText, item => typeof item !== 'string' || item.trim() === '')) {
 			// we have just emoji here, so render it bigger!
-			return emojify(text,
+			emojifiedText = emojify(text,
 				{
 					...emojiOptions,
 					style: {
@@ -62,6 +65,26 @@ class ChatBubble extends Component {
 				}
 			);
 		}
+
+		// we have emojified text, now wrap for interactive animations when clicked
+		const wrapItemIfEmoji = (item, index) => {
+			if (typeof item === 'string') {
+				return item;
+			}
+			return <EmojiWrapper key={index}
+								 emojiId={`${chatId}-${index}`}
+								 onClickEmojiAnimation={onClickEmojiAnimation}>{item}</EmojiWrapper>;
+		};
+
+		if (typeof emojifiedText !== 'string') {
+			// this has emoji in it
+			if (Array.isArray(emojifiedText)) {
+				return emojifiedText.map((i, index) => wrapItemIfEmoji(i, index));
+			} else {
+				return wrapItemIfEmoji(emojifiedText);
+			}
+		}
+
 		return emojifiedText;
 	}
 
@@ -229,6 +252,7 @@ class ChatBubble extends Component {
 		if (!chat || chat['text'] === null) {
 			return null;
 		}
+
 		const userTheme = (className) =>
 			theme[sentByCurrentUser ? className : className + 'OtherUser'];
 
@@ -255,7 +279,7 @@ by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
 					{chat.payloads.map((chat, index) => (
 						<div className={theme.text} key={index}>
 							<Linkify properties={{target: '_blank'}}>
-								{this.emojify(chat.text.trim())}
+								{this.emojify(chat.text.trim(), chat.id)}
 							</Linkify>
 							{this.getUnfurledLinks(chat.text.trim())}
 						</div>

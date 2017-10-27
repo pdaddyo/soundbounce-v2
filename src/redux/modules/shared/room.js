@@ -17,6 +17,7 @@ export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
 export const ROOM_CHAT = 'ROOM_CHAT';
 export const ROOM_REACTION = 'ROOM_REACTION';
+export const ROOM_EMOJI_ANIMATION = 'ROOM_EMOJI_ANIMATION';
 export const ROOM_TRACK_PROGRESS = 'ROOM_TRACK_PROGRESS';
 export const ROOM_NAVIGATING = 'ROOM_NAVIGATING';
 
@@ -30,6 +31,7 @@ export const actions = {
 	ROOM_TRACK_LIKE,
 	ROOM_CHAT,
 	ROOM_REACTION,
+	ROOM_EMOJI_ANIMATION,
 	ROOM_TRACK_PROGRESS,
 	ROOM_NAVIGATING
 };
@@ -80,6 +82,11 @@ export const roomChat = ({userId, text, trackIds, offset}) => ({
 export const roomReaction = ({userId, emoji, trackIds, offset}) => ({
 	type: ROOM_REACTION,
 	payload: {userId, emoji, trackIds, offset}
+});
+
+export const roomEmojiAnimation = ({emojiId, animation}) => ({
+	type: ROOM_EMOJI_ANIMATION,
+	payload: {emojiId, animation}
 });
 
 export const roomNowPlayingChanged = ({trackIds, seekPosition}) => ({

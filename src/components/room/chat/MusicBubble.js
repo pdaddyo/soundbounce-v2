@@ -92,7 +92,7 @@ class MusicBubble extends Component {
 
 						{emoji && (
 							<img src='https://twemoji.maxcdn.com/svg/2764.svg'
-								 className={theme.emoji}/>
+								 className={theme.reactionEmoji}/>
 						)}
 					</div>
 				</div>

@@ -23,6 +23,7 @@ import Emoticon from '../../svg/icons/Emoticon';
 class ChatPanel extends Component {
 	static propTypes = {
 		onChatSend: PropTypes.func,
+		onClickEmojiAnimation: PropTypes.func,
 		actionLog: PropTypes.array,
 		emojiPickerVisible: PropTypes.bool,
 		setEmojiPickerVisible: PropTypes.func,
@@ -66,7 +67,7 @@ class ChatPanel extends Component {
 		for (let actionIndex = 0; actionIndex < actionLog.length; actionIndex++) {
 			const action = actionLog[actionIndex];
 			const groupedPayloads = [];
-			groupedPayloads.push(action.payload); // add this payload
+			groupedPayloads.push({...action.payload, id: action.id}); // add this payload
 
 			// now look ahead and see if we should consume future actions, to group together into
 			// a single bubble / message
@@ -75,7 +76,10 @@ class ChatPanel extends Component {
 			actionLog[actionIndex + 1].payload.userId === action.payload.userId &&
 			((new Date(actionLog[actionIndex + 1].timestamp)).getTime() -
 			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 60) {
-				groupedPayloads.push(actionLog[++actionIndex].payload);
+				groupedPayloads.push({
+					...actionLog[++actionIndex].payload,
+					id: actionLog[actionIndex].id
+				});
 			}
 
 			// ok now we've grouped a bunch of payloads (potentially, we defo have at least one)
@@ -114,7 +118,7 @@ class ChatPanel extends Component {
 	};
 
 	render() {
-		const {emojiPickerVisible} = this.props;
+		const {emojiPickerVisible, onClickEmojiAnimation} = this.props;
 		const actionLog = takeRight(ChatPanel.groupSimilarActionLogItems(this.props.actionLog), 40);
 		return (
 			<div className={theme.panel}>
@@ -125,7 +129,8 @@ class ChatPanel extends Component {
 								type {loggedAction.type}</div>;
 							switch (loggedAction.type) {
 								case ROOM_CHAT:
-									item = <ChatBubble chat={loggedAction}/>;
+									item = <ChatBubble chat={loggedAction}
+													   onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									break;
 								case ROOM_TRACK_ADD_OR_VOTE:
 									if (loggedAction.payloads

@@ -1,4 +1,6 @@
 import update from 'react-addons-update';
+import {ROOM_EMOJI_ANIMATION} from './shared/room';
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -25,7 +27,10 @@ export const uiUpdate = ({key, newState}) => ({
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-	[UI_UPDATE]: (state, {payload}) => update(state, {[payload.key]: {$set: payload.newState}})
+	[UI_UPDATE]: (state, {payload}) =>
+		update(state, {[payload.key]: {$set: payload.newState}}),
+	[ROOM_EMOJI_ANIMATION]: (state, {payload}) =>
+		update(state, {[`emoji-animation-${payload.emojiId}`]: {$set: payload.animation}})
 };
 
 // ------------------------------------

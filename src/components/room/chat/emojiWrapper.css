@@ -1,0 +1,26 @@
+.wrapper {
+	animation-fill-mode: forwards;
+	display: inline-block;
+	-webkit-backface-visibility: hidden;
+}
+
+@keyframes emojiWobble {
+	0% {
+		transform: rotate(30deg) scale(0.8);
+	}
+	50% {
+		transform: rotate(-30deg) scale(0.9);
+	}
+	100% {
+		transform: rotate(0);
+	}
+}
+
+.none {
+	animation: none !important;
+}
+
+.wobble {
+	composes: wrapper;
+	animation: emojiWobble ease-out 400ms 1;
+}

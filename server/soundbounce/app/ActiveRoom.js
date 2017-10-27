@@ -13,7 +13,7 @@ import roomReducer, {
 	roomChat,
 	roomReaction,
 	roomNowPlayingEnded,
-	actions as roomActions
+	actions as roomActions, roomEmojiAnimation
 } from '../../../src/redux/modules/shared/room';
 import {uniq, flatten, take, some} from 'lodash';
 import shortid from 'shortid';
@@ -310,6 +310,14 @@ export default class ActiveRoom {
 				emoji,
 				trackIds: [trackId],
 				offset: event.nowPlayingProgress
+			}));
+		}
+		if (event.type === 'emojiAnimation') {
+			const {emojiId, animation} = event;
+			this.emitUserEvent(roomEmojiAnimation({
+				userId: sender.get('id'),
+				emojiId,
+				animation
 			}));
 		}
 	}

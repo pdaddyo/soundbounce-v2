@@ -110,6 +110,14 @@ class RoomView extends Component {
 		});
 	};
 
+	onClickEmojiAnimation = ({emojiId, animation}) => {
+		this.props.emitRoomEvent({
+			type: 'emojiAnimation',
+			emojiId,
+			animation
+		});
+	};
+
 	render() {
 		const {
 			room, params, actionLogForChatPanel, playlist, sync,
@@ -186,6 +194,7 @@ class RoomView extends Component {
 					)}
 					<div className={theme.chat}>
 						<ChatPanel onChatSend={this.onChatSend.bind(this)}
+								   onClickEmojiAnimation={this.onClickEmojiAnimation.bind(this)}
 								   actionLog={actionLogForChatPanel}/>
 					</div>
 				</div>
