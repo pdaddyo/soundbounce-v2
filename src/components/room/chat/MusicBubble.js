@@ -13,6 +13,8 @@ import Track from '../../track/Track';
 /* eslint-disable */
 import {chain, value, uniq, flatten} from 'lodash';
 import {uiUpdate} from '../../../redux/modules/ui';
+import EmojiWrapper from './EmojiWrapper';
+import {emojify} from 'react-emojione';
 /* eslint-enable */
 
 class MusicBubble extends Component {
@@ -20,6 +22,7 @@ class MusicBubble extends Component {
 		loggedAction: PropTypes.object.isRequired,
 		tracks: PropTypes.array,
 		showMoreTracks: PropTypes.func,
+		onClickEmojiAnimation: PropTypes.func,
 		hideMoreTracks: PropTypes.func,
 		moreTracksVisible: PropTypes.bool
 	};
@@ -27,7 +30,8 @@ class MusicBubble extends Component {
 	render() {
 		const {
 			loggedAction, tracks,
-			showMoreTracks, hideMoreTracks, moreTracksVisible
+			showMoreTracks, hideMoreTracks, moreTracksVisible,
+			onClickEmojiAnimation
 		} = this.props;
 		const {sentByCurrentUser} = loggedAction;
 
@@ -91,8 +95,18 @@ class MusicBubble extends Component {
 						)}
 
 						{emoji && (
-							<img src='https://twemoji.maxcdn.com/svg/2764.svg'
-								 className={theme.reactionEmoji}/>
+							<div className={theme.reactionEmoji}>
+								<EmojiWrapper canClick={sentByCurrentUser}
+											  onClickEmojiAnimation={onClickEmojiAnimation}
+											  emojiId={loggedAction.payloads[0].id}
+								>{emojify(':heart:',
+									{
+										style: {
+											width: 32, height: 32
+										}
+									}
+								)}</EmojiWrapper>
+							</div>
 						)}
 					</div>
 				</div>

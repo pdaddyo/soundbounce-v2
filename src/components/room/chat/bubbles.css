@@ -242,23 +242,10 @@
 	margin-left: 2.4rem;
 }
 
-@keyframes reactionEmojiGrow {
-	0% {
-		transform: scale(0.1);
-	}
-	100% {
-		transform: scale(0.9);
-	}
-}
-
 .reactionEmoji {
-	animation: reactionEmojiGrow ease-out 300ms;
-	animation-fill-mode: forwards;
 	width: 2rem;
 	height: 2rem;
 	position: absolute;
-	left: 0.7rem;
-	top: 0.7rem;
-	transform: scale(0.1);
+	left: 0.55rem;
+	top: 0.85rem;
 }
-

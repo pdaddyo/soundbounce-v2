@@ -305,6 +305,21 @@ export default class ActiveRoom {
 		}
 		if (event.type === 'reaction') {
 			const {emoji, trackId} = event;
+
+			// see if this reaction has been sent before, in which case just send an animation message
+			const existingReaction = state.actionLog.find(item => (item.type === 'ROOM_REACTION'
+			&& item.payload.userId === sender.get('id')
+			&& item.payload.trackIds[0] === trackId));
+
+			if (existingReaction) {
+				this.emitUserEvent(roomEmojiAnimation({
+					userId: sender.get('id'),
+					emojiId: existingReaction.id,
+					animation: 'grow'
+				}));
+				return;
+			}
+
 			this.emitUserEvent(roomReaction({
 				userId: sender.get('id'),
 				emoji,

@@ -136,13 +136,15 @@ class ChatPanel extends Component {
 								case ROOM_TRACK_ADD_OR_VOTE:
 									if (loggedAction.payloads
 											.filter(p => p.isAdd && p.userId).length > 0) {
-										item = <MusicBubble loggedAction={loggedAction}/>;
+										item = <MusicBubble loggedAction={loggedAction}
+															onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									} else {
 										item = <span></span>;
 									}
 									break;
 								case ROOM_REACTION:
-									item = <MusicBubble loggedAction={loggedAction}/>;
+									item = <MusicBubble loggedAction={loggedAction}
+														onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									break;
 							}
 							return (
