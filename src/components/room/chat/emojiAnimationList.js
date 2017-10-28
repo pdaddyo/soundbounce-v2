@@ -6,5 +6,8 @@ export default [
 	{cssClass: 'grow', name: 'Grow'},
 	{cssClass: 'bounce', name: 'Bounce'},
 	{cssClass: 'shake', name: 'Shake'},
-	{cssClass: 'spin', name: 'Spin'}
+	{cssClass: 'spin', name: 'Spin'},
+	{cssClass: 'vibrate', name: 'Vibrate'},
+	{cssClass: 'blink', name: 'Blink'},
+	{cssClass: 'flip', name: 'Flip'}
 ];

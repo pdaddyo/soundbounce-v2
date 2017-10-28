@@ -61,6 +61,46 @@
 	}
 }
 
+@keyframes emojiVibrate {
+	0% {
+		transform: translate(0);
+	}
+	20% {
+		transform: translate(-2px, 2px);
+	}
+	40% {
+		transform: translate(-2px, -2px);
+	}
+	60% {
+		transform: translate(2px, 2px);
+	}
+	80% {
+		transform: translate(2px, -2px);
+	}
+	100% {
+		transform: translate(0);
+	}
+}
+
+@keyframes emojiBlink {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes emojiFlip {
+	0% {
+		transform: rotateX(0);
+	}
+	100% {
+		transform: rotateX(360deg);
+	}
+}
+
 .none {
 	animation: none !important;
 }
@@ -88,4 +128,20 @@
 .spin {
 	composes: wrapper;
 	animation: emojiSpin ease-in-out 400ms 1;
+}
+
+.vibrate {
+	composes: wrapper;
+	animation: emojiVibrate linear 300ms 1;
+}
+
+.blink {
+	composes: wrapper;
+	animation: emojiBlink ease-in-out 200ms 1;
+}
+
+.flip {
+	composes: wrapper;
+	animation: emojiFlip ease-out 400ms 1;
+	-webkit-backface-visibility: inherit !important;
 }
