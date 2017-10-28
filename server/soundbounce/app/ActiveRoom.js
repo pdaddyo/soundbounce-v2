@@ -312,6 +312,7 @@ export default class ActiveRoom {
 			&& item.payload.trackIds[0] === trackId));
 
 			if (existingReaction) {
+				// this user has already reacted to this track, animate the existing reaction
 				this.emitUserEvent(roomEmojiAnimation({
 					userId: sender.get('id'),
 					emojiId: existingReaction.id,
