@@ -4,5 +4,7 @@
 export default [
 	{cssClass: 'wobble', name: 'Wobble'},
 	{cssClass: 'grow', name: 'Grow'},
-	{cssClass: 'bounce', name: 'Bounce'}
+	{cssClass: 'bounce', name: 'Bounce'},
+	{cssClass: 'shake', name: 'Shake'},
+	{cssClass: 'spin', name: 'Spin'}
 ];

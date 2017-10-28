@@ -37,6 +37,30 @@
 	}
 }
 
+@keyframes emojiShake {
+	0%, 50%, 100% {
+		transform: translateX(0);
+	}
+	25% {
+		transform: translateX(-5px);
+	}
+	75% {
+		transform: translateX(5px);
+	}
+}
+
+@keyframes emojiSpin {
+	0% {
+		transform: rotate(0);
+	}
+	90% {
+		transform: rotate(370deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .none {
 	animation: none !important;
 }
@@ -54,4 +78,14 @@
 .bounce {
 	composes: wrapper;
 	animation: emojiBounce ease-in-out 200ms 1;
+}
+
+.shake {
+	composes: wrapper;
+	animation: emojiShake ease-in-out 200ms 1;
+}
+
+.spin {
+	composes: wrapper;
+	animation: emojiSpin ease-in-out 400ms 1;
 }
