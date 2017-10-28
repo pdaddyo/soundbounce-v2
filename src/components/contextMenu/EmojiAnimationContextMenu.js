@@ -28,6 +28,9 @@ class EmojiAnimationContextMenu extends Component {
 							  disabled={animationDetails.cssClass === selectedAnimation}
 							  key={animationDetails.cssClass}>
 						{animationDetails.name}
+						{animationDetails.cssClass === selectedAnimation && (
+							<div style={{position: 'absolute', right: 8, top: 3}}>✓</div>
+						)}
 					</MenuItem>
 				))}
 			</ContextMenu>
