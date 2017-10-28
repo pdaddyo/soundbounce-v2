@@ -24,7 +24,9 @@ class EmojiAnimationContextMenu extends Component {
 				{emojiAnimationList.map(animationDetails => (
 					<MenuItem onClick={() => {
 						setSelectedAnimation(animationDetails.cssClass);
-					}} disabled={animationDetails.cssClass === selectedAnimation}>
+					}}
+							  disabled={animationDetails.cssClass === selectedAnimation}
+							  key={animationDetails.cssClass}>
 						{animationDetails.name}
 					</MenuItem>
 				))}
