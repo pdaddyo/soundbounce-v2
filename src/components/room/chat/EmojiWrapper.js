@@ -1,5 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {ContextMenuTrigger} from 'react-contextmenu';
+import emojiAnimationList from './emojiAnimationList';
 
 import theme from './emojiWrapper.css';
 
@@ -8,32 +10,43 @@ class EmojiWrapper extends Component {
 		children: PropTypes.any,
 		onClickEmojiAnimation: PropTypes.func,
 		emojiId: PropTypes.string,
-		animation: PropTypes.string,
+		emojiAnimation: PropTypes.string,
+		selectedAnimation: PropTypes.string,
 		canClick: PropTypes.bool
 	};
 
 	handleClick = evt => {
-		const {onClickEmojiAnimation, emojiId, canClick} = this.props;
+		const {
+			onClickEmojiAnimation,
+			emojiId,
+			selectedAnimation = emojiAnimationList[0].cssClass  // default to the first in list
+		} = this.props;
 
-		if (canClick) {
-			onClickEmojiAnimation({emojiId, animation: 'wobble'});
-		}
+		onClickEmojiAnimation({emojiId, animation: selectedAnimation});
 	};
 
 	render() {
-		const {animation = 'none', children} = this.props;
+		const {emojiAnimation = 'none', children, canClick} = this.props;
+		if (!canClick) {
+			return <span className={theme[emojiAnimation]}>{children}</span>;
+		}
+
 		return (
-			<span onClick={this.handleClick}
-				  ref='span'
-				  className={theme[animation]}>
-				{children}
-			</span>
+			<ContextMenuTrigger id='emoji-animation'
+								collect={c => c}
+								holdToDisplay={-1}>
+				<span onClick={this.handleClick}
+					  className={theme[emojiAnimation]}>
+					{children}
+				</span>
+			</ContextMenuTrigger>
 		);
 	}
 }
 
 const mapStateToProps = (state, ownProps) => ({
-	animation: state.ui[`emoji-animation-${ownProps.emojiId}`]
+	emojiAnimation: state.ui[`emoji-animation-${ownProps.emojiId}`],
+	selectedAnimation: state.ui['selected-animation']
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

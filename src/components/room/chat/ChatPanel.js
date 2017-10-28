@@ -19,6 +19,7 @@ import theme from './chatPanel.css';
 // global emoji mart (the emoji picker) styles
 import './emoji-mart.css';
 import Emoticon from '../../svg/icons/Emoticon';
+import EmojiAnimationContextMenu from '../../contextMenu/EmojiAnimationContextMenu';
 
 class ChatPanel extends Component {
 	static propTypes = {
@@ -186,6 +187,7 @@ class ChatPanel extends Component {
 						<ArrowRight/>
 					</div>
 				</div>
+				<EmojiAnimationContextMenu />
 			</div>
 		);
 	}
