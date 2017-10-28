@@ -25,6 +25,18 @@
 	}
 }
 
+@keyframes emojiBounce {
+	0% {
+		transform: translateY(0) scale(0.8);
+	}
+	50% {
+		transform: translateY(-7px) scale(0.6);
+	}
+	100% {
+		transform: translateY(0) scale(1);
+	}
+}
+
 .none {
 	animation: none !important;
 }
@@ -37,4 +49,9 @@
 .grow {
 	composes: wrapper;
 	animation: emojiGrow ease-out 400ms 1;
+}
+
+.bounce {
+	composes: wrapper;
+	animation: emojiBounce ease-in-out 200ms 1;
 }

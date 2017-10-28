@@ -3,5 +3,6 @@
  */
 export default [
 	{cssClass: 'wobble', name: 'Wobble'},
-	{cssClass: 'grow', name: 'Grow'}
+	{cssClass: 'grow', name: 'Grow'},
+	{cssClass: 'bounce', name: 'Bounce'}
 ];
