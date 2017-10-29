@@ -17,7 +17,10 @@ import {
 	actions as spotifyActions, spotifyAudioAnalysisUpdate
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
-import {syncStartFail, syncStop, syncStartOk, actions as syncActions} from '../modules/sync';
+import {
+	syncStartFail, syncStop, syncStartOk, actions as syncActions,
+	syncStart
+} from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
 import moment from 'moment';
 import _ from 'lodash';
@@ -363,6 +366,7 @@ function * watchForSwitchDevice() {
 			method: 'PUT',
 			body: JSON.stringify({device_ids: [payload.deviceId]})
 		});
+		yield put(syncStart());
 	}
 }
 
