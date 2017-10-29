@@ -111,8 +111,8 @@ class MusicBubble extends Component {
 					</div>
 				</div>
 				<div className={userTheme('timestamp')}>
-					{emoji ? 'Liked' : 'Added'}
-					{sentByCurrentUser ? ' ' : ` by ${loggedAction.user.nickname} `}
+					{emoji ? 'Reaction' : 'Added'}
+					{sentByCurrentUser ? ' ' : ` ${emoji ? 'from' : 'by'} ${loggedAction.user.nickname} `}
 					{friendlyTimeStamp}
 				</div>
 				{loggedAction.user && (
