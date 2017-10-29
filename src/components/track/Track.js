@@ -179,7 +179,7 @@ class Track extends Component {
 
 								<ContextMenuTrigger id='reaction'
 													collect={c => c}
-													holdToDisplay={-1}>
+													holdToDisplay={400}>
 									<div className={theme.reactionButton}
 										 onClick={() => {
 											 if (onClickReaction) {
