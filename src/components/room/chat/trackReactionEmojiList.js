@@ -12,9 +12,27 @@ export default [
 		emoji: ':+1:', name: 'Thumbs up', animation: 'wobble'
 	},
 	{
+		emoji: ':ok_hand:', name: 'Perfection', animation: 'grow'
+	},
+	{
+		emoji: ':metal:', name: 'Metal', animation: 'wobble'
+	},
+	{
 		emoji: ':loud_sound:', name: 'Crank it!', animation: 'shake'
 	},
 	{
+		emoji: ':star_struck:', name: 'Star Struck', animation: 'wobble'
+	},
+	{
+		emoji: ':sleeping:', name: 'Boring', animation: 'vibrate'
+	},
+	{
 		emoji: ':grimacing:', name: 'Eeeek', animation: 'vibrate'
+	},
+	{
+		emoji: ':cry:', name: 'Crying', animation: 'wobble'
+	},
+	{
+		emoji: ':laughing:', name: 'Laughing', animation: 'wobble'
 	}
 ];
