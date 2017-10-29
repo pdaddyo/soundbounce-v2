@@ -6,10 +6,10 @@ export default [
 		emoji: ':heart:', name: 'Heart', animation: 'grow'
 	},
 	{
-		emoji: ':+1:', name: 'Thumbs up', animation: 'wobble'
+		emoji: ':star:', name: 'Star', animation: 'vibrate'
 	},
 	{
-		emoji: ':star:', name: 'Star', animation: 'vibrate'
+		emoji: ':+1:', name: 'Thumbs up', animation: 'wobble'
 	},
 	{
 		emoji: ':loud_sound:', name: 'Crank it!', animation: 'shake'
