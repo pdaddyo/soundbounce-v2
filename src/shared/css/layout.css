@@ -8,4 +8,5 @@
 
 body {
 	-webkit-font-smoothing: subpixel-antialiased;
+	user-select: none;
 }
