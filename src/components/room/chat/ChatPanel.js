@@ -74,6 +74,7 @@ class ChatPanel extends Component {
 			// a single bubble / message
 			while (actionIndex + 1 < actionLog.length &&
 			actionLog[actionIndex + 1].type === action.type &&
+			actionLog[actionIndex + 1].type !== 'ROOM_REACTION' &&
 			actionLog[actionIndex + 1].payload.userId === action.payload.userId &&
 			((new Date(actionLog[actionIndex + 1].timestamp)).getTime() -
 			(new Date(actionLog[actionIndex].timestamp)).getTime()) < 1000 * 60) {
