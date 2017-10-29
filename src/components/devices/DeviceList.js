@@ -41,7 +41,7 @@ class DeviceList extends Component {
 
 		return (
 			<div>
-				{devices.length === 0 || (devices.length > 0 && !activeDevice) && (
+				{(devices.length === 0 || (devices.length > 0 && !activeDevice)) && (
 					<div className={theme.cover}/>
 				)}
 
