@@ -39,7 +39,7 @@ class MainNavigation extends Component {
 	};
 
 	render() {
-		const {currentUser, isSynced, deviceListVisible} = this.props;
+		const {currentUser, isSynced, deviceListVisible, spotifyDevicesRequest} = this.props;
 		return (
 			<div>
 				<div className={theme.nav}>
@@ -64,18 +64,30 @@ class MainNavigation extends Component {
 						</div>
 					</Link>
 				</div>
-				{deviceListVisible && <DeviceList/>}
+				{deviceListVisible && <DeviceList spotifyDevicesRequest={spotifyDevicesRequest}/>}
 			</div>
 		);
 	}
 }
 
 // map the spotify player state to prop 'player'
-const mapStateToProps = state => ({
-	currentUser: selectCurrentUser(state),
-	isSynced: state.sync.isSynced,
-	deviceListVisible: Boolean(state.ui['deviceListVisible'])
-});
+const mapStateToProps = state => {
+	const {devices} = state.spotify;
+	const activeDevice = devices && devices.find(device => device.is_active);
+
+	return {
+		currentUser: selectCurrentUser(state),
+		isSynced: state.sync.isSynced,
+		// always show the device list if we're in a room with no active device
+		deviceListVisible: (
+			!activeDevice &&
+			state.router.locationBeforeTransitions.pathname.indexOf('/room/') === 0
+		) ||
+		(
+			Boolean(state.ui['deviceListVisible'])
+		)
+	};
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	spotifyDevicesRequest: () => {

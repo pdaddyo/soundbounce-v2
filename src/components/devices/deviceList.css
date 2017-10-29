@@ -1,8 +1,18 @@
+.cover {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8);
+	z-index: 9;
+}
+
 .container {
 	z-index: 10;
 	position: absolute;
-	bottom: 10rem;
-	left: 5rem;
+	top: 6rem;
+	left: 6rem;
 	background-color: rgba(0, 0, 0, 0.99);
 	border-radius: 2px;
 	display: inline-flex;
@@ -18,6 +28,14 @@
 	padding: 1rem;
 	width: 13rem;
 	line-height: 1.3rem;
+	font-size: 80%;
+	color: #00BFFF;
+	border-bottom: 1px solid #00BFFF;
+}
+
+.notFound strong {
+	color: #ad009f;
+	font-size: 0.9rem;
 }
 
 .device:not(:last-child) {

@@ -12,7 +12,8 @@ class DeviceList extends Component {
 	static propTypes = {
 		devices: PropTypes.array.isRequired,
 		room: PropTypes.object,
-		switchDevice: PropTypes.func
+		switchDevice: PropTypes.func,
+		spotifyDevicesRequest: PropTypes.func
 	};
 
 	static contextTypes = {
@@ -23,28 +24,54 @@ class DeviceList extends Component {
 		this.props.switchDevice(deviceId);
 	}
 
+	componentDidMount() {
+		this.timerId = setInterval(() => {
+			this.props.spotifyDevicesRequest();
+		}, 600);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.timerId);
+	}
+
 	render() {
-		const {devices, room} = this.props;
-		const primary = (room && room.config) ? room.config.colors.primary : '#ad009f';
+		const {devices} = this.props;
+		const primary = '#00BFFF';
+		const activeDevice = devices && devices.find(device => device.is_active);
 
 		return (
-			<div className={theme.container}>
-				{devices.length === 0 && (
-					<div className={theme.notFound}>
-						<strong>No devices found.</strong><br/><br/>
-						Open Spotify app (or web player)
-						and ensure Spotify Connect is enabled, and you
-						are logged into same Spotify Premium account.
-					</div>
+			<div>
+				{devices.length === 0 || (devices.length > 0 && !activeDevice) && (
+					<div className={theme.cover}/>
 				)}
-				{devices.map(device => (
-					<div className={theme[device.is_active ? 'deviceActive' : 'device']}
-						 key={device.id}
-						 style={device.is_active ? {color: primary} : {}}
-						 onClick={this.clickDevice.bind(this, device.id)}>
-						{device.name}
-					</div>
-				))}
+
+				<div className={theme.container}>
+					{devices.length === 0 && (
+						<div className={theme.notFound}>
+							<strong>No Spotify Connect devices found.</strong><br/><br/>
+							Open Spotify app (or web player)
+							and ensure Spotify Connect is enabled, and you
+							are logged into same Spotify Premium account.
+						</div>
+					)}
+					{devices.length > 0 && !activeDevice && (
+						<div className={theme.notFound}>
+							<strong>Select Spotify Connect device.</strong><br/><br/>
+							Please select a Spotify Connect device below.<br/><br/>
+							<span style={{fontSize: '80%'}}>If your player is not shown,
+								try playing a track manually in Spotify first (list refreshes automatically).</span>
+						</div>
+					)}
+
+					{devices.map(device => (
+						<div className={theme[device.is_active ? 'deviceActive' : 'device']}
+							 key={device.id}
+							 style={device.is_active ? {color: primary} : {}}
+							 onClick={this.clickDevice.bind(this, device.id)}>
+							{device.name}
+						</div>
+					))}
+				</div>
 			</div>
 		);
 	}

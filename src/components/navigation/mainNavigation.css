@@ -28,7 +28,7 @@
 
 .deviceIconContainer {
 	position: absolute;
-	bottom: 10rem;
+	top: 8rem;
 	left: 2rem;
 	cursor: pointer;
 	opacity: 0.4;
