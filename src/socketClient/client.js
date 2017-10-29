@@ -18,6 +18,7 @@ import {homeSetData} from 'redux/modules/home';
 import {roomFullSync, roomNavigating} from 'redux/modules/shared/room';
 import {syncSetServerOffset} from '../redux/modules/sync';
 import {socketRoomStatsOk} from '../redux/modules/socket';
+import {setCurrentUserPrefs} from '../redux/modules/users';
 
 class SocketClient {
 	setStore(store) {
@@ -55,10 +56,7 @@ class SocketClient {
 		socket.on('server:version', ({buildVersion}) => {
 			if (buildVersion !== config.buildVersion) {
 				console.log(`Wrong client version! Server: ${buildVersion}, Client: ${config.buildVersion}`);
-				/*				alert(`A new version of Soundbounce has just been deployed!
-
-				 Press OK to refresh and load the latest version...`);
-				 */
+				// reload
 				location.reload(true);
 			}
 		});
@@ -86,6 +84,9 @@ class SocketClient {
 		socket.on('home:data:ok', (home) => {
 			dispatch(socketHomeDataOk(home));
 			dispatch(homeSetData(home));
+		});
+		socket.on('user:prefs:ok', prefs => {
+			dispatch(setCurrentUserPrefs(prefs));
 		});
 	}
 

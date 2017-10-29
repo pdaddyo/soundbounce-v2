@@ -111,6 +111,14 @@ export default class Connections {
 			socket.emit('user:current:ok', socket.authenticatedUser.get({plain: true}));
 		});
 
+		socket.on('user:prefs:save', prefsToSave => {
+			const prefs = {...socket.authenticatedUser.get('prefs'), ...prefsToSave};
+			// console.log('saving ' + JSON.stringify(prefs));
+			socket.authenticatedUser.update({prefs}).then(() => {
+				app.io.to(socket.allSocketsForThisUser).emit('user:prefs:ok', prefs);
+			});
+		});
+
 		socket.on('room:event', ({roomId, event}) => {
 			const activeRoom = app.rooms.findActiveRoom(roomId);
 			if (!activeRoom) {

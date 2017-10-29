@@ -7,9 +7,11 @@ import {SOCKET_ROOM_EVENT} from './socket';
 // Constants
 // ------------------------------------
 export const USER_SET_CURRENT = 'USER_SET_CURRENT';
+export const USER_SET_CURRENT_PREFS = 'USER_SET_CURRENT_PREFS';
 
 export const actions = {
-	USER_SET_CURRENT
+	USER_SET_CURRENT,
+	USER_SET_CURRENT_PREFS
 };
 
 // ------------------------------------
@@ -26,6 +28,11 @@ const defaultState = {
 export const setCurrentUser = (user) => ({
 	type: USER_SET_CURRENT,
 	payload: {user}
+});
+
+export const setCurrentUserPrefs = (prefs) => ({
+	type: USER_SET_CURRENT_PREFS,
+	payload: {prefs}
 });
 
 // ------------------------------------
@@ -80,6 +87,14 @@ const ACTION_HANDLERS = {
 	[SOCKET_ROOM_EVENT]: (state, {payload}) => {
 		let {users} = payload;
 		return users ? mergeUsers({state, users}) : state;
+	},
+	[USER_SET_CURRENT_PREFS]: (state, {payload}) => {
+		const {prefs} = payload;
+		return {
+			...state, users: update(state.users, {
+				[state.currentUserId]: {prefs: {$set: prefs}}
+			})
+		};
 	}
 };
 

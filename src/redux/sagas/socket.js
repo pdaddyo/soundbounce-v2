@@ -71,6 +71,12 @@ function * watchForRoomStatsRequest() {
 		socketClient.emit('room:stats', payload);
 	}
 }
+function * watchForUserPrefsSave() {
+	while (true) {
+		const {payload} = yield take(socketActions.SOCKET_USER_PREFS_SAVE);
+		socketClient.emit('user:prefs:save', payload.prefs);
+	}
+}
 
 function * watchForSocketOnRoomCreateOk() {
 	while (true) {
@@ -90,7 +96,8 @@ export default function * socketInit() {
 			watchForSocketEmitRoomEvent(),
 			watchForSocketOnRoomCreateOk(),
 			watchForSocketRequestHomeData(),
-			watchForRoomStatsRequest()
+			watchForRoomStatsRequest(),
+			watchForUserPrefsSave()
 		];
 	} catch (err) {
 		console.log('unhandled socket saga error: ' + err);

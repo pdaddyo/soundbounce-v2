@@ -3,22 +3,24 @@
  */
 import React, {Component, PropTypes} from 'react';
 import {ContextMenu, MenuItem} from 'react-contextmenu';
-import {uiUpdate} from '../../redux/modules/ui';
 import {connect} from 'react-redux';
 
 import trackReactionEmojiList from '../room/chat/trackReactionEmojiList';
 import {emojify} from 'react-emojione';
+import {selectCurrentUser} from '../../redux/modules/users';
+import {socketUserPrefsSave} from '../../redux/modules/socket';
 
 class ReactionSelectionContextMenu extends Component {
 	static propTypes = {
 		setSelectedReactionEmoji: PropTypes.func,
-		selectedReaction: PropTypes.string
+		selectedReaction: PropTypes.string,
+		roomId: PropTypes.string
 	};
 
 	render() {
 		const {
 			setSelectedReactionEmoji,
-			selectedReaction = trackReactionEmojiList[0].emoji
+			selectedReaction
 		} = this.props;
 		return (
 			<ContextMenu id='reaction'>
@@ -47,13 +49,20 @@ class ReactionSelectionContextMenu extends Component {
 	}
 }
 
-const mapStateToProps = state => ({
-	selectedReaction: state.ui['selected-reaction']
-});
+const mapStateToProps = state => {
+	const currentUser = selectCurrentUser(state);
+	let emoji = trackReactionEmojiList[0].emoji;
+	if (currentUser && currentUser.prefs) {
+		emoji = currentUser.prefs['selectedReactionEmoji'];
+	}
+	return {
+		selectedReaction: emoji
+	};
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	setSelectedReactionEmoji: (animation) => {
-		dispatch(uiUpdate({key: 'selected-reaction', newState: animation}));
+	setSelectedReactionEmoji: (emoji) => {
+		dispatch(socketUserPrefsSave({prefs: {selectedReactionEmoji: emoji}}));
 	}
 });
 

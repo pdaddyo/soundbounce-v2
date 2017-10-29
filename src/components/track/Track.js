@@ -15,6 +15,8 @@ import {uiUpdate} from '../../redux/modules/ui';
 import intersperse from 'shared/intersperse';
 import {ContextMenuTrigger} from 'react-contextmenu';
 import {emojify} from 'react-emojione';
+import {selectCurrentUser} from '../../redux/modules/users';
+import trackReactionEmojiList from '../room/chat/trackReactionEmojiList';
 
 class Track extends Component {
 	static propTypes = {
@@ -217,10 +219,17 @@ class Track extends Component {
 	}
 }
 
-const mapStateToProps = state => ({
-	currentRoomId: state.room.id,
-	selectedReactionEmoji: state.ui['selected-reaction'] || ':heart:'
-});
+const mapStateToProps = state => {
+	const currentUser = selectCurrentUser(state);
+	let emoji = trackReactionEmojiList[0].emoji;
+	if (currentUser && currentUser.prefs) {
+		emoji = currentUser.prefs['selectedReactionEmoji'];
+	}
+	return {
+		currentRoomId: state.room.id,
+		selectedReactionEmoji: emoji
+	};
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	previewStart: (trackId) => {

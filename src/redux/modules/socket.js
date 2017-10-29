@@ -16,6 +16,7 @@ export const SOCKET_REQUEST_HOME_DATA = 'SOCKET_REQUEST_HOME_DATA';
 export const SOCKET_HOME_DATA_OK = 'SOCKET_HOME_DATA_OK';
 export const SOCKET_ROOM_STATS_REQUEST = 'SOCKET_ROOM_STATS_REQUEST';
 export const SOCKET_ROOM_STATS_OK = 'SOCKET_ROOM_STATS_OK';
+export const SOCKET_USER_PREFS_SAVE = 'SOCKET_USER_PREFS_SAVE';
 
 export const actions = {
 	SOCKET_CONNECT_BEGIN,
@@ -32,7 +33,8 @@ export const actions = {
 	SOCKET_REQUEST_HOME_DATA,
 	SOCKET_HOME_DATA_OK,
 	SOCKET_ROOM_STATS_REQUEST,
-	SOCKET_ROOM_STATS_OK
+	SOCKET_ROOM_STATS_OK,
+	SOCKET_USER_PREFS_SAVE
 };
 
 // ------------------------------------
@@ -117,6 +119,11 @@ export const socketRoomStatsRequest = (roomId) => ({
 export const socketRoomStatsOk = ({roomId, stats, tracks}) => ({
 	type: SOCKET_ROOM_STATS_OK,
 	payload: {roomId, stats, tracks}
+});
+
+export const socketUserPrefsSave = ({prefs}) => ({
+	type: SOCKET_USER_PREFS_SAVE,
+	payload: {prefs}
 });
 
 // ------------------------------------
