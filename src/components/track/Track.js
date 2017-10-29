@@ -14,7 +14,7 @@ import {syncStart} from '../../redux/modules/sync';
 import {uiUpdate} from '../../redux/modules/ui';
 import intersperse from 'shared/intersperse';
 import {ContextMenuTrigger} from 'react-contextmenu';
-import Heart from '../svg/icons/Heart';
+import {emojify} from 'react-emojione';
 
 class Track extends Component {
 	static propTypes = {
@@ -27,7 +27,8 @@ class Track extends Component {
 		previewStart: PropTypes.func,
 		previewStop: PropTypes.func,
 		currentRoomId: PropTypes.string,
-		performSearch: PropTypes.func
+		performSearch: PropTypes.func,
+		selectedReactionEmoji: PropTypes.string
 	};
 
 	static contextTypes = {
@@ -56,7 +57,7 @@ class Track extends Component {
 	render() {
 		const {
 			track, size, onClickVote, onClickReaction, percentComplete,
-			visible, currentRoomId, performSearch
+			visible, currentRoomId, performSearch, selectedReactionEmoji
 		} = this.props;
 		const {router} = this.context;
 
@@ -173,15 +174,32 @@ class Track extends Component {
 					{(size === 'normal' || size === 'small') && votes}
 					{size !== 'small' && (
 						<div className={sizeTheme('buttons')}>
+							{/* reaction icon e.g. heart this track */}
 							{percentComplete > -1 && (
-								<div className={theme.reactionButton}
-									 onClick={() => {
-										 if (onClickReaction) {
-											 onClickReaction({trackId: track.id, emoji: 'heart'});
-										 }
-									 }}>
-									<Heart />
-								</div>
+
+								<ContextMenuTrigger id='reaction'
+													collect={c => c}
+													holdToDisplay={-1}>
+									<div className={theme.reactionButton}
+										 onClick={() => {
+											 if (onClickReaction) {
+												 onClickReaction({
+													 trackId: track.id,
+													 emoji: selectedReactionEmoji
+												 });
+											 }
+										 }}>
+
+										{emojify(selectedReactionEmoji,
+											{
+												style: {
+													width: 32, height: 32
+												}
+											}
+										)}
+
+									</div>
+								</ContextMenuTrigger>
 							)}
 							<span className={theme.dotsButton}
 								  onClick={e => {
@@ -200,7 +218,8 @@ class Track extends Component {
 }
 
 const mapStateToProps = state => ({
-	currentRoomId: state.room.id
+	currentRoomId: state.room.id,
+	selectedReactionEmoji: state.ui['selected-reaction'] || ':heart:'
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

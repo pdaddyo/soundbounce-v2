@@ -166,14 +166,6 @@
 	cursor: pointer;
 }
 
-.reactionButton {
-	composes: voteUpButton;
-	padding: 0.3rem;
-	margin-left: 0;
-	transform: none;
-	width: 1.5rem;
-}
-
 .voteUpButton:hover {
 	opacity: 0.7;
 }
@@ -232,3 +224,21 @@
 	background-color: rgba(255, 255, 255, 0.1);
 	width: 100%;
 }
+
+.reactionButton {
+	padding: 0.3rem;
+	margin-left: 0;
+	transform: scale(0.8);
+	width: 1.5rem;
+	filter: grayscale(90%);
+	opacity: 0.8;
+	cursor: pointer;
+	transition: all 200ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+}
+
+.reactionButton:hover {
+	opacity: 1;
+	transform: scale(0.9);
+	filter: grayscale(0%);
+}
+

@@ -26,6 +26,7 @@ import theme from './roomView.css';
 import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
 import {ROOM_REACTION} from '../../redux/modules/shared/room';
 import Stats from 'components/room/stats/Stats';
+import ReactionSelectionContextMenu from '../../components/contextMenu/ReactionSelectionContextMenu';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -141,6 +142,7 @@ class RoomView extends Component {
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<TrackContextMenu/>
+				<ReactionSelectionContextMenu/>
 				<ScrollStyle size={0.6} alpha={0.35}/>
 				<Gradient />
 				<TopBar room={room} params={params}/>

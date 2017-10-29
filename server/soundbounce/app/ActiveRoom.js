@@ -20,6 +20,8 @@ import shortid from 'shortid';
 import moment from 'moment';
 import Refill from './Refill';
 
+import trackReactionEmojiList from '../../../src/components/room/chat/trackReactionEmojiList';
+
 import {TrackActivity} from '../data/schema';
 
 let debug = _debug('soundbounce:activeroom');
@@ -312,12 +314,17 @@ export default class ActiveRoom {
 			&& item.payload.trackIds[0] === trackId));
 
 			if (existingReaction) {
+				const emojiAnimationItem = trackReactionEmojiList.find(reaction => reaction.emoji === existingReaction.payload.emoji);
+
+				const animation = emojiAnimationItem ? emojiAnimationItem.animation : 'grow';
+
 				// this user has already reacted to this track, animate the existing reaction
 				this.emitUserEvent(roomEmojiAnimation({
 					userId: sender.get('id'),
 					emojiId: existingReaction.id,
-					animation: 'grow'
-				}));
+					animation
+				}))
+				;
 				return;
 			}
 
