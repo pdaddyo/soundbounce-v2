@@ -14,9 +14,9 @@ import {syncStart} from '../../redux/modules/sync';
 import {uiUpdate} from '../../redux/modules/ui';
 import intersperse from 'shared/intersperse';
 import {ContextMenuTrigger} from 'react-contextmenu';
-import {emojify} from 'react-emojione';
 import {selectCurrentUser} from '../../redux/modules/users';
 import trackReactionEmojiList from '../room/chat/trackReactionEmojiList';
+import emojifyWithOptions from '../room/chat/emojifyWithOptions';
 
 class Track extends Component {
 	static propTypes = {
@@ -192,13 +192,7 @@ class Track extends Component {
 											 }
 										 }}>
 
-										{emojify(selectedReactionEmoji,
-											{
-												style: {
-													width: 32, height: 32
-												}
-											}
-										)}
+										{emojifyWithOptions(selectedReactionEmoji)}
 
 									</div>
 								</ContextMenuTrigger>

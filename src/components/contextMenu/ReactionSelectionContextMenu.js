@@ -6,9 +6,9 @@ import {ContextMenu, MenuItem} from 'react-contextmenu';
 import {connect} from 'react-redux';
 
 import trackReactionEmojiList from '../room/chat/trackReactionEmojiList';
-import {emojify} from 'react-emojione';
 import {selectCurrentUser} from '../../redux/modules/users';
 import {socketUserPrefsSave} from '../../redux/modules/socket';
+import emojifyWithOptions from '../room/chat/emojifyWithOptions';
 
 class ReactionSelectionContextMenu extends Component {
 	static propTypes = {
@@ -30,11 +30,9 @@ class ReactionSelectionContextMenu extends Component {
 						}}
 								  disabled={reactionEmojiListItem.emoji === selectedReaction}
 								  key={reactionEmojiListItem.emoji}>
-							{emojify(reactionEmojiListItem.emoji + '      ' + reactionEmojiListItem.name,
-								{
-									style: {
-										width: 20, height: 20, marginLeft: -8, marginRight: 8
-									}
+							{emojifyWithOptions(reactionEmojiListItem.emoji + ' ' + reactionEmojiListItem.name,
+								20, {
+									marginLeft: -8, marginRight: 8
 								}
 							)}
 							{reactionEmojiListItem.emoji === selectedReaction && (

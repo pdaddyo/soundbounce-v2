@@ -9,28 +9,17 @@ import every from 'lodash/every';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Avatar from '../../user/avatar/Avatar';
-import {emojify} from 'react-emojione';
 
 import theme from './bubbles.css';
 import {spotifyPreviewTrack} from '../../../redux/modules/spotify';
 import {syncStart} from '../../../redux/modules/sync';
 import {ContextMenuTrigger} from 'react-contextmenu';
 import EmojiWrapper from './EmojiWrapper';
+import emojifyWithOptions from './emojifyWithOptions';
 
 const maxEmojiToDrawLarge = 5;
 const largeEmojiSize = 32;
 const maxDescriptionLength = 250;
-
-const emojiOptions = {
-	convertShortnames: true,
-	convertUnicode: true,
-	convertAscii: true,
-	style: {
-		height: 24,
-		width: 24,
-		top: 0
-	}
-};
 
 /*eslint-disable */
 const linkRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
@@ -49,21 +38,13 @@ class ChatBubble extends Component {
 
 	emojify(text, chatId) {
 		const {onClickEmojiAnimation, chat} = this.props;
-		let emojifiedText = emojify(text, emojiOptions);
+		let emojifiedText = emojifyWithOptions(text, 24);
 		// check if this is just emojis with no other text
 		if (Array.isArray(emojifiedText) &&
 			emojifiedText.length <= maxEmojiToDrawLarge &&
 			every(emojifiedText, item => typeof item !== 'string' || item.trim() === '')) {
 			// we have just emoji here, so render it bigger!
-			emojifiedText = emojify(text,
-				{
-					...emojiOptions,
-					style: {
-						...emojiOptions.style,
-						width: largeEmojiSize, height: largeEmojiSize
-					}
-				}
-			);
+			emojifiedText = emojifyWithOptions(text, largeEmojiSize);
 		}
 
 		// we have emojified text, now wrap for interactive animations when clicked

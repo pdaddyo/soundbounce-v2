@@ -14,7 +14,7 @@ import Track from '../../track/Track';
 import {chain, value, uniq, flatten} from 'lodash';
 import {uiUpdate} from '../../../redux/modules/ui';
 import EmojiWrapper from './EmojiWrapper';
-import {emojify} from 'react-emojione';
+import emojifyWithOptions from './emojifyWithOptions';
 /* eslint-enable */
 
 class MusicBubble extends Component {
@@ -99,13 +99,7 @@ class MusicBubble extends Component {
 								<EmojiWrapper canClick={sentByCurrentUser}
 											  onClickEmojiAnimation={onClickEmojiAnimation}
 											  emojiId={loggedAction.payloads[0].id}
-								>{emojify(loggedAction.payloads[0].emoji,
-									{
-										style: {
-											width: 32, height: 32
-										}
-									}
-								)}</EmojiWrapper>
+								>{emojifyWithOptions(loggedAction.payloads[0].emoji)}</EmojiWrapper>
 							</div>
 						)}
 					</div>
