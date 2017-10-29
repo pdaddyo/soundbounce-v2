@@ -27,7 +27,7 @@ class DeviceList extends Component {
 	componentDidMount() {
 		this.timerId = setInterval(() => {
 			this.props.spotifyDevicesRequest();
-		}, 600);
+		}, 850);
 	}
 
 	componentWillUnmount() {
@@ -51,7 +51,9 @@ class DeviceList extends Component {
 							<strong>No Spotify Connect devices found.</strong><br/><br/>
 							Open Spotify app (or web player)
 							and ensure Spotify Connect is enabled, and you
-							are logged into same Spotify Premium account.
+							are logged into same Spotify account.<br/><br/>
+							<span style={{fontSize: '80%'}}>Spotify Premium is required due to
+								Spotify Connect being a premium-only feature, sorry!</span>
 						</div>
 					)}
 					{devices.length > 0 && !activeDevice && (
