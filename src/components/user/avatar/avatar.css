@@ -13,7 +13,7 @@
 
 .avatarInitial {
 	composes: avatar;
-	background-color: #FA0B84;
+	background-color: #00bfff90;
 	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
