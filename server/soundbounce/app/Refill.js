@@ -67,14 +67,15 @@ export default class Refill {
 				}
 				for (let source of sources) {
 					if (source.percent === 0) {
-						return;
+						continue;
 					}
 					const handler = ({
 						'room-history': ({percent, numTracksFromThisSource}) => {
-							//this.debug(`${percent}% (${numTracksFromThisSource} tracks)  from room history`);
+							this.debug(`${percent}% (${numTracksFromThisSource} tracks)  from room history`);
 							promises.push(
 								this.getRandomTracksFromRoomHistory(numTracksFromThisSource)
 									.then(results => {
+										this.debug(`Found ${results.length} tracks, adding now...`);
 										const trackIds = results.map(track => track.trackId);
 										return {
 											trackIds,
@@ -85,31 +86,33 @@ export default class Refill {
 						},
 						'suggestions-from-room-history': ({percent, numTracksFromThisSource}) => {
 							//	this.debug(`${percent}% (${numTracksFromThisSource} tracks) from history suggestions`);
-							promises.push(
-								this.getRandomTracksFromRoomHistory(5).then(results => {
-									const historyTrackIds = results.map(track => track.trackId);
-									if (historyTrackIds.length === 0) {
-										return {
-											trackIds: [],
-											reason: ''
-										};
-									}
-
-									return spotifyApi.getRecommendations({
-										seed_tracks: historyTrackIds,
-										limit: numTracksFromThisSource
-									}).then(results => {
-											if (results && results.body && results.body.tracks) {
-												const trackIds = results.body.tracks.map(track => track.id);
-												return {
-													trackIds,
-													reason: 'Suggested by Soundbounce based on room history'
-												};
-											}
+							if (numTracksFromThisSource > 0) {
+								promises.push(
+									this.getRandomTracksFromRoomHistory(5).then(results => {
+										const historyTrackIds = results.map(track => track.trackId);
+										if (historyTrackIds.length === 0) {
+											return {
+												trackIds: [],
+												reason: ''
+											};
 										}
-									);
-								})
-							);
+
+										return spotifyApi.getRecommendations({
+											seed_tracks: historyTrackIds,
+											limit: numTracksFromThisSource
+										}).then(results => {
+												if (results && results.body && results.body.tracks) {
+													const trackIds = results.body.tracks.map(track => track.id);
+													return {
+														trackIds,
+														reason: 'Suggested by Soundbounce based on room history'
+													};
+												}
+											}
+										);
+									})
+								);
+							}
 						},
 						'suggestions-from-current-playlist': ({percent, numTracksFromThisSource}) => {
 							//	this.debug(`${percent}% (${numTracksFromThisSource} tracks) from current playlist suggestions`);
@@ -120,23 +123,23 @@ export default class Refill {
 								.take(5)
 								.value();
 
-							if (seeds.length === 0) {
-								return;
+							if (seeds.length > 0) {
+
+								promises.push(
+									spotifyApi.getRecommendations({
+										seed_tracks: seeds,
+										limit: numTracksFromThisSource
+									}).then(results => {
+										if (results && results.body && results.body.tracks) {
+											const trackIds = results.body.tracks.map(track => track.id);
+											return {
+												trackIds,
+												reason: 'Suggested by Soundbounce based on current playlist'
+											};
+										}
+									})
+								);
 							}
-							promises.push(
-								spotifyApi.getRecommendations({
-									seed_tracks: seeds,
-									limit: numTracksFromThisSource
-								}).then(results => {
-									if (results && results.body && results.body.tracks) {
-										const trackIds = results.body.tracks.map(track => track.id);
-										return {
-											trackIds,
-											reason: 'Suggested by Soundbounce based on current playlist'
-										};
-									}
-								})
-							);
 						}
 					})[source.type];
 
