@@ -83,6 +83,19 @@ class ChatBubble extends Component {
 			if (str === '/shrug') {
 				return '¯\\_(ツ)_/¯';
 			}
+			// look for backquote (code)
+			const matches = str.match(/`(.*?)`/g);
+			if (matches) {
+				const startPos = str.indexOf(matches[0]);
+				return [
+					str.substr(0, startPos),
+					// wrap backquoted 'code' in our span
+					<span className={theme.code}>
+						{str.substr(startPos + 1, matches[0].length - 2)}
+						</span>,
+					str.substr(startPos + matches[0].length)
+				];
+			}
 		};
 
 		if (typeof content !== 'string') {
