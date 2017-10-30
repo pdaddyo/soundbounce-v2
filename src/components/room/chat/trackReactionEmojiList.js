@@ -37,5 +37,8 @@ export default [
 	},
 	{
 		emoji: ':sunglasses:', name: 'Cool', animation: 'spin'
+	},
+	{
+		emoji: ':exploding_head:', name: 'Exploding head', animation: 'bounce'
 	}
 ];
