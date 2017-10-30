@@ -1,3 +1,7 @@
+.react-contextmenu-wrapper {
+	display: inline-block;
+}
+
 .react-contextmenu {
 	z-index: 100;
 	min-width: 160px;
