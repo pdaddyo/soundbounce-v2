@@ -17,7 +17,7 @@
 	min-width: 2.5rem;
 	border-radius: 0.3rem;
 	padding: 0.7rem 1rem 0.5rem 1rem;
-	background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.11);
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.8rem;
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.6);
@@ -30,7 +30,7 @@
 
 .musicBubble {
 	composes: bubble;
-	background-color: rgba(255, 255, 255, 0.03);
+	background-color: rgba(255, 255, 255, 0.07);
 	min-height: 2.25rem;
 }
 
