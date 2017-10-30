@@ -11,7 +11,8 @@ import ArrowRight from '../../svg/icons/ArrowRight';
 import ChatBubble from './ChatBubble.js';
 import MusicBubble from './MusicBubble.js';
 import takeRight from 'lodash/takeRight';
-// import EmojiInput from 'react-emoji-input';  <<- todo implement this
+// import EmojiInput from 'react-emoji-input';  // <<- todo implement this
+import '!!style!css!./emojiInput.css';
 
 import {uiUpdate} from 'redux/modules/ui';
 import theme from './chatPanel.css';
@@ -161,6 +162,7 @@ class ChatPanel extends Component {
 					</div>
 				</div>
 				<div className={theme.chatBox}>
+					{/* <EmojiInput input={true}/> */}
 					<TextInput uiKey='roomChat'
 							   className={theme.input}
 							   placeholder='Type message'

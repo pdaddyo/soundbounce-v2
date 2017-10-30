@@ -1,0 +1,47 @@
+.ei-container {
+	position: relative
+}
+
+.ei-container .ei-text-component {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	font-size: inherit;
+	line-height: 1.5;
+	padding: 5px;
+	width: 100%
+}
+
+.ei-container .ei-text-component:focus {
+	border: 1px solid #999;
+	outline: none
+}
+
+.ei-container .ei-suggestions-container {
+	left: 0;
+	position: absolute;
+	bottom: 0;
+	min-width: 120px
+}
+
+.ei-container .ei-suggestions {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	list-style: none;
+	margin: 0;
+	padding-left: 0
+}
+
+.ei-container .ei-suggestions li {
+	cursor: pointer;
+	display: block;
+	padding: 3px 10px
+}
+
+.ei-container .ei-suggestions li:not(:last-child) {
+	border-bottom: 1px solid #ddd
+}
+
+.ei-container .ei-suggestions li.selected {
+	background: #eee
+}
