@@ -12,5 +12,6 @@
 	color: rgba(255, 255, 255, 0.7);
 	width: 10rem;
 	margin-left: 6rem;
+	font-weight: 100;
 	text-transform: capitalize;
 }
