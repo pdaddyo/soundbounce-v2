@@ -24,6 +24,7 @@ import EmojiAnimationContextMenu from '../../contextMenu/EmojiAnimationContextMe
 class ChatPanel extends Component {
 	static propTypes = {
 		onChatSend: PropTypes.func,
+		onClickVote: PropTypes.func,
 		onClickEmojiAnimation: PropTypes.func,
 		actionLog: PropTypes.array,
 		emojiPickerVisible: PropTypes.bool,
@@ -120,7 +121,7 @@ class ChatPanel extends Component {
 	};
 
 	render() {
-		const {emojiPickerVisible, onClickEmojiAnimation} = this.props;
+		const {emojiPickerVisible, onClickEmojiAnimation, onClickVote} = this.props;
 		const actionLog = takeRight(ChatPanel.groupSimilarActionLogItems(this.props.actionLog), 40);
 		return (
 			<div className={theme.panel}>
@@ -138,6 +139,7 @@ class ChatPanel extends Component {
 									if (loggedAction.payloads
 											.filter(p => p.isAdd && p.userId).length > 0) {
 										item = <MusicBubble loggedAction={loggedAction}
+															onClickVote={onClickVote}
 															onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									} else {
 										item = <span></span>;
@@ -145,6 +147,7 @@ class ChatPanel extends Component {
 									break;
 								case ROOM_REACTION:
 									item = <MusicBubble loggedAction={loggedAction}
+														onClickVote={onClickVote}
 														onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									break;
 							}

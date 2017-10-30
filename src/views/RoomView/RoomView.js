@@ -197,6 +197,7 @@ class RoomView extends Component {
 					<div className={theme.chat}>
 						<ChatPanel onChatSend={this.onChatSend.bind(this)}
 								   onClickEmojiAnimation={this.onClickEmojiAnimation.bind(this)}
+								   onClickVote={this.onClickVote.bind(this)}
 								   actionLog={actionLogForChatPanel}/>
 					</div>
 				</div>

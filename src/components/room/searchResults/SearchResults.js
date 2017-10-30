@@ -21,7 +21,7 @@ class SearchResults extends Component {
 						<div className={theme.trackContainer}
 							 key={track.id}>
 							<Track
-								track={{...track, votes: [], canVote: true}}
+								track={{...track, votes: []}}
 								onClickVote={onClickVote}
 								size='small'/>
 						</div>
@@ -35,7 +35,15 @@ class SearchResults extends Component {
 const mapStateToProps = (state) => {
 	if (state.ui['inRoomSearch'] && state.spotify.searchResults[state.ui['inRoomSearch']]) {
 		return {
-			tracks: state.spotify.searchResults[state.ui['inRoomSearch']].tracks['items']
+			tracks: state.spotify.searchResults[state.ui['inRoomSearch']].tracks['items'].map(track => {
+				const playlistEntry = state.room.playlist.find(i => i.id === track.id);
+				return {
+					...track,
+					canVote: !playlistEntry ||
+					(playlistEntry && !playlistEntry.votes
+						.find(v => v.userId === state.users.currentUserId))
+				};
+			})
 		};
 	}
 	return {tracks: []};

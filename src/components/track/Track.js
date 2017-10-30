@@ -81,8 +81,6 @@ class Track extends Component {
 
 		let votes = track.votes && (
 				<div className={sizeTheme('votes')}>
-
-
 					<div className={theme.voteUpButton}
 						 onClick={() => {
 							 if (track.canVote && onClickVote) {
@@ -93,8 +91,7 @@ class Track extends Component {
 							<ArrowUpThick/>
 						)}
 					</div>
-
-
+					
 					{track.votes.map(vote => (
 						<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
 							<Avatar user={vote.user}/>
@@ -109,13 +106,13 @@ class Track extends Component {
 			if (track.canVote) {
 				votes = (
 					<div className={sizeTheme('votes')}>
-						<div className={theme.voteUpButton}
+						<div className={theme.voteUpButtonSmall}
 							 onClick={() => {
 								 if (track.canVote && onClickVote) {
 									 onClickVote(track.id);
 								 }
 							 }}>
-							<ArrowUpThick size={1.6}/>
+							<ArrowUpThick size={1.5}/>
 						</div>
 					</div>
 				);

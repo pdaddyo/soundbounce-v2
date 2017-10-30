@@ -71,7 +71,8 @@
 	composes: artistsAndTrackName;
 	font-size: 0.9rem;
 	margin-left: 1rem;
-	min-width: auto;
+	min-width: inherit;
+	flex-grow: 2;
 }
 
 .artists {
@@ -136,6 +137,7 @@
 
 .votesSmall {
 	composes: votes;
+	margin: 0;
 }
 
 .avatarContainer {
@@ -168,6 +170,11 @@
 
 .voteUpButton:hover {
 	opacity: 0.7;
+}
+
+.voteUpButtonSmall {
+	composes: voteUpButton;
+	padding: 0;
 }
 
 .buttons {

@@ -15,6 +15,7 @@ import {chain, value, uniq, flatten} from 'lodash';
 import {uiUpdate} from '../../../redux/modules/ui';
 import EmojiWrapper from './EmojiWrapper';
 import emojifyWithOptions from './emojifyWithOptions';
+import {selectCurrentUser} from '../../../redux/modules/users';
 /* eslint-enable */
 
 class MusicBubble extends Component {
@@ -24,14 +25,15 @@ class MusicBubble extends Component {
 		showMoreTracks: PropTypes.func,
 		onClickEmojiAnimation: PropTypes.func,
 		hideMoreTracks: PropTypes.func,
-		moreTracksVisible: PropTypes.bool
+		moreTracksVisible: PropTypes.bool,
+		onClickVote: PropTypes.func
 	};
 
 	render() {
 		const {
 			loggedAction, tracks,
 			showMoreTracks, hideMoreTracks, moreTracksVisible,
-			onClickEmojiAnimation
+			onClickEmojiAnimation, onClickVote
 		} = this.props;
 		const {sentByCurrentUser} = loggedAction;
 
@@ -63,6 +65,7 @@ class MusicBubble extends Component {
 						{!moreTracksVisible && (
 							<div className={theme.trackContainer}>
 								<Track track={firstTrack}
+									   onClickVote={onClickVote}
 									   size='small'/>
 								{andMore && (
 									<div className={theme.andMore}
@@ -80,6 +83,7 @@ class MusicBubble extends Component {
 									<div className={theme.trackContainer}
 										 key={track.id}>
 										<Track track={track}
+											   onClickVote={onClickVote}
 											   size='small'/>
 									</div>
 								)}
@@ -124,10 +128,14 @@ const mapStateToProps = (state, ownProps) => {
 		.map(p => p.trackIds)
 		.flatten()
 		.uniq()
-		.map(trackId => ({
-			...state.spotify.tracks[trackId]
-			// ...state.room.playlist.find(playlistTrack => playlistTrack.id === trackId)
-		}))
+		.map(trackId => {
+			const playlistEntry = state.room.playlist.find(i => i.id === trackId);
+			return {
+				...state.spotify.tracks[trackId],
+				canVote: playlistEntry && !playlistEntry.votes
+					.find(v => v.userId === state.users.currentUserId)
+			};
+		})
 		.value();
 
 	return {
