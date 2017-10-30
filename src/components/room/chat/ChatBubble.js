@@ -96,6 +96,8 @@ class ChatBubble extends Component {
 					str.substr(startPos + matches[0].length)
 				];
 			}
+
+			return str;
 		};
 
 		if (typeof content !== 'string') {
