@@ -148,7 +148,10 @@ class Track extends Component {
 						{progress}
 					</div>
 					<div className={sizeTheme('artistsAndTrackName')}>
-						<div className={sizeTheme('name')}>
+						<div className={sizeTheme('name')}
+							 onClick={() => {
+								 document.location = `spotify:track:${track.id}`;
+							 }}>
 							{track.name}
 						</div>
 						<div className={sizeTheme('artists')}>
