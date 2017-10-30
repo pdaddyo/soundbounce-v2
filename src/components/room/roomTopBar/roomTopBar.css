@@ -32,7 +32,6 @@
 	cursor: pointer;
 	opacity: 0.8;
 	font-size: 1.5rem;
-
 }
 
 .searchIcon:hover {
@@ -59,7 +58,7 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.3);
+	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
 }
 
 .roomLeave {
