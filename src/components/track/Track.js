@@ -141,6 +141,7 @@ class Track extends Component {
 			<ContextMenuTrigger id='track'
 								ref={ctx => this.contextTrigger = ctx}
 								track={track}
+								attributes={{style: {display: 'block'}}}
 								trackId={track.id}
 								collect={c => c}
 								holdToDisplay={-1}>
