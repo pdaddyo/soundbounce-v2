@@ -32,7 +32,7 @@ class ReactionSelectionContextMenu extends Component {
 								  key={reactionEmojiListItem.emoji}>
 							{emojifyWithOptions(reactionEmojiListItem.emoji + ' ' + reactionEmojiListItem.name,
 								20, {
-									marginLeft: -8, marginRight: 8
+									marginLeft: -8, marginRight: 8, top: -1
 								}
 							)}
 							{reactionEmojiListItem.emoji === selectedReaction && (

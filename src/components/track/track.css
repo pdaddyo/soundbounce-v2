@@ -226,7 +226,8 @@
 }
 
 .reactionButton {
-	padding: 0.3rem;
+	padding: 0.15rem;
+	margin-right: 0.5rem;
 	margin-left: 0;
 	transform: scale(0.8);
 	width: 1.5rem;
