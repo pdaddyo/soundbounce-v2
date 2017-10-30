@@ -70,6 +70,32 @@ class ChatBubble extends Component {
 		return emojifiedText;
 	}
 
+	emojifyAndReplaceSlashCommands = (text, chatId) => {
+		const content = this.emojify(text, chatId);
+
+		const updateStringIfRequired = str => {
+			if (typeof str !== 'string') {
+				return str; // not a string (emoji probably)
+			}
+			if (str.indexOf('/me ') === 0) {
+				return <span className={theme.slashMe} key={str}>{str.substr(4)}</span>;
+			}
+			if (str === '/shrug') {
+				return '¯\\_(ツ)_/¯';
+			}
+		};
+
+		if (typeof content !== 'string') {
+			if (Array.isArray(content)) {
+				return content.map((i, index) => updateStringIfRequired(i));
+			} else {
+				return updateStringIfRequired(content);
+			}
+		}
+
+		return updateStringIfRequired(content);
+	};
+
 	componentWillMount() {
 		this.makeLinkUnfurlRequests();
 	}
@@ -261,7 +287,7 @@ by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
 					{chat.payloads.map((chat, index) => (
 						<div className={theme.text} key={index}>
 							<Linkify properties={{target: '_blank'}}>
-								{this.emojify(chat.text.trim(), chat.id)}
+								{this.emojifyAndReplaceSlashCommands(chat.text.trim(), chat.id)}
 							</Linkify>
 							{this.getUnfurledLinks(chat.text.trim())}
 						</div>
