@@ -50,10 +50,10 @@
 
 .roomName {
 	position: relative;
-	bottom: 0.5rem;
+	bottom: 0.4rem;
 	display: inline-block;
-	font-size: 1.8rem;
-	font-weight: 500;
+	font-size: 1.9rem;
+	font-weight: 100;
 	margin-right: 0.2rem;
 	max-width: 20rem;
 	white-space: nowrap;
