@@ -28,7 +28,8 @@ class Stats extends Component {
 						</div>
 						<ol className={theme.list}>
 							{topTracks.map(({track, plays}) => (
-								<li className={theme.li}>
+								<li className={theme.li}
+									key={track.id}>
 									<div className={theme.row}><Track
 										track={{...track, votes: [], canVote: false}}
 										size='normal'/>
