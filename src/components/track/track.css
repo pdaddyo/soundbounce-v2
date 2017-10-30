@@ -76,7 +76,7 @@
 
 .artists {
 	font-weight: 200;
-	font-size: 80%;
+	font-size: 77%;
 	color: rgba(255, 255, 255, 0.65);
 }
 
@@ -215,7 +215,6 @@
 	left: 0;
 	height: 0.5rem;
 	background-color: rgba(255, 255, 255, 0.7);
-
 }
 
 .progressBg {
