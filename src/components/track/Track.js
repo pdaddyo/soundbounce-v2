@@ -91,13 +91,11 @@ class Track extends Component {
 							<ArrowUpThick/>
 						)}
 					</div>
-					
 					{track.votes.map(vote => (
 						<div className={sizeTheme('avatarContainer')} key={vote.user.id}>
 							<Avatar user={vote.user}/>
 						</div>
 					))}
-
 				</div>
 			);
 
