@@ -34,5 +34,8 @@ export default [
 	},
 	{
 		emoji: ':laughing:', name: 'Laughing', animation: 'wobble'
+	},
+	{
+		emoji: ':sunglasses:', name: 'Cool', animation: 'spin'
 	}
 ];
