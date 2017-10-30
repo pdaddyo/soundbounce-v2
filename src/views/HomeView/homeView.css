@@ -36,12 +36,13 @@
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	text-overflow: ellipsis;
 	overflow: hidden;
-	border-bottom: solid 0.1rem;
+	font-weight: 100;
+	border-bottom: none;
 	margin-bottom: 0.2rem;
 }
 
 .room:hover .name {
-	border-bottom: solid 0.3rem;
+	border-bottom: solid 0.2rem;
 	margin-bottom: 0;
 }
 
