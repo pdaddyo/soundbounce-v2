@@ -128,7 +128,6 @@ function * roomTrackTimerLoop() {
 		if (leftRoom) {
 			return;
 		}
-		
 		if (nowPlayingChanged) {
 			continue;
 		}
