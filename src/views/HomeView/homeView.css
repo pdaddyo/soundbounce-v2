@@ -36,7 +36,7 @@
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	text-overflow: ellipsis;
 	overflow: hidden;
-	font-weight: 100;
+	font-weight: 200;
 	border-bottom: none;
 	margin-bottom: 0.2rem;
 }
