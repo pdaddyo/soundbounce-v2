@@ -32,7 +32,8 @@ class ChatPanel extends Component {
 		emojiPickerVisible: PropTypes.bool,
 		setEmojiPickerVisible: PropTypes.func,
 		chatText: PropTypes.string,
-		updateChatText: PropTypes.func
+		updateChatText: PropTypes.func,
+		mobileSwipePosition: PropTypes.string
 	};
 
 	chatEnterPressed = () => {
@@ -59,6 +60,13 @@ class ChatPanel extends Component {
 		if (prevProps.actionLog.length === 0 ||
 			// or we're near the bottom already
 			(scroll.scrollTop + 150 >= (scroll.scrollHeight - scroll.offsetHeight))) {
+			this.scrollLastChatIntoView();
+		}
+
+		const {mobileSwipePosition} = this.props;
+		if (prevProps.mobileSwipePosition !== mobileSwipePosition &&
+			mobileSwipePosition === 'chat') {
+			// transitioned to chat view, so scroll to bottom of chat
 			this.scrollLastChatIntoView();
 		}
 	}
@@ -208,7 +216,8 @@ class ChatPanel extends Component {
 
 const mapStateToProps = state => ({
 	emojiPickerVisible: state.ui['emojiPickerVisible'] || false,
-	chatText: state.ui['roomChat'] || ''
+	chatText: state.ui['roomChat'] || '',
+	mobileSwipePosition: state.ui['mobileSwipePosition'] || 'playlist'
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

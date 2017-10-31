@@ -34,3 +34,8 @@
 	color: rgba(255, 255, 255, 0.9);
 }
 
+@media screen and (max-width: 600px) {
+	.menu {
+		top: 9.5rem;
+	}
+}

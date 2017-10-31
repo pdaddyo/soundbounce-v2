@@ -93,12 +93,16 @@
 }
 
 @media screen and (max-width: 600px) {
-	html {
-		font-size: 80%;
-	}
-
 	.room {
 		right: 0;
+		left: 1.5rem;
+	}
+
+	.play {
+		width: 8rem;
+		height: 8rem;
+		transform: scale(0.7);
+		transform-origin: top left;
 	}
 
 	.chat {
@@ -112,5 +116,9 @@
 
 	.chatMobileChatActive {
 		display: block;
+	}
+
+	.roomPlaylistContentArea {
+		top: 14rem;
 	}
 }

@@ -50,3 +50,9 @@ a {
 a:hover {
 	color: rgba(255, 255, 255, 0.9);
 }
+
+@media screen and (max-width: 600px) {
+	html {
+		font-size: 90%;
+	}
+}

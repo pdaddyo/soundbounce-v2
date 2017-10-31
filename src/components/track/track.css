@@ -260,12 +260,28 @@
 
 	}
 
+	.artworkHero {
+		composes: artwork;
+		width: 7rem;
+		min-width: 7rem;
+		height: 7rem;
+	}
+
+	.avatarContainerHero {
+		transform: scale(0.7);
+		transform-origin: 0 50%;
+	}
+
+	.nameHero {
+		font-size: 70%;
+	}
+
 	.artistsAndTrackName {
-		min-width: 13rem;
+		min-width: 0;
 	}
 
 	.artistsAndTrackNameHero {
-		min-width: 10rem;
+		min-width: 8rem;
 	}
 
 	.track .buttons {
