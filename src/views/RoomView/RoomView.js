@@ -24,7 +24,7 @@ import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
 
 import theme from './roomView.css';
 import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
-import {ROOM_REACTION} from '../../redux/modules/shared/room';
+import {ROOM_REACTION, ROOM_TRACK_VOTE_SKIP} from '../../redux/modules/shared/room';
 import Stats from 'components/room/stats/Stats';
 import ReactionSelectionContextMenu from '../../components/contextMenu/ReactionSelectionContextMenu';
 
@@ -223,6 +223,7 @@ const mapStateToProps = state => ({
 			.filter(
 				al => al.type === ROOM_CHAT ||
 				al.type === ROOM_REACTION ||
+				al.type === ROOM_TRACK_VOTE_SKIP ||
 				(al.type === ROOM_TRACK_ADD_OR_VOTE && al.payload.isAdd))
 			.map(chatWithUserId => ({
 				...chatWithUserId,

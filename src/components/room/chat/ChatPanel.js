@@ -21,6 +21,7 @@ import theme from './chatPanel.css';
 import './emoji-mart.css';
 import Emoticon from '../../svg/icons/Emoticon';
 import EmojiAnimationContextMenu from '../../contextMenu/EmojiAnimationContextMenu';
+import {ROOM_TRACK_VOTE_SKIP} from '../../../redux/modules/shared/room';
 
 class ChatPanel extends Component {
 	static propTypes = {
@@ -149,6 +150,10 @@ class ChatPanel extends Component {
 								case ROOM_REACTION:
 									item = <MusicBubble loggedAction={loggedAction}
 														onClickVote={onClickVote}
+														onClickEmojiAnimation={onClickEmojiAnimation}/>;
+									break;
+								case ROOM_TRACK_VOTE_SKIP:
+									item = <MusicBubble loggedAction={loggedAction}
 														onClickEmojiAnimation={onClickEmojiAnimation}/>;
 									break;
 							}

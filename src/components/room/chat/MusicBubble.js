@@ -16,6 +16,7 @@ import {uiUpdate} from '../../../redux/modules/ui';
 import EmojiWrapper from './EmojiWrapper';
 import emojifyWithOptions from './emojifyWithOptions';
 import {selectCurrentUser} from '../../../redux/modules/users';
+import {ROOM_TRACK_VOTE_SKIP} from '../../../redux/modules/shared/room';
 /* eslint-enable */
 
 class MusicBubble extends Component {
@@ -56,7 +57,11 @@ class MusicBubble extends Component {
 		const showLess = tracks.length > 1
 			? 'show fewer' : '';
 
-		const emoji = loggedAction.payloads[0].emoji;
+		let emoji = loggedAction.payloads[0].emoji;
+
+		if (loggedAction.type === ROOM_TRACK_VOTE_SKIP) {
+			emoji = ':thumbsdown:';
+		}
 
 		return (
 			<div className={userTheme('container')}>
@@ -103,7 +108,7 @@ class MusicBubble extends Component {
 								<EmojiWrapper canClick={sentByCurrentUser}
 											  onClickEmojiAnimation={onClickEmojiAnimation}
 											  emojiId={loggedAction.payloads[0].id}
-								>{emojifyWithOptions(loggedAction.payloads[0].emoji)}</EmojiWrapper>
+								>{emojifyWithOptions(emoji)}</EmojiWrapper>
 							</div>
 						)}
 					</div>
@@ -132,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
 			const playlistEntry = state.room.playlist.find(i => i.id === trackId);
 			return {
 				...state.spotify.tracks[trackId],
-				canVote: playlistEntry && !playlistEntry.votes
+				canVote: (ownProps.loggedAction.type !== ROOM_TRACK_VOTE_SKIP && playlistEntry) && !playlistEntry.votes
 					.find(v => v.userId === state.users.currentUserId)
 			};
 		})
