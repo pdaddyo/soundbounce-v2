@@ -295,7 +295,7 @@ const ACTION_HANDLERS = {
 		const newState = {
 			...state,
 			playlist: applyVotes({playlist, payload}),
-			actionLog: appendToActionLog({actionLog, action})
+			actionLog: payload.userId ? appendToActionLog({actionLog, action}) : actionLog
 		};
 
 		// there were no tracks before, so set the start time to the action timestamp (server now)
