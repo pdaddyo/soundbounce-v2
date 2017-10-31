@@ -135,9 +135,11 @@ const mapStateToProps = (state, ownProps) => {
 		.uniq()
 		.map(trackId => {
 			const playlistEntry = state.room.playlist.find(i => i.id === trackId);
+			const playlistIndex = playlistEntry && state.room.playlist.indexOf(playlistEntry);
+
 			return {
 				...state.spotify.tracks[trackId],
-				canVote: (ownProps.loggedAction.type !== ROOM_TRACK_VOTE_SKIP && playlistEntry) && !playlistEntry.votes
+				canVote: (ownProps.loggedAction.type !== ROOM_TRACK_VOTE_SKIP && playlistEntry && playlistIndex > 0) && !playlistEntry.votes
 					.find(v => v.userId === state.users.currentUserId)
 			};
 		})
