@@ -268,7 +268,7 @@
 		min-width: 10rem;
 	}
 
-	.track:active .buttons {
+	.track .buttons {
 		opacity: 1;
 	}
 }

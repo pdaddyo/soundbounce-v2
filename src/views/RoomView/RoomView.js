@@ -21,6 +21,7 @@ import Play from 'components/svg/icons/Play';
 import Listeners from 'components/room/listeners/Listeners';
 import About from 'components/room/about/About';
 import TrackContextMenu from 'components/contextMenu/TrackContextMenu';
+import Swipeable from 'react-swipeable';
 
 import theme from './roomView.css';
 import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
@@ -32,6 +33,8 @@ class RoomView extends Component {
 	static propTypes = {
 		emitRoomEvent: PropTypes.func.isRequired,
 		emitRoomJoin: PropTypes.func,
+		setMobileSwipePosition: PropTypes.func,
+		mobileSwipePosition: PropTypes.string,
 		currentUser: PropTypes.object,
 		params: PropTypes.object,
 		room: PropTypes.object,
@@ -129,7 +132,7 @@ class RoomView extends Component {
 	render() {
 		const {
 			room, params, actionLogForChatPanel, playlist, sync,
-			syncStart, currentUser
+			syncStart, currentUser, mobileSwipePosition, setMobileSwipePosition
 		} = this.props;
 		const roomTab = params.roomTab || 'next-up';
 
@@ -146,6 +149,14 @@ class RoomView extends Component {
 		}
 		const nowPlayingTrack = playlist.length === 0 ? null : playlist[0];
 
+		let roomTheme = theme.room;
+		let chatTheme = theme.chat;
+
+		if (mobileSwipePosition === 'chat') {
+			roomTheme = theme.roomMobileChatActive;
+			chatTheme = theme.chatMobileChatActive;
+		}
+
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<TrackContextMenu/>
@@ -153,63 +164,68 @@ class RoomView extends Component {
 				<ScrollStyle size={0.6} alpha={0.35}/>
 				<Gradient />
 				<TopBar room={room} params={params}/>
-				<div className={theme.roomAndChat}>
-					{roomTab !== 'search' ? (
-						<div className={theme.room} ref='room'>
-							<div className={theme.play} onClick={syncStart}>
-								{(!sync.isSynced) && (
-									<div className={theme.playSurround}>
-										<Play/>
-									</div>
+				<Swipeable onSwipedLeft={() => setMobileSwipePosition('chat')}
+						   onSwipedRight={() => setMobileSwipePosition('playlist')}>
+					<div className={theme.roomAndChat}>
+						{roomTab !== 'search' ? (
+							<div className={roomTheme} ref='room'>
+								<div className={theme.play} onClick={syncStart}>
+									{(!sync.isSynced) && (
+										<div className={theme.playSurround}>
+											<Play/>
+										</div>
+									)}
+								</div>
+								{nowPlayingTrack && (
+									<Track track={nowPlayingTrack}
+										   percentComplete={progressPercent}
+										   size='hero'
+										   onClickVoteSkip={this.onClickVoteSkip}
+										   onClickReaction={this.onClickReaction}
+									/>
 								)}
-							</div>
-							{nowPlayingTrack && (
-								<Track track={nowPlayingTrack}
-									   percentComplete={progressPercent}
-									   size='hero'
-									   onClickVoteSkip={this.onClickVoteSkip}
-									   onClickReaction={this.onClickReaction}
-								/>
-							)}
-							<RoomMenu roomId={room.id} listeners={room.listeners} params={params}/>
-							<div className={theme.roomPlaylistContentArea}>
-								<div style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
-									<FlipMove duration={400}
-											  easing='ease-in-out'
-											  enterAnimation='elevator'>
-										{drop(playlist, 1).map((track, index) => (
-											<Track key={track.id}
-												   track={track}
-												   onClickVoteSkip={this.onClickVoteSkip}
-												   onClickVote={this.onClickVote}
-												   size='normal'
-												   visible={roomTab === 'next-up'}/>
-										))}
-									</FlipMove>
+								<RoomMenu roomId={room.id} listeners={room.listeners}
+										  params={params}/>
+								<div className={theme.roomPlaylistContentArea}>
+									<div
+										style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
+										<FlipMove duration={400}
+												  easing='ease-in-out'
+												  enterAnimation='elevator'>
+											{drop(playlist, 1).map((track, index) => (
+												<Track key={track.id}
+													   track={track}
+													   onClickVoteSkip={this.onClickVoteSkip}
+													   onClickVote={this.onClickVote}
+													   size='normal'
+													   visible={roomTab === 'next-up'}/>
+											))}
+										</FlipMove>
+									</div>
+									<div className={theme.otherTabs}>
+										{roomTab === 'listeners' &&
+										<Listeners userIds={room.listeners}/>}
+										{roomTab === 'about' &&
+										<About room={room} currentUser={currentUser}/>}
+										{roomTab === 'stats' &&
+										<Stats room={room}/>}
+									</div>
 								</div>
-								<div className={theme.otherTabs}>
-									{roomTab === 'listeners' &&
-									<Listeners userIds={room.listeners}/>}
-									{roomTab === 'about' &&
-									<About room={room} currentUser={currentUser}/>}
-									{roomTab === 'stats' &&
-									<Stats room={room}/>}
-								</div>
-							</div>
 
+							</div>
+						) : (
+							<div className={roomTheme} ref='room'>
+								<SearchResults onClickVote={this.onClickVote}/>
+							</div>
+						)}
+						<div className={chatTheme}>
+							<ChatPanel onChatSend={this.onChatSend.bind(this)}
+									   onClickEmojiAnimation={this.onClickEmojiAnimation.bind(this)}
+									   onClickVote={this.onClickVote.bind(this)}
+									   actionLog={actionLogForChatPanel}/>
 						</div>
-					) : (
-						<div className={theme.room} ref='room'>
-							<SearchResults onClickVote={this.onClickVote}/>
-						</div>
-					)}
-					<div className={theme.chat}>
-						<ChatPanel onChatSend={this.onChatSend.bind(this)}
-								   onClickEmojiAnimation={this.onClickEmojiAnimation.bind(this)}
-								   onClickVote={this.onClickVote.bind(this)}
-								   actionLog={actionLogForChatPanel}/>
 					</div>
-				</div>
+				</Swipeable>
 			</ColorContextProvider>
 		);
 	}
@@ -233,7 +249,8 @@ const mapStateToProps = state => ({
 					? chatWithUserId.payload.trackIds.map(id => state.spotify.tracks[id]) : []
 			})),
 		playlist: selectPlaylistTracksAndVotes(state),
-		roomChatText: state.ui['roomChat']
+		roomChatText: state.ui['roomChat'],
+		mobileSwipePosition: state.ui['mobileSwipePosition'] || 'playlist'
 	})
 ;
 
@@ -246,6 +263,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	clearChatText: () => {
 		dispatch(uiUpdate({key: 'roomChat', newState: ''}));
+	},
+	setMobileSwipePosition: (val) => {
+		dispatch(uiUpdate({key: 'mobileSwipePosition', newState: val}));
 	},
 	syncStart: () => {
 		dispatch(syncStart());

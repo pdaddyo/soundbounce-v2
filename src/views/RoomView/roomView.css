@@ -56,20 +56,6 @@
 	}
 }
 
-@media screen and (max-width: 600px) {
-	html {
-		font-size: 80%;
-	}
-
-	.room {
-		right: 0;
-	}
-
-	.chat {
-		display: none;
-	}
-}
-
 .play {
 	position: absolute;
 	z-index: 10;
@@ -104,4 +90,27 @@
 	left: 0;
 	right: 0;
 	min-height: 0;
+}
+
+@media screen and (max-width: 600px) {
+	html {
+		font-size: 80%;
+	}
+
+	.room {
+		right: 0;
+	}
+
+	.chat {
+		display: none;
+	}
+
+	.roomMobileChatActive {
+		composes: room;
+		display: none;
+	}
+
+	.chatMobileChatActive {
+		display: block;
+	}
 }

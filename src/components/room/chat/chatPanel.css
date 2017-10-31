@@ -46,10 +46,15 @@
 	bottom: 2.9rem;
 	overflow-y: scroll;
 	-webkit-mask-image: -webkit-gradient(linear, left 5%, left top, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
-
 }
 
 .actionLog {
 	/* this is to push the first items ever posted in a room beneath the fade out */
 	padding-top: 3rem;
+}
+
+@media screen and (max-width: 600px) {
+	.chatScroll {
+		left: 0.5rem;
+	}
 }
