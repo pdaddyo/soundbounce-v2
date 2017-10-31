@@ -354,7 +354,6 @@ export default class ActiveRoom {
 			}));
 
 			const newState = this.reduxStore.getState();
-			debug(newState.nowPlayingProgress);
 			if (newState.playlist.length > 0 && newState.playlist[0].id !== nowPlayingTrackId) {
 				// track changed
 				this.beginNextTrackTimer();
