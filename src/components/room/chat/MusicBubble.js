@@ -139,8 +139,12 @@ const mapStateToProps = (state, ownProps) => {
 
 			return {
 				...state.spotify.tracks[trackId],
-				canVote: (ownProps.loggedAction.type !== ROOM_TRACK_VOTE_SKIP && playlistEntry && playlistIndex > 0) && !playlistEntry.votes
-					.find(v => v.userId === state.users.currentUserId)
+				canVote: (
+					ownProps.loggedAction.type !== ROOM_TRACK_VOTE_SKIP &&
+					playlistEntry &&
+					playlistIndex > 0
+				) &&
+				!playlistEntry.votes.find(v => v.userId === state.users.currentUserId)
 			};
 		})
 		.value();
