@@ -12,6 +12,7 @@ export const ROOM_FULL_SYNC = 'ROOM_FULL_SYNC';
 export const ROOM_USER_JOIN = 'ROOM_USER_JOIN';
 export const ROOM_USER_LEAVE = 'ROOM_USER_LEAVE';
 export const ROOM_TRACK_ADD_OR_VOTE = 'ROOM_TRACKS_ADD_OR_VOTE';
+export const ROOM_TRACK_VOTE_SKIP = 'ROOM_TRACK_VOTE_SKIP';
 export const ROOM_NOW_PLAYING_CHANGED = 'ROOM_NOW_PLAYING_CHANGED';
 export const ROOM_NOW_PLAYING_ENDED = 'ROOM_NOW_PLAYING_ENDED';
 export const ROOM_TRACK_LIKE = 'ROOM_TRACK_LIKE';
@@ -28,6 +29,7 @@ export const actions = {
 	ROOM_NOW_PLAYING_CHANGED,
 	ROOM_NOW_PLAYING_ENDED,
 	ROOM_TRACK_ADD_OR_VOTE,
+	ROOM_TRACK_VOTE_SKIP,
 	ROOM_TRACK_LIKE,
 	ROOM_CHAT,
 	ROOM_REACTION,
@@ -72,6 +74,11 @@ export const roomUserLeave = (userId) => ({
 export const roomTrackAddOrVote = ({userId, trackIds, reason = '', isAdd}) => ({
 	type: ROOM_TRACK_ADD_OR_VOTE,
 	payload: {userId, trackIds, reason, isAdd}
+});
+
+export const roomTrackVoteSkip = ({userId, trackIds, moment}) => ({
+	type: ROOM_TRACK_VOTE_SKIP,
+	payload: {userId, trackIds, moment}
 });
 
 export const roomChat = ({userId, text, trackIds, offset}) => ({
@@ -126,13 +133,13 @@ const applyVotes = ({playlist, payload}) => {
 	const {userId, trackIds, reason, emote} = payload;
 	/*
 	 The playlist is an array of track ids with votes, like so:
-	 [{id, votes: [{userId, emote, reason}]},...]
+	 [{id, votes: [{userId, emote, reason}], skipVotes: [{userId}...]} ,...]
 	 */
 	let updatedPlaylist = playlist;
 	for (let trackId of trackIds) {
 		let playlistTrack = updatedPlaylist.find(t => t.id === trackId);
 		if (!playlistTrack) {
-			playlistTrack = {id: trackId, votes: []};
+			playlistTrack = {id: trackId, votes: [], skipVotes: []};
 		} else {
 			const oldIndex = updatedPlaylist.indexOf(playlistTrack);
 
@@ -179,6 +186,53 @@ const applyVotes = ({playlist, payload}) => {
 		}
 		// insert at the new spot
 		updatedPlaylist = update(updatedPlaylist, {$splice: [[playlistIndex, 0, newPlaylistTrack]]});
+	}
+
+	return updatedPlaylist;
+};
+
+const applySkipVote = ({playlist, payload}) => {
+	const {userId, trackIds} = payload;
+	let updatedPlaylist = [...playlist];
+
+	for (let trackId of trackIds) {
+		let playlistTrack = updatedPlaylist.find(t => t.id === trackId);
+		if (!playlistTrack) {
+			// can't skip a track that isn't in list
+			continue;
+		}
+		const playlistIndex = updatedPlaylist.indexOf(playlistTrack);
+
+		// track was already in list - check they haven't already voted for it
+		if (playlistTrack.skipVotes && playlistTrack.skipVotes.find(v => v.userId === userId)) {
+			// user has already voted to skip, neeeext!
+			continue;
+		}
+
+		// if they had an upvote for this track, remove it
+		playlistTrack.votes = [...playlistTrack.votes].filter(v => v.userId !== userId);
+
+		let updatedPlaylistTrack = {...playlistTrack};
+		// old tracks might not have this yet
+		if (!updatedPlaylistTrack.skipVotes) {
+			updatedPlaylistTrack.skipVotes = [];
+		}
+
+		updatedPlaylistTrack = update(updatedPlaylistTrack, {
+			skipVotes: {
+				$push: [{
+					userId,
+					trackId
+				}]
+			}
+		});
+
+		updatedPlaylist[playlistIndex] = updatedPlaylistTrack;
+
+		// check if we have enough votes to remove
+		if (updatedPlaylistTrack.skipVotes.length > updatedPlaylistTrack.votes.length) {
+			updatedPlaylist = update(updatedPlaylist, {$splice: [[playlistIndex, 1]]});
+		}
 	}
 
 	return updatedPlaylist;
@@ -247,6 +301,26 @@ const ACTION_HANDLERS = {
 		// there were no tracks before, so set the start time to the action timestamp (server now)
 		if (state.playlist.length === 0) {
 			newState.nowPlayingStartedAt = moment(action.timestamp).valueOf();
+		}
+		return newState;
+	},
+	[ROOM_TRACK_VOTE_SKIP]: (state, action) => {
+		const {actionLog, playlist} = state;
+		const {payload} = action;
+		const nowPlayingTrackId = playlist.length === 0 ? null : playlist[0].id;
+
+		let newState = {
+			...state,
+			playlist: applySkipVote({playlist, payload}),
+			actionLog: appendToActionLog({actionLog, action})
+		};
+
+		if (newState.playlist.length === 0 || newState.playlist[0].id !== nowPlayingTrackId) {
+			// the now playing track changed because of this vote, we need to keep the show going
+			newState = update(newState, {
+				nowPlayingStartedAt: {$set: payload.moment},
+				nowPlayingProgress: {$set: 0}
+			});
 		}
 		return newState;
 	},

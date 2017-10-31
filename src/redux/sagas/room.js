@@ -75,6 +75,17 @@ function * updateRoomTrackProgress() {
 	}
 }
 
+function * watchForVoteSkipToSeeIfTrackChanges() {
+	while (true) {
+		const {payload: {moment}} = yield take(roomActions.ROOM_TRACK_VOTE_SKIP);
+		const {room} = yield select(state => state);
+		if (room.nowPlayingStartedAt === moment) {
+			// this track is brand new, the vote must've triggered it!
+			yield put(roomNowPlayingChanged({trackIds: [room.playlist[0].id], seekPosition: 0}));
+		}
+	}
+}
+
 function * roomTrackTimerLoop() {
 	while (true) {
 		let {room, sync, spotify} = yield select(state => state);
@@ -107,14 +118,19 @@ function * roomTrackTimerLoop() {
 		}
 
 		// ok now race a timer to the end of this track vs sync stopping for any reason
-		const {leftRoom} = yield race({
+		const {leftRoom, nowPlayingChanged} = yield race({
 			delay: delay(spotify.tracks[trackWithVotes.id].duration - seekPosition),
-			leftRoom: take(roomActions.ROOM_NAVIGATING)
+			leftRoom: take(roomActions.ROOM_NAVIGATING),
+			nowPlayingChanged: take(roomActions.ROOM_NOW_PLAYING_CHANGED)
 		});
 
 		// sync stopped, bail
 		if (leftRoom) {
 			return;
+		}
+		
+		if (nowPlayingChanged) {
+			continue;
 		}
 
 		// reselect the state because it might have changed whilst track was playing
@@ -122,7 +138,7 @@ function * roomTrackTimerLoop() {
 		let state = yield select(state => state);
 		room = state.room;
 
-		const finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
+		let finishingTrackDuration = state.spotify.tracks[room.playlist[0].id].duration;
 
 		// ok let's fire a next track action!
 		yield put(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
@@ -135,6 +151,7 @@ export default function * socketInit() {
 			watchForSocketRoomJoinOk(),
 			watchForSocketRoomEvent(),
 			watchForFullSyncAndUpdateTitle(),
+			watchForVoteSkipToSeeIfTrackChanges(),
 			pollRoomTrackProgress()
 		];
 	} catch (err) {

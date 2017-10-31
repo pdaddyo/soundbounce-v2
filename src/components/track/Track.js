@@ -24,6 +24,7 @@ class Track extends Component {
 		size: PropTypes.oneOf(['normal', 'hero', 'small']),
 		percentComplete: PropTypes.number,
 		onClickVote: PropTypes.func,
+		onClickVoteSkip: PropTypes.func,
 		onClickReaction: PropTypes.func,
 		visible: PropTypes.bool,
 		previewStart: PropTypes.func,
@@ -58,7 +59,7 @@ class Track extends Component {
 
 	render() {
 		const {
-			track, size, onClickVote, onClickReaction, percentComplete,
+			track, size, onClickVote, onClickVoteSkip, onClickReaction, percentComplete,
 			visible, currentRoomId, performSearch, selectedReactionEmoji
 		} = this.props;
 		const {router} = this.context;
@@ -136,6 +137,7 @@ class Track extends Component {
 			<ContextMenuTrigger id='track'
 								ref={ctx => this.contextTrigger = ctx}
 								track={track}
+								onClickVoteSkip={onClickVoteSkip}
 								attributes={{style: {display: 'block'}}}
 								trackId={track.id}
 								collect={c => c}

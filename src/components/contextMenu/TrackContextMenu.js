@@ -35,7 +35,7 @@ class TrackContextMenu extends Component {
 			);
 		}
 
-		const {track} = trigger;
+		const {track, onClickVoteSkip} = trigger;
 		let album = track.album;
 		if (!album && track.json) {
 			album = track.json.album;
@@ -113,7 +113,7 @@ class TrackContextMenu extends Component {
 					</SubMenu>
 				)}
 				<MenuItem onClick={() => {
-					notify.show('Sorry, feature not yet implemented!');
+					onClickVoteSkip(track.id);
 				}}>
 					Vote to skip
 				</MenuItem>

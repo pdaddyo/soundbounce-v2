@@ -103,6 +103,13 @@ class RoomView extends Component {
 		});
 	};
 
+	onClickVoteSkip = (trackId) => {
+		this.props.emitRoomEvent({
+			type: 'voteSkip',
+			trackIds: [trackId]
+		});
+	};
+
 	onClickReaction = ({trackId, emoji}) => {
 		this.props.emitRoomEvent({
 			type: 'reaction',
@@ -160,6 +167,7 @@ class RoomView extends Component {
 								<Track track={nowPlayingTrack}
 									   percentComplete={progressPercent}
 									   size='hero'
+									   onClickVoteSkip={this.onClickVoteSkip}
 									   onClickReaction={this.onClickReaction}
 								/>
 							)}
@@ -172,6 +180,7 @@ class RoomView extends Component {
 										{drop(playlist, 1).map((track, index) => (
 											<Track key={track.id}
 												   track={track}
+												   onClickVoteSkip={this.onClickVoteSkip}
 												   onClickVote={this.onClickVote}
 												   size='normal'
 												   visible={roomTab === 'next-up'}/>

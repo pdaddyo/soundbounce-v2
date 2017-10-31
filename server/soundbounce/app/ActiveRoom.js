@@ -13,7 +13,7 @@ import roomReducer, {
 	roomChat,
 	roomReaction,
 	roomNowPlayingEnded,
-	actions as roomActions, roomEmojiAnimation
+	actions as roomActions, roomEmojiAnimation, roomTrackVoteSkip
 } from '../../../src/redux/modules/shared/room';
 import {uniq, flatten, take, some} from 'lodash';
 import shortid from 'shortid';
@@ -95,7 +95,7 @@ export default class ActiveRoom {
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
 	shutdown() {
-		debug(`Room '${this.name}' shutdown.`);
+		debug(`'${this.name}' shutdown.`);
 		// remove from the rooms list
 		this.removeFromList();
 		// clear next track timer
@@ -323,8 +323,7 @@ export default class ActiveRoom {
 					userId: sender.get('id'),
 					emojiId: existingReaction.id,
 					animation
-				}))
-				;
+				}));
 				return;
 			}
 
@@ -343,7 +342,25 @@ export default class ActiveRoom {
 				animation
 			}));
 		}
-	}
+		if (event.type === 'voteSkip') {
+			const {trackIds} = event;
+			const nowPlayingTrackId = state.playlist.length === 0 ?
+				null : state.playlist[0].id;
+
+			this.emitUserEvent(roomTrackVoteSkip({
+				userId: sender.get('id'),
+				trackIds,
+				moment: moment().valueOf()
+			}));
+
+			const newState = this.reduxStore.getState();
+			debug(newState.nowPlayingProgress);
+			if (newState.playlist.length > 0 && newState.playlist[0].id !== nowPlayingTrackId) {
+				// track changed
+				this.beginNextTrackTimer();
+			}
+		}
+	};
 
 	emitUserEvent = (reduxAction, supplementaryData = {}) => {
 		const {emit, app, id} = this;
