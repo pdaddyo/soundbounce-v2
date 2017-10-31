@@ -19,7 +19,7 @@ import {uniq, flatten, take, some} from 'lodash';
 import shortid from 'shortid';
 import moment from 'moment';
 import Refill from './Refill';
-
+import Ector from 'ector';
 import trackReactionEmojiList from '../../../src/components/room/chat/trackReactionEmojiList';
 
 import {TrackActivity} from '../data/schema';
@@ -37,6 +37,10 @@ export default class ActiveRoom {
 		this.refillTimeoutId = null;
 		this.refill = new Refill({room, app, activeRoom: this});
 		this.debug = _debug(`soundbounce:activeroom:${this.id}`);
+
+		// ector the bot
+		this.ector = new Ector('parrot', 'Soundbouncer');
+		this.ectorPreviousResponseNodes = null;
 	}
 
 	// called when first user joins a room so room goes active
@@ -74,6 +78,15 @@ export default class ActiveRoom {
 				this.beginNextTrackTimer();
 			}
 		}
+
+		// teach the chat bot everything said so far (it forgets between sessions)
+		existingState.actionLog.filter(action => action.type === 'ROOM_CHAT').forEach(action => {
+			this.ector.addEntry(action.payload.text);
+			this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+			const botResponse = this.ector.generateResponse();
+			this.ectorPreviousResponseNodes = botResponse.nodes;
+		});
+
 		// save default state so it's sent to first client
 		room.set('reduxState', reduxStore.getState());
 		room.set('isActive', true);
@@ -293,13 +306,29 @@ export default class ActiveRoom {
 			});
 		}
 		if (event.type === 'chat') {
-			const {text} = event;
+			let {text} = event;
 			if (!('text' in event) || text === null || text === '') {
 				return;
 			}
+
+			let userId = sender.get('id');
+			if (text === '/parrot' || text === '/bot' || text === '/p' &&
+				userId === this.room.set('creatorId')) {
+				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+				const botResponse = this.ector.generateResponse();
+				this.ectorPreviousResponseNodes = botResponse.nodes;
+				text = `${botResponse.sentence}`;
+				userId = 'parrot';
+			} else {
+				this.ector.addEntry(text);
+				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+				const botResponse = this.ector.generateResponse();
+				this.ectorPreviousResponseNodes = botResponse.nodes;
+			}
+
 			const nowPlayingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
 			this.emitUserEvent(roomChat({
-				userId: sender.get('id'),
+				userId,
 				text,
 				trackIds: nowPlayingTrackId ? [nowPlayingTrackId] : [],
 				offset: event.nowPlayingProgress

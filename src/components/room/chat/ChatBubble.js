@@ -320,7 +320,7 @@ by ${track.artists && track.artists.map(artist => artist.name).join(', ')}`}
 				) : timeStamp}
 
 				<div className={userTheme('avatar')}>
-					<Avatar user={chat.user}/>
+					{chat.user && <Avatar user={chat.user}/>}
 				</div>
 			</div>
 		);

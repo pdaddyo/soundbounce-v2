@@ -91,6 +91,7 @@
 		"cookies-js": "^1.2.2",
 		"d3-shape": "latest",
 		"debug": "^2.2.0",
+		"ector": "^1.0.1",
 		"ellipsize": "^0.0.3",
 		"emoji-mart": "^0.5.0",
 		"enzyme": "^2.8.2",

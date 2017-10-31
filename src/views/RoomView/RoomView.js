@@ -244,7 +244,11 @@ const mapStateToProps = state => ({
 			.map(chatWithUserId => ({
 				...chatWithUserId,
 				sentByCurrentUser: chatWithUserId.payload.userId === state.users.currentUserId,
-				user: state.users.users[chatWithUserId.payload.userId],
+				user: ['parrot', 'ector'].indexOf(chatWithUserId.payload.userId) > -1 ? {
+					id: 'parrot',
+					nickname: 'Polly parrot',
+					avatar: 'https://png.icons8.com/parrot/office/50/000000'
+				} : state.users.users[chatWithUserId.payload.userId],
 				tracks: chatWithUserId.payload.trackIds
 					? chatWithUserId.payload.trackIds.map(id => state.spotify.tracks[id]) : []
 			})),
