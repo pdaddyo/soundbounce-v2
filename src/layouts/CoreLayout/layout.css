@@ -8,7 +8,6 @@ html, body, .app {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	min-width: 960px;
 	font-size: 100%;
 	color: rgba(255, 255, 255, 0.8);
 	overflow: hidden;
@@ -32,6 +31,13 @@ html, body, .app {
 	height: 100%;
 	width: calc(100% - 5rem);
 	z-index: 2;
+}
+
+@media screen and (max-width: 600px) {
+	.container {
+		left: 0;
+		width: 100%;
+	}
 }
 
 a {

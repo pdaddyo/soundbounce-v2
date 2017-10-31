@@ -61,6 +61,14 @@
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
 }
 
+@media screen and (max-width: 600px) {
+	.roomName {
+		max-width: 6rem;
+		font-size: 1.2rem;
+		bottom: 0.8rem;
+	}
+}
+
 .roomLeave {
 	display: inline-block;
 	cursor: pointer;

@@ -56,6 +56,20 @@
 	}
 }
 
+@media screen and (max-width: 600px) {
+	html {
+		font-size: 80%;
+	}
+
+	.room {
+		right: 0;
+	}
+
+	.chat {
+		display: none;
+	}
+}
+
 .play {
 	position: absolute;
 	z-index: 10;

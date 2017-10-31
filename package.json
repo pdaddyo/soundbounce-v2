@@ -130,6 +130,7 @@
 		"react-router": "^2.0.0",
 		"react-router-redux": "^4.0.0-beta",
 		"react-select": "^1.0.0-rc.2",
+		"react-swipeable": "^4.2.0",
 		"redis": "^2.7.1",
 		"redux": "^3.0.0",
 		"redux-logger": "^2.5.2",

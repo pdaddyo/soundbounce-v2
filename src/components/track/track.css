@@ -255,3 +255,21 @@
 	filter: grayscale(0%);
 }
 
+@media screen and (max-width: 600px) {
+	.track {
+
+	}
+
+	.artistsAndTrackName {
+		min-width: 13rem;
+	}
+
+	.artistsAndTrackNameHero {
+		min-width: 10rem;
+	}
+
+	.track:active .buttons {
+		opacity: 1;
+	}
+}
+

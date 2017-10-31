@@ -9,6 +9,12 @@
 	z-index: 3;
 }
 
+@media screen and (max-width: 600px) {
+	.nav {
+		display: none;
+	}
+}
+
 .text {
 	display: inline-block;
 	position: relative;
