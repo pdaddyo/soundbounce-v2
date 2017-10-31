@@ -1,30 +1,30 @@
 /* eslint key-spacing:0 spaced-comment:0 */
 import _debug from 'debug';
 import path from 'path';
-import { argv } from 'yargs';
+import {argv} from 'yargs';
 
 const debug = _debug('soundbounce:config:_base');
 const config = {
 	env: process.env.NODE_ENV || 'development',
 
-  // ----------------------------------
-  // Project Structure
-  // ----------------------------------
+	// ----------------------------------
+	// Project Structure
+	// ----------------------------------
 	path_base: path.resolve(__dirname, '../'),
 	dir_client: 'src',
 	dir_dist: 'dist',
 	dir_server: 'server',
 	dir_test: 'tests',
 
-  // ----------------------------------
-  // Server Configuration
-  // ----------------------------------
+	// ----------------------------------
+	// Server Configuration
+	// ----------------------------------
 	server_host: 'localhost',
 	server_port: process.env.PORT || 1337,
 
-  // ----------------------------------
-  // Compiler Configuration
-  // ----------------------------------
+	// ----------------------------------
+	// Compiler Configuration
+	// ----------------------------------
 	compiler_css_modules: true,
 	compiler_devtool: 'source-map',
 	compiler_hash_type: 'hash',
@@ -42,27 +42,35 @@ const config = {
 		'react-redux',
 		'react-router',
 		'react-router-redux',
-		'redux'
+		'redux',
+		'react-dom',
+		'react-emojione',
+		'd3-shape',
+		'semiotic',
+		'redux-saga',
+		'react-contextmenu',
+		'react-alert',
+		'lodash'
 	],
 
-  // ----------------------------------
-  // Test Configuration
-  // ----------------------------------
+	// ----------------------------------
+	// Test Configuration
+	// ----------------------------------
 	coverage_enabled: !argv.watch,
 	coverage_reporters: [
-    { type : 'text-summary' },
-    { type : 'lcov', dir : 'coverage' }
+		{type: 'text-summary'},
+		{type: 'lcov', dir: 'coverage'}
 	]
 };
 
 /************************************************
--------------------------------------------------
+ -------------------------------------------------
 
-All Internal Configuration Below
-Edit at Your Own Risk
+ All Internal Configuration Below
+ Edit at Your Own Risk
 
--------------------------------------------------
-************************************************/
+ -------------------------------------------------
+ ************************************************/
 
 // ------------------------------------
 // Environment
@@ -90,11 +98,11 @@ config.compiler_vendor = config.compiler_vendor
 	.filter((dep) => {
 		if (pkg.dependencies[dep]) return true;
 		debug(
-      `Package "${dep}" was not found as an npm dependency in package.json; ` +
-      `it won't be included in the webpack vendor bundle.
+			`Package "${dep}" was not found as an npm dependency in package.json; ` +
+			`it won't be included in the webpack vendor bundle.
        Consider removing it from vendor_dependencies in ~/config/index.js`
-    );
-  });
+		);
+	});
 
 // ------------------------------------
 // Utilities
@@ -103,7 +111,7 @@ config.utils_paths = (() => {
 	const resolve = path.resolve;
 
 	const base = (...args) =>
-    resolve.apply(resolve, [config.path_base, ...args]);
+		resolve.apply(resolve, [config.path_base, ...args]);
 
 	return {
 		base: base,

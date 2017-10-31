@@ -7,11 +7,11 @@ import Root from './containers/Root';
 import configureStore from './redux/configureStore';
 
 // IE polyfills and fixes
-import es6promise from 'es6-promise';
-es6promise.polyfill();
+// import es6promise from 'es6-promise';
+// es6promise.polyfill();
 import 'isomorphic-fetch';
-import 'event-source-polyfill';
-import 'babel-polyfill';
+// import 'event-source-polyfill';
+// import 'babel-polyfill';
 // import './components/room/backgrounds/halfTone/breathing-halftone';
 
 // Create redux store and sync with react-router-redux. We have installed the
