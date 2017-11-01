@@ -16,7 +16,7 @@ export default class Gradient extends Component {
 
 		return (
 			<div style={{
-				background: `linear-gradient(to bottom, ${rgba(primary, 0.25)}, ${rgba(primary, 0)})`,
+				background: `linear-gradient(to bottom, ${rgba(primary, 0.1)}, ${rgba(primary, 0)})`,
 				position: 'absolute',
 				left: '-6rem',
 				right: 0,
