@@ -229,7 +229,8 @@ function * watchForPreviewTrack() {
 		yield call(spotifyPlayTracksThenSeek, {
 			trackIds: [trackId],
 			// seek to 1/3 through for preview
-			seekPosition: offset || Math.round(tracks[trackId].duration / 3)
+			seekPosition: offset || Math.round((tracks[trackId].duration ||
+				tracks[trackId].duration_ms) / 3)
 		});
 	}
 }
