@@ -132,6 +132,7 @@
 		"react-router-redux": "^4.0.0-beta",
 		"react-select": "^1.0.0-rc.2",
 		"react-swipeable": "^4.2.0",
+		"react-three": "^0.9.7",
 		"redis": "^2.7.1",
 		"redux": "^3.0.0",
 		"redux-logger": "^2.5.2",
@@ -143,6 +144,7 @@
 		"socket.io": "^1.7.3",
 		"socket.io-client": "^1.7.3",
 		"spotify-web-api-node": "^2.3.6",
+		"three": "^0.87.1",
 		"whatwg-fetch": "^0.11.0",
 		"yargs": "^3.18.0"
 	},
