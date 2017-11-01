@@ -84,10 +84,8 @@ export default class MusicBlocks3D extends Component {
 							{segmentsToRender.map((segment, index) => {
 								const mostConfidentPitch = max(segment.pitches);
 								const pitchIndex = segment.pitches.indexOf(mostConfidentPitch);
-
-								const timbreForPitch = segment.timbre[pitchIndex];
-								const pitchFromKey = (analysis.track.key + pitchIndex + 1 ) % 12;
-
+								// const timbreForPitch = segment.timbre[pitchIndex];
+								const pitchRelativeToKey = (analysis.track.key + pitchIndex - 1) % 12;
 								const yScale = segment.duration * yStretch / 10;
 								return <Mesh key={index}
 											 geometry={boxGeometry}
@@ -97,8 +95,12 @@ export default class MusicBlocks3D extends Component {
 												 yScale,
 												 0.1
 											 )}
-											 position={new THREE.Vector3((pitchFromKey) * 10,
-												 segment.start * yStretch, 0)}/>;
+											 position={new THREE.Vector3(
+												 pitchRelativeToKey * 10,
+												 segment.start * yStretch,
+												 0
+											 )}
+								/>;
 							})}
 
 						</Object3D>

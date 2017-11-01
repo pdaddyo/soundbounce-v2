@@ -86,7 +86,6 @@ class Analysis extends Component {
 							   nowPlayingStartedAt={nowPlayingStartedAt}
 							   serverMsOffset={serverMsOffset}
 				/>
-				
 				<XYFrame
 					size={[width, height]}
 					lines={[
