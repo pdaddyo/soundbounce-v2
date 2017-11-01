@@ -312,8 +312,10 @@ export default class ActiveRoom {
 			}
 
 			let userId = sender.get('id');
-			if (text === '/parrot' || text === '/bot' || text === '/p' &&
-				userId === this.room.set('creatorId')) {
+			if (text === '/parrot' || text === '/bot' || text === '/p') {
+				if (userId !== this.room.get('creatorId')) {
+					return;
+				}
 				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
 				const botResponse = this.ector.generateResponse();
 				this.ectorPreviousResponseNodes = botResponse.nodes;
