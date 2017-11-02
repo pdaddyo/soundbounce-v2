@@ -7,48 +7,50 @@ import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene} from 'react-three';
 import * as THREE from 'three';
 import take from 'lodash/take';
 import moment from 'moment';
-import seedrandom from 'seedrandom';
+import colors from 'shared/colors';
 
 const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
 const simpleWhiteMaterial = new THREE.MeshBasicMaterial({});
 const yStretch = 20;
-
-// super basic material cache
-const materialCache = {};
-const getMaterial = (key) => {
-	if (materialCache[key]) {
-		return materialCache[key];
-	}
-	const rnd = seedrandom(key);
-	const material = new THREE.MeshBasicMaterial({color: (rnd() * 0xffffff / 2) + 0xffffff / 2});
-	materialCache[key] = material;
-	return material;
-};
 
 export default class MusicBlocks3D extends Component {
 	static propTypes = {
 		width: PropTypes.number.isRequired,
 		height: PropTypes.number.isRequired,
 		analysis: PropTypes.object.isRequired,
-		progressPercent: PropTypes.number,
-		serverMsOffset: PropTypes.number,
-		nowPlayingStartedAt: PropTypes.number
+		player: PropTypes.object
 	};
 
 	constructor(props) {
 		super(props);
 		this.state = {time: 0};
+
+		// super basic material cache
+		this.materialCache = {};
+		this.colorIndex = 4;
+		this.getMaterial = (key) => {
+			if (this.materialCache[key]) {
+				return this.materialCache[key];
+			}
+			const material = new THREE.MeshBasicMaterial({
+				color: parseInt(`0x${colors[this.colorIndex % colors.length].substr(1)}`)
+			});
+			this.materialCache[key] = material;
+			this.colorIndex += 14;
+			return material;
+		};
 	}
 
 	animate = () => {
-		const {
-			serverMsOffset, nowPlayingStartedAt, progressPercent
-		} = this.props;
-		if (!this.mounted || progressPercent <= 0) {
+		const {player} = this.props;
+		if (!this.mounted) {
 			return;
 		}
-		this.setState({time: (moment().valueOf() - nowPlayingStartedAt - serverMsOffset) / 1000});
-		this.frameId = requestAnimationFrame(this.animate);
+		this.setState({
+			time: player.is_playing
+				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
+		});
+		requestAnimationFrame(this.animate);
 	};
 
 	componentDidMount() {
@@ -63,10 +65,10 @@ export default class MusicBlocks3D extends Component {
 
 	render() {
 		const {
-			width, height, analysis, progressPercent
+			width, height, analysis
 		} = this.props;
 
-		const yPos = (progressPercent === 0 ? 0 : this.state.time) * yStretch;
+		const yPos = this.state.time * yStretch;
 
 		const cameraProps = {
 			fov: 75, aspect: width / height,
@@ -75,7 +77,7 @@ export default class MusicBlocks3D extends Component {
 			lookat: new THREE.Vector3(50, yPos + 55, 0)
 		};
 
-		const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.2);
+		const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.3);
 
 		const segmentMeshes = [];
 
@@ -94,7 +96,7 @@ export default class MusicBlocks3D extends Component {
 				segmentMeshes.push(
 					<Mesh key={segmentIndex + '-' + pitchLoopIndex}
 						  geometry={boxGeometry}
-						  material={getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
+						  material={this.getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
 						  scale={new THREE.Vector3(
 							  Math.min(segmentWidth, 1),
 							  yScale,
@@ -113,12 +115,12 @@ export default class MusicBlocks3D extends Component {
 		return (
 			<div>
 				<Renderer width={width} height={height} enableRapidRender={true}
-						  background={0x222222}>
+						  transparent={true}>
 					<Scene width={width} height={height} camera="maincamera">
 						<PerspectiveCamera name="maincamera" {...cameraProps} />
 						<Mesh geometry={boxGeometry}
 							  material={simpleWhiteMaterial}
-							  scale={new THREE.Vector3(200, 0.1, 0.01)}
+							  scale={new THREE.Vector3(200, 0.05, 0.01)}
 							  position={new THREE.Vector3(-100, yPos, 0)}
 						/>
 						{analysis.bars.map(bar => (

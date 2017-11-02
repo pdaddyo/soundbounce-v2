@@ -15,7 +15,6 @@ import chunk from 'lodash/chunk';
 import meanBy from 'lodash/meanBy';
 
 import theme from './analysis.css';
-import MusicBlocks3D from '../3d/MusicBlocks3D';
 
 const width = 410;
 const height = 60;
@@ -27,9 +26,7 @@ class Analysis extends Component {
 		analysis: PropTypes.object,
 		features: PropTypes.object,
 		fetchAnalysis: PropTypes.func,
-		progressPercent: PropTypes.number,
-		serverMsOffset: PropTypes.number,
-		nowPlayingStartedAt: PropTypes.number
+		progressPercent: PropTypes.number
 	};
 
 	componentDidMount() {
@@ -39,7 +36,7 @@ class Analysis extends Component {
 	}
 
 	render() {
-		const {analysis, features, progressPercent, serverMsOffset, nowPlayingStartedAt} = this.props;
+		const {analysis, features, progressPercent} = this.props;
 		if (!analysis) {
 			return <div>Analysing...</div>;
 		}
@@ -80,15 +77,8 @@ class Analysis extends Component {
 		}
 		return (
 			<div>
-				<MusicBlocks3D width={width}
-							   height={width}
-							   analysis={analysis}
-							   progressPercent={progressPercent}
-							   nowPlayingStartedAt={nowPlayingStartedAt}
-							   serverMsOffset={serverMsOffset}
-				/>
 
-				{false && <XYFrame
+				{<XYFrame
 					size={[width, height]}
 					lines={[
 						{
@@ -122,7 +112,7 @@ class Analysis extends Component {
 				/>}
 
 
-				{false && features && (
+				{features && (
 					<div className={theme.featuresContainer}>
 						{
 							featuresKeys.map(key => (
@@ -150,9 +140,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		analysis: state.spotify.audioAnalysis[ownProps.track.id],
 		features: state.spotify.audioFeatures[ownProps.track.id],
-		progressPercent,
-		nowPlayingStartedAt: state.room.nowPlayingStartedAt,
-		serverMsOffset: state.sync.serverMsOffset
+		progressPercent
 	};
 };
 

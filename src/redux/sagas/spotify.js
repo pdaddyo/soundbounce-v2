@@ -67,7 +67,7 @@ function * updatePlayerState() {
 	// get player state from api then update redux state with the return
 	const playerState = yield getPlayerState();
 	if (playerState) {
-		yield put(spotifyPlayerStateUpdate(playerState));
+		yield put(spotifyPlayerStateUpdate({...playerState, updateArrivedAt: moment().valueOf()}));
 	}
 }
 
