@@ -312,20 +312,22 @@ export default class ActiveRoom {
 			}
 
 			let userId = sender.get('id');
-			if (text === '/parrot' || text === '/bot' || text === '/p') {
-				if (userId !== this.room.get('creatorId')) {
-					return;
+			try {
+				if (text === '/parrot' || text === '/bot' || text === '/p') {
+					if (userId !== this.room.get('creatorId')) {
+						return;
+					}
+					this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+					const botResponse = this.ector.generateResponse();
+					this.ectorPreviousResponseNodes = botResponse.nodes;
+					text = `${botResponse.sentence}`;
+					userId = 'parrot';
+				} else {
+					this.ector.addEntry(text);
 				}
-				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
-				const botResponse = this.ector.generateResponse();
-				this.ectorPreviousResponseNodes = botResponse.nodes;
-				text = `${botResponse.sentence}`;
-				userId = 'parrot';
-			} else {
-				this.ector.addEntry(text);
-				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
-				const botResponse = this.ector.generateResponse();
-				this.ectorPreviousResponseNodes = botResponse.nodes;
+			}
+			catch (err) {
+				this.debug(`chat bot error - ${err}`);
 			}
 
 			const nowPlayingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
