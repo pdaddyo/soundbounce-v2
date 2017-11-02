@@ -88,7 +88,7 @@ class Analysis extends Component {
 							   serverMsOffset={serverMsOffset}
 				/>
 
-				{ false && <XYFrame
+				{false && <XYFrame
 					size={[width, height]}
 					lines={[
 						{
