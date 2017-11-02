@@ -3,9 +3,9 @@
  */
 
 import React, {Component, PropTypes} from 'react';
-import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene, AmbientLight} from 'react-three';
+import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene} from 'react-three';
 import * as THREE from 'three';
-import max from 'lodash/max';
+import take from 'lodash/take';
 import moment from 'moment';
 import seedrandom from 'seedrandom';
 
@@ -20,7 +20,7 @@ const getMaterial = (key) => {
 		return materialCache[key];
 	}
 	const rnd = seedrandom(key);
-	const material = new THREE.MeshBasicMaterial({color: (rnd() * 0xffffff / 3) + 0xffffff / 3});
+	const material = new THREE.MeshBasicMaterial({color: (rnd() * 0xffffff / 2) + 0xffffff / 2});
 	materialCache[key] = material;
 	return material;
 };
@@ -71,18 +71,51 @@ export default class MusicBlocks3D extends Component {
 		const cameraProps = {
 			fov: 75, aspect: width / height,
 			near: 1, far: 5000,
-			position: new THREE.Vector3(60, yPos, 100),
-			lookat: new THREE.Vector3(60, yPos + 55, 0)
+			position: new THREE.Vector3(50, yPos, 100),
+			lookat: new THREE.Vector3(50, yPos + 55, 0)
 		};
 
 		const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.2);
+
+		const segmentMeshes = [];
+
+		segmentsToRender.forEach((segment, segmentIndex) => {
+			const mostConfidentPitches = take([...segment.pitches].sort(), 3);
+
+			mostConfidentPitches.forEach((pitchConfidence, pitchLoopIndex) => {
+				const pitchIndex = segment.pitches.indexOf(pitchConfidence);
+				if (pitchLoopIndex > 0 && pitchConfidence < 0.55) {
+					return;
+				}
+				const timbreForPitch = segment.timbre[pitchIndex];
+				const pitchRelativeToKey = (analysis.track.key + pitchIndex - 1) % 12;
+				const yScale = segment.duration * yStretch / 10;
+				const segmentWidth = 0.01 + (0.016 * (40 + segment.loudness_max));
+				segmentMeshes.push(
+					<Mesh key={segmentIndex + '-' + pitchLoopIndex}
+						  geometry={boxGeometry}
+						  material={getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
+						  scale={new THREE.Vector3(
+							  Math.min(segmentWidth, 1),
+							  yScale,
+							  0.1
+						  )}
+						  position={new THREE.Vector3(
+							  pitchRelativeToKey * 10,
+							  segment.start * yStretch + (yScale * 5),
+							  0
+						  )}
+					/>
+				);
+			});
+		});
+
 		return (
 			<div>
 				<Renderer width={width} height={height} enableRapidRender={true}
 						  background={0x222222}>
 					<Scene width={width} height={height} camera="maincamera">
 						<PerspectiveCamera name="maincamera" {...cameraProps} />
-						<AmbientLight color={0xffffff}/>
 						<Mesh geometry={boxGeometry}
 							  material={simpleWhiteMaterial}
 							  scale={new THREE.Vector3(200, 0.1, 0.01)}
@@ -93,32 +126,10 @@ export default class MusicBlocks3D extends Component {
 								  key={bar.start}
 								  material={simpleWhiteMaterial}
 								  scale={new THREE.Vector3(12, 0.01, 0.01)}
-								  position={new THREE.Vector3(55, bar.start * yStretch, 0)}/>
+								  position={new THREE.Vector3(50, bar.start * yStretch, 0)}/>
 						))}
 						<Object3D>
-							{segmentsToRender.map((segment, index) => {
-								const mostConfidentPitch = max(segment.pitches);
-								const pitchIndex = segment.pitches.indexOf(mostConfidentPitch);
-								const timbreForPitch = segment.timbre[pitchIndex];
-								const pitchRelativeToKey = (analysis.track.key + pitchIndex - 1) % 12;
-								const yScale = segment.duration * yStretch / 10;
-								const segmentWidth = 0.03 + (0.015 * (40 + segment.loudness_max));
-
-								return <Mesh key={index}
-											 geometry={boxGeometry}
-											 material={getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
-											 scale={new THREE.Vector3(
-												 Math.min(segmentWidth, 1),
-												 yScale,
-												 0.1
-											 )}
-											 position={new THREE.Vector3(
-												 pitchRelativeToKey * 10,
-												 segment.start * yStretch + (yScale * 5),
-												 0
-											 )}
-								/>;
-							})}
+							{segmentMeshes}
 
 						</Object3D>
 					</Scene>

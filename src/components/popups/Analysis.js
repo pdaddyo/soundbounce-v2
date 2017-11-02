@@ -87,7 +87,8 @@ class Analysis extends Component {
 							   nowPlayingStartedAt={nowPlayingStartedAt}
 							   serverMsOffset={serverMsOffset}
 				/>
-				<XYFrame
+
+				{ false && <XYFrame
 					size={[width, height]}
 					lines={[
 						{
@@ -118,10 +119,10 @@ class Analysis extends Component {
 					xAccessor={'start'}
 					yAccessor={'loudness'}
 					foregroundGraphics={progressIndicator}
-				/>
+				/>}
 
 
-				{features && (
+				{false && features && (
 					<div className={theme.featuresContainer}>
 						{
 							featuresKeys.map(key => (
