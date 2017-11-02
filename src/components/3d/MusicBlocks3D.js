@@ -3,14 +3,27 @@
  */
 
 import React, {Component, PropTypes} from 'react';
-import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene} from 'react-three';
+import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene, AmbientLight} from 'react-three';
 import * as THREE from 'three';
 import max from 'lodash/max';
 import moment from 'moment';
+import seedrandom from 'seedrandom';
 
 const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
-const boxMaterial = new THREE.MeshBasicMaterial({});
+const simpleWhiteMaterial = new THREE.MeshBasicMaterial({});
 const yStretch = 20;
+
+// super basic material cache
+const materialCache = {};
+const getMaterial = (key) => {
+	if (materialCache[key]) {
+		return materialCache[key];
+	}
+	const rnd = seedrandom(key);
+	const material = new THREE.MeshBasicMaterial({color: (rnd() * 0xffffff / 3) + 0xffffff / 3});
+	materialCache[key] = material;
+	return material;
+};
 
 export default class MusicBlocks3D extends Component {
 	static propTypes = {
@@ -31,7 +44,7 @@ export default class MusicBlocks3D extends Component {
 		const {
 			serverMsOffset, nowPlayingStartedAt, progressPercent
 		} = this.props;
-		if (!this.mounted || progressPercent === 0) {
+		if (!this.mounted || progressPercent <= 0) {
 			return;
 		}
 		this.setState({time: (moment().valueOf() - nowPlayingStartedAt - serverMsOffset) / 1000});
@@ -69,14 +82,16 @@ export default class MusicBlocks3D extends Component {
 						  background={0x222222}>
 					<Scene width={width} height={height} camera="maincamera">
 						<PerspectiveCamera name="maincamera" {...cameraProps} />
+						<AmbientLight color={0xffffff}/>
 						<Mesh geometry={boxGeometry}
-							  material={boxMaterial}
+							  material={simpleWhiteMaterial}
 							  scale={new THREE.Vector3(200, 0.1, 0.01)}
 							  position={new THREE.Vector3(-100, yPos, 0)}
 						/>
 						{analysis.bars.map(bar => (
 							<Mesh geometry={boxGeometry}
-								  material={boxMaterial}
+								  key={bar.start}
+								  material={simpleWhiteMaterial}
 								  scale={new THREE.Vector3(12, 0.01, 0.01)}
 								  position={new THREE.Vector3(55, bar.start * yStretch, 0)}/>
 						))}
@@ -84,20 +99,22 @@ export default class MusicBlocks3D extends Component {
 							{segmentsToRender.map((segment, index) => {
 								const mostConfidentPitch = max(segment.pitches);
 								const pitchIndex = segment.pitches.indexOf(mostConfidentPitch);
-								// const timbreForPitch = segment.timbre[pitchIndex];
+								const timbreForPitch = segment.timbre[pitchIndex];
 								const pitchRelativeToKey = (analysis.track.key + pitchIndex - 1) % 12;
 								const yScale = segment.duration * yStretch / 10;
+								const segmentWidth = 0.03 + (0.015 * (40 + segment.loudness_max));
+
 								return <Mesh key={index}
 											 geometry={boxGeometry}
-											 material={boxMaterial}
+											 material={getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
 											 scale={new THREE.Vector3(
-												 0.01 * (30 + segment.loudness_max),
+												 Math.min(segmentWidth, 1),
 												 yScale,
 												 0.1
 											 )}
 											 position={new THREE.Vector3(
 												 pitchRelativeToKey * 10,
-												 segment.start * yStretch,
+												 segment.start * yStretch + (yScale * 5),
 												 0
 											 )}
 								/>;

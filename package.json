@@ -138,6 +138,7 @@
 		"redux-logger": "^2.5.2",
 		"redux-saga": "^0.16.0",
 		"request": "^2.81.0",
+		"seedrandom": "^2.4.3",
 		"semiotic": "^1.1.7",
 		"sequelize": "^3.30.4",
 		"shortid": "^2.2.8",

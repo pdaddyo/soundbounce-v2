@@ -83,6 +83,7 @@ class Analysis extends Component {
 				<MusicBlocks3D width={width}
 							   height={width}
 							   analysis={analysis}
+							   progressPercent={progressPercent}
 							   nowPlayingStartedAt={nowPlayingStartedAt}
 							   serverMsOffset={serverMsOffset}
 				/>
