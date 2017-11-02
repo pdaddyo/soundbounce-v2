@@ -196,10 +196,6 @@
 	opacity: 1;
 }
 
-.trackHero .buttons {
-	opacity: 1 !important;
-}
-
 .buttonsHero {
 	composes: buttons;
 	margin-left: auto;
