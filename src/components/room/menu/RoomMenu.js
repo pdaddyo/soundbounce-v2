@@ -52,8 +52,8 @@ export default class RoomMenu extends Component {
 				<MenuItem tab='listeners'>{listeners.length} Listener{
 					listeners.length === 1 ? '' : 's'
 				}</MenuItem>
-				{/* <MenuItem tab='about'>About</MenuItem> */ }
 				<MenuItem tab='stats'>Stats</MenuItem>
+				<MenuItem tab='about'>...</MenuItem>
 			</div>
 		);
 	}
