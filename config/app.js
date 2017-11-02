@@ -5,10 +5,10 @@
 // all delays in ms
 export default {
 	// incrementing this forces clients to download new client code in order to connect
-	buildVersion: 37,
+	buildVersion: 38,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
-		pollPlayerDelay: 8000,
+		pollPlayerDelay: 5000,
 		apiRetryDelay: 3000,
 		maxRetry: 5,
 		// when playing a track, don't then send a follow-up seek command if position < ms
