@@ -6,6 +6,8 @@ import React, {Component, PropTypes} from 'react';
 import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene} from 'react-three';
 import * as THREE from 'three';
 import take from 'lodash/take';
+import takeRight from 'lodash/takeRight';
+import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import colors from 'shared/colors';
 
@@ -68,18 +70,21 @@ export default class MusicBlocks3D extends Component {
 			width, height, analysis
 		} = this.props;
 
-		const yPos = this.state.time * yStretch;
+		const yTrackPosition = this.state.time * yStretch;
+		const numRails = 4;
 
 		const cameraProps = {
 			fov: 75, aspect: width / height,
 			near: 1, far: 5000,
-			position: new THREE.Vector3(50, yPos, 100),
-			lookat: new THREE.Vector3(50, yPos + 55, 0)
+			position: new THREE.Vector3(50, yTrackPosition, 100),
+			lookat: new THREE.Vector3(50, yTrackPosition + 55, 0)
 		};
 
-		const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.3);
-
+		// const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.3);
+		const segmentsToRender = takeRight(sortBy(analysis.segments, 'confidence'), 400);
 		const segmentMeshes = [];
+
+		const mostRecentSegmentForRailEndPoints = [];
 
 		segmentsToRender.forEach((segment, segmentIndex) => {
 			const mostConfidentPitches = take([...segment.pitches].sort(), 3);
@@ -90,25 +95,24 @@ export default class MusicBlocks3D extends Component {
 					return;
 				}
 				const timbreForPitch = segment.timbre[pitchIndex];
-				const pitchRelativeToKey = (analysis.track.key + pitchIndex - 1) % 12;
 				const yScale = segment.duration * yStretch / 10;
 				const segmentWidth = 0.01 + (0.016 * (40 + segment.loudness_max));
-				segmentMeshes.push(
-					<Mesh key={segmentIndex + '-' + pitchLoopIndex}
-						  geometry={boxGeometry}
-						  material={this.getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
-						  scale={new THREE.Vector3(
-							  Math.min(segmentWidth, 1),
-							  yScale,
-							  0.1
-						  )}
-						  position={new THREE.Vector3(
-							  pitchRelativeToKey * 10,
-							  segment.start * yStretch + (yScale * 5),
-							  0
-						  )}
-					/>
-				);
+				const railForThisSegment = Math.abs((pitchIndex)) % numRails;
+				const xPos = (railForThisSegment) * (120 / numRails);
+				const yPos = segment.start * yStretch + (yScale * 5);
+				mostRecentSegmentForRailEndPoints[railForThisSegment] =
+					segmentMeshes.push(
+						<Mesh key={segmentIndex + '-' + pitchLoopIndex}
+							  geometry={boxGeometry}
+							  material={this.getMaterial(`block-style-${Math.floor(timbreForPitch / 15)}`)}
+							  scale={new THREE.Vector3(
+								  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
+								  yScale,
+								  0.1
+							  )}
+							  position={new THREE.Vector3(xPos, yPos, 0)}
+						/>
+					);
 			});
 		});
 
@@ -121,7 +125,7 @@ export default class MusicBlocks3D extends Component {
 						<Mesh geometry={boxGeometry}
 							  material={simpleWhiteMaterial}
 							  scale={new THREE.Vector3(200, 0.05, 0.01)}
-							  position={new THREE.Vector3(-100, yPos, 0)}
+							  position={new THREE.Vector3(-100, yTrackPosition, 0)}
 						/>
 						{analysis.bars.map(bar => (
 							<Mesh geometry={boxGeometry}
