@@ -112,6 +112,8 @@
 
 .nameHero {
 	composes: name;
+	max-height: 5rem;
+	overflow: hidden;
 }
 
 .nameSmall {
