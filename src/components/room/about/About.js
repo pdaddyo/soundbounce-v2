@@ -46,7 +46,7 @@ class About extends Component {
 			<div className={theme.about}>
 				{analysis && (
 					<MusicBlocks3D width={450}
-								   height={400}
+								   height={500}
 								   analysis={analysis}
 								   player={player}/>
 				)}

@@ -2890,6 +2890,10 @@ exports-loader@^0.6.3:
     loader-utils "^1.0.2"
     source-map "0.5.x"
 
+expose-loader@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/expose-loader/-/expose-loader-0.7.3.tgz#35fbd3659789e4faa81f59de8b7e9fc39e466d51"
+
 express@^4.15.2:
   version "4.15.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.15.2.tgz#af107fc148504457f2dca9a6f2571d7129b97b35"
@@ -7419,6 +7423,10 @@ text-table@~0.2.0:
 textarea-caret@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/textarea-caret/-/textarea-caret-3.0.2.tgz#f360c48699aa1abf718680a43a31a850665c2caf"
+
+three.proton.js@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/three.proton.js/-/three.proton.js-0.1.5.tgz#3ae32fd9cf3b5698e3b546946e53badbda04948e"
 
 three@^0.87.1:
   version "0.87.1"
