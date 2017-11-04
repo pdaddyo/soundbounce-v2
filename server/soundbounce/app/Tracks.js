@@ -95,7 +95,7 @@ export default class Tracks {
 											// work out if we have any track ids back from api
 											// that we didn't ask for - these may already be in db
 											const relinkedTracksCouldBeInDb = tracks.filter(t =>
-											t.linked_from && t.linked_from.id);
+											t && t.linked_from && t.linked_from.id);
 
 											let tracksAlreadyExistPromise = Promise.resolve([]);
 
