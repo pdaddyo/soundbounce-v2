@@ -55,6 +55,7 @@ export default class Tracks {
 
 									// get all the unique artists in the response
 									const artists = chain(tracks)
+										.filter(t => t) // only if there is a track
 										.map(t => t.album.artists)
 										.flatten()
 										.uniqBy(a => a.id)
