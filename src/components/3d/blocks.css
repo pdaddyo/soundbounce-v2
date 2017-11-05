@@ -64,6 +64,12 @@
 	position: relative;
 }
 
+.keyPressed .keycap {
+	background: #353331;
+	text-align: center;
+	background: linear-gradient(to right, #454241, #555351, #454241);
+}
+
 .keyShouldPress .keycap {
 	background: #651311;
 	background: linear-gradient(to right, #652221, #753331, #652221);
