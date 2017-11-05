@@ -64,11 +64,12 @@ export default class MusicBlocks3D extends Component {
 		if (!this.mounted) {
 			return;
 		}
+		requestAnimationFrame(this.animate);
+
 		this.setState({
 			time: player.is_playing
 				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
 		});
-		requestAnimationFrame(this.animate);
 	};
 
 	componentDidMount() {
@@ -343,7 +344,7 @@ export default class MusicBlocks3D extends Component {
 						  customRender={this.customRender}>
 					<Scene width={width} height={height} camera="maincamera">
 						<PerspectiveCamera name="maincamera" {...cameraProps} />
-						{/* <Mesh geometry={boxGeometry}
+						{/*  <Mesh geometry={boxGeometry}
 						 material={simpleWhiteMaterial}
 						 scale={new THREE.Vector3(200, 0.05, 0.01)}
 						 position={new THREE.Vector3(-100, yTrackPosition, 0)}

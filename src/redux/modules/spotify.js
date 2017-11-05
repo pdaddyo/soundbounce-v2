@@ -2,6 +2,7 @@ import update from 'react-addons-update';
 
 import {ROOM_FULL_SYNC} from './shared/room';
 import {SOCKET_ROOM_EVENT, SOCKET_HOME_DATA_OK, SOCKET_ROOM_STATS_OK} from './socket';
+import moment from 'moment';
 
 // ------------------------------------
 // Constants
@@ -113,7 +114,8 @@ export const spotifyProfileRequest = () => ({
 });
 
 export const spotifyPlayerStateRequest = () => ({
-	type: SPOTIFY_PLAYER_STATE_REQUEST
+	type: SPOTIFY_PLAYER_STATE_REQUEST,
+	payload: {updateRequestedAt: moment().valueOf()}
 });
 
 export const spotifyPlayerStateUpdate = (playerState) => ({
@@ -213,11 +215,22 @@ const ACTION_HANDLERS = {
 			...state,
 			isLoggedIn: true
 		}),
+		[SPOTIFY_PLAYER_STATE_REQUEST]: (state, {payload}) => ({
+				...state,
+				player: {
+					...state.player,
+					updateRequestedAt: payload.updateRequestedAt
+				}
+			}
+		),
 		[SPOTIFY_PLAYER_STATE_UPDATE]: (state, {payload}) => {
 			const {item} = payload.playerState;
 			const newState = {
 				...state,
-				player: payload.playerState
+				player: {
+					...payload.playerState,
+					updateRequestedAt: state.player.updateRequestedAt
+				}
 			};
 
 			// this might be a new track that we haven't seen before, check if it's in our
