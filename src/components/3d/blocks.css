@@ -5,6 +5,7 @@
 }
 
 .key {
+	transition: all 200ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
 	text-transform: uppercase;
 	width: 40px;
 	height: 45px;
@@ -17,9 +18,32 @@
 	color: #222;
 }
 
-.key {
+.keyWhite {
 	background: #d3cfcc;
 	border-color: #ece8e4 #dedad6 #c9c4c4;
+}
+
+.key {
+	background: #332f2c;
+	border-color: #4c4844 #3e3a36 #292424;
+}
+
+@keyframes shake {
+	0%, 50%, 100% {
+		transform: translateX(0);
+	}
+	25% {
+		transform: translateX(-3px);
+	}
+	75% {
+		transform: translateX(3px);
+	}
+}
+
+.keyShouldPress {
+	composes: key;
+	animation: shake ease-in-out 80ms infinite;
+	color: red !important;
 }
 
 .keyPressed {
@@ -30,15 +54,12 @@
 .key .keycap, .keyPressed .keycap {
 	width: 33px;
 	height: 40px;
-	padding: 5px 0 0 7px;
+	padding: 6px 0 0 0;
 	font-size: 18px;
 	line-height: 1;
-	background: #f5f3f1;
-	background: -webkit-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
-	background: -moz-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
-	background: -ms-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
-	background: -o-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
-	background: linear-gradient(to right, #e5e2e1, #f5f3f1, #e5e2e1);
+	background: #151311;
+	text-align: center;
+	background: linear-gradient(to right, #252221, #353331, #252221);
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 	border-radius: 4px;
 	position: relative;

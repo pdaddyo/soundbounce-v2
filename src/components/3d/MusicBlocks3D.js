@@ -22,7 +22,7 @@ const finishedSegmentMaterials = railColors.map(color => (new THREE.MeshBasicMat
 	transparent: true,
 	opacity: 0.4
 })));
-const yStretch = 20;
+const yStretch = 25;
 const numRails = 4;
 const minGap = 12;
 
@@ -146,10 +146,10 @@ export default class MusicBlocks3D extends Component {
 	initParticles = scene => {
 		// starfield bg
 		const geometry = new THREE.Geometry();
-		for (let i = 0; i < 1000; i++) {
+		for (let i = 0; i < this.props.analysis.track.duration * 5; i++) {
 			const vertex = new THREE.Vector3();
 			vertex.x = Math.random() * 3000 - 1500;
-			vertex.y = Math.random() * (this.props.analysis.track.duration + 30) * yStretch - 200;
+			vertex.y = Math.random() * (this.props.analysis.track.duration + 50) * yStretch - 200;
 			vertex.z = Math.random() * -2000 - 50;
 			geometry.vertices.push(vertex);
 		}
@@ -322,23 +322,32 @@ export default class MusicBlocks3D extends Component {
 			<div>
 				<div className={theme.keys}>
 					{railKeys.map((key, index) => (
-						<div className={this.railButtons[index] ? theme.keyPressed : theme.key}
-							 index={key}>
-							<div className={theme.keycap}>{key}</div>
+						<div
+							className={this.railButtons[index]
+								? theme.keyPressed : this.railsHaveActiveSegment[index]
+									? theme.keyShouldPress : theme.key}
+							key={index}>
+							<div className={theme.keycap}
+								 style={{
+									 color: (!this.railButtons[index]
+									 && this.railsHaveActiveSegment[index])
+										 ? 'red' : railColors[index]
+								 }}>{key}</div>
 						</div>
 					))}
 				</div>
 				<Renderer width={width} height={height}
 						  enableRapidRender={true}
 						  transparent={true}
+						  className={theme.key}
 						  customRender={this.customRender}>
 					<Scene width={width} height={height} camera="maincamera">
 						<PerspectiveCamera name="maincamera" {...cameraProps} />
-						<Mesh geometry={boxGeometry}
-							  material={simpleWhiteMaterial}
-							  scale={new THREE.Vector3(200, 0.05, 0.01)}
-							  position={new THREE.Vector3(-100, yTrackPosition, 0)}
-						/>
+						{/* <Mesh geometry={boxGeometry}
+						 material={simpleWhiteMaterial}
+						 scale={new THREE.Vector3(200, 0.05, 0.01)}
+						 position={new THREE.Vector3(-100, yTrackPosition, 0)}
+						 /> */}
 						{analysis.bars.map(bar => (
 							<Mesh geometry={boxGeometry}
 								  key={bar.start}
