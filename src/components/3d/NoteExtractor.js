@@ -3,7 +3,7 @@
  */
 
 import {sortBy, takeRight, take} from 'lodash';
-const minGapBeats = 0.5; // seconds
+const minGapBeats = 0.4; // seconds
 const minGapSegments = 0.6; // seconds
 
 const railsForBeats = 1;
@@ -22,19 +22,21 @@ export default class NoteExtractor {
 		let lastBeatEnded = 0, barNotes = [];
 
 		confidentBeats.forEach(beat => {
-			if (beat.start > lastBeatEnded + minGapBeats) {
+			const barsBeforeThisBeat = sortBy(bars.filter(b => b.start <= beat.start), 'start').length;
+			// count the tatums this bar
+			if (!barNotes[barsBeforeThisBeat]) {
+				barNotes[barsBeforeThisBeat] = 0;
+			}
+			// always play the first beat of a bar
+			if (beat.start >= lastBeatEnded + minGapBeats) {
 				// find num bars that started before this beat
-				const barsBeforeThisBeat = sortBy(bars.filter(b => b.start <= beat.start), 'start').length;
-				// count the tatums this bar
-				if (!barNotes[barsBeforeThisBeat]) {
-					barNotes[barsBeforeThisBeat] = 0;
-				}
 
 				notes.push({
 					id: noteId++,
 					rail: barNotes[barsBeforeThisBeat] % railsForBeats,
 					start: beat.start,
-					duration: beat.duration
+					duration: beat.duration,
+					loudness: -5
 				});
 
 				barNotes[barsBeforeThisBeat]++;
