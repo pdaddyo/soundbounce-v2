@@ -329,8 +329,8 @@ export default class MusicBlocks3D extends Component {
 							key={index}>
 							<div className={theme.keycap}
 								 style={{
-									 color: (!this.railButtons[index]
-									 && this.railsHaveActiveSegment[index])
+									 color: (!this.railButtons[index] &&
+									 this.railsHaveActiveSegment[index])
 										 ? 'red' : railColors[index]
 								 }}>{key}</div>
 						</div>
