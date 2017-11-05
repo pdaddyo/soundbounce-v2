@@ -10,11 +10,13 @@ import takeRight from 'lodash/takeRight';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import Proton from 'three.proton.js';
+import theme from './blocks.css';
 
 const railColors = ['#FA0B84', '#00BFFF', '#f57c00', '#b2ff59'];
 const railKeys = ['h', 'j', 'k', 'l'];
 const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
 const simpleWhiteMaterial = new THREE.MeshBasicMaterial({});
+const simpleRedMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
 const finishedSegmentMaterials = railColors.map(color => (new THREE.MeshBasicMaterial({
 	color: parseInt(`0x${color.substr(1)}`),
 	transparent: true,
@@ -40,6 +42,10 @@ export default class MusicBlocks3D extends Component {
 		// super basic material cache
 		this.materialCache = {};
 		this.colorIndex = 0;
+		this.railButtons = [false, false, false, false];
+		this.railsHaveActiveSegment = [false, false, false, false];
+		this.segmentsCorrect = [];
+
 		this.getMaterial = (key) => {
 			if (this.materialCache[key]) {
 				return this.materialCache[key];
@@ -83,16 +89,14 @@ export default class MusicBlocks3D extends Component {
 	onKeyDown = evt => {
 		const railIndex = railKeys.indexOf(evt.key);
 		if (railIndex > -1) {
-			this.successEmitters[railIndex].emit();
-			this.sparkEmitters[railIndex].emit();
+			this.railButtons[railIndex] = true;
 		}
 	};
 
 	onKeyUp = evt => {
 		const railIndex = railKeys.indexOf(evt.key);
 		if (railIndex > -1) {
-			this.successEmitters[railIndex].stopEmit();
-			this.sparkEmitters[railIndex].stopEmit();
+			this.railButtons[railIndex] = false;
 		}
 	};
 
@@ -111,13 +115,13 @@ export default class MusicBlocks3D extends Component {
 		const emitter = new Proton.Emitter();
 		emitter.rate = new Proton.Rate(new Proton.Span(10, 15), new Proton.Span(0.05, 0.1));
 		emitter.addInitialize(new Proton.Body(this.createSprite()));
-		emitter.addInitialize(new Proton.Mass(isFail ? 1.5 : 1));
+		emitter.addInitialize(new Proton.Mass(isFail ? 2.5 : 1));
 		emitter.addInitialize(new Proton.Life(1, 3));
 		emitter.addInitialize(new Proton.Position(new Proton.SphereZone(20)));
 		if (isSpark) {
 			emitter.addInitialize(new Proton.V(new Proton.Span(20, 100), new Proton.Vector3D(0, 1, 0), 30));
 		} else {
-			emitter.addInitialize(new Proton.V(new Proton.Span(100, 400), new Proton.Vector3D(0, 1, 0), 30));
+			emitter.addInitialize(new Proton.V(new Proton.Span(100, isFail ? 200 : 400), new Proton.Vector3D(0, 1, 0), 30));
 		}
 
 		emitter.addBehaviour(new Proton.RandomDrift(10, 10, 10, 0.05));
@@ -125,35 +129,38 @@ export default class MusicBlocks3D extends Component {
 		if (isSpark) {
 			emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.5, 0.7), 0));
 		} else {
-			emitter.addBehaviour(new Proton.Scale(new Proton.Span(isFail ? 1 : 0.5, 1.4), 0));
+			if (isFail) {
+				emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.7, 0.9), 0));
+			} else {
+				emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.5, 1.4), 0));
+			}
 		}
 		emitter.addBehaviour(new Proton.G(9.8));
 		emitter.addBehaviour(new Proton.Color(isFail ? '#FF0026' : (isSpark ? '#ffffff' : railColors[rail]),
 			['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
 		emitter.p.x = rail * (120 / numRails);
 		emitter.p.y = 0;
-		//	emitter.emit();
 		return emitter;
 	}
 
 	initParticles = scene => {
 		// starfield bg
 		const geometry = new THREE.Geometry();
-		for (let i = 0; i < 3000; i++) {
+		for (let i = 0; i < 1000; i++) {
 			const vertex = new THREE.Vector3();
-			vertex.x = Math.random() * 2000 - 1000;
-			vertex.y = Math.random() * 10000;
-			vertex.z = Math.random() * -1000 - 200;
+			vertex.x = Math.random() * 3000 - 1500;
+			vertex.y = Math.random() * (this.props.analysis.track.duration + 30) * yStretch - 200;
+			vertex.z = Math.random() * -2000 - 50;
 			geometry.vertices.push(vertex);
 		}
 
 		this.stars = new THREE.Points(geometry,
-			new THREE.PointsMaterial({size: 3, color: 0x00BFFF})
+			new THREE.PointsMaterial({size: 3, color: 0x00BFFF, fog: false})
 		);
 		scene.add(this.stars);
 
 		// this fog makes the notes appear to fade in at top of camera
-		// scene.fog = new THREE.Fog(0, 140, 200);
+		scene.fog = new THREE.Fog(0, 180, 240);
 
 		// physics engine to emit particles
 		this.proton = new Proton();
@@ -173,24 +180,58 @@ export default class MusicBlocks3D extends Component {
 		this.particlesReady = true;
 	};
 
+	enableEmitter(emitter, enable) {
+		if (enable && emitter.totalEmitTimes === -1) {
+			// it's off and we've been asked to enable
+			emitter.emit();
+		}
+		if (!enable && emitter.totalEmitTimes > -1) {
+			emitter.stopEmit();
+		}
+	}
+
 	customRender = (renderer, scene, camera) => {
 		if (!this.particlesReady) { // scene.children.find(t => t.type === 'Points')) {
 			console.log('initParticles');
 			this.initParticles(scene);
-			console.log(this.emitter);
 		}
 
-		// move all the emitters along with the music
 		for (let railIndex = 0; railIndex < numRails; railIndex++) {
+			// move all the emitters along with the music
 			this.successEmitters[railIndex].p.y = this.state.time * yStretch;
 			this.failEmitters[railIndex].p.y = this.state.time * yStretch;
 			this.sparkEmitters[railIndex].p.y = this.state.time * yStretch;
-		}
 
+			// check if rail has segment active and if key / button is pushed:
+			if (this.railsHaveActiveSegment[railIndex]) {
+				if (this.railButtons[railIndex]) {
+					// button is down, and it's supposed to be
+					this.enableEmitter(this.successEmitters[railIndex], true);
+					this.enableEmitter(this.sparkEmitters[railIndex], true);
+					this.enableEmitter(this.failEmitters[railIndex], false);
+				} else {
+					// button isn't down, and it's supposed to be
+					this.enableEmitter(this.successEmitters[railIndex], false);
+					this.enableEmitter(this.sparkEmitters[railIndex], false);
+					this.enableEmitter(this.failEmitters[railIndex], true);
+				}
+			} else {
+				if (this.railButtons[railIndex]) {
+					// pushing when shouldn't
+					this.enableEmitter(this.successEmitters[railIndex], false);
+					this.enableEmitter(this.sparkEmitters[railIndex], false);
+					this.enableEmitter(this.failEmitters[railIndex], true);
+				} else {
+					// no active note, no keys pressed, so all emitters off
+					this.enableEmitter(this.successEmitters[railIndex], false);
+					this.enableEmitter(this.sparkEmitters[railIndex], false);
+					this.enableEmitter(this.failEmitters[railIndex], false);
+				}
+			}
+		}
 		this.proton.update();
 		renderer.render(scene, camera);
-
-		Proton.Debug.renderInfo(this.proton, 3);
+//		Proton.Debug.renderInfo(this.proton, 3);
 	};
 
 	render() {
@@ -203,7 +244,7 @@ export default class MusicBlocks3D extends Component {
 		const cameraProps = {
 			fov: 85, aspect: width / height,
 			near: 1, far: 5000,
-			position: new THREE.Vector3(50, yTrackPosition, 100),
+			position: new THREE.Vector3(50, yTrackPosition, 120),
 			lookat: new THREE.Vector3(50, yTrackPosition + 55, 0)
 		};
 
@@ -212,6 +253,8 @@ export default class MusicBlocks3D extends Component {
 		const segmentMeshes = [];
 		const railSegmentEnds = [];
 
+		this.railsHaveActiveSegment = [false, false, false, false];
+		let segmentId = 0;
 		segmentsToRender.forEach((segment, segmentIndex) => {
 			const mostConfidentPitches = take([...segment.pitches].sort(), 3);
 
@@ -237,15 +280,37 @@ export default class MusicBlocks3D extends Component {
 				// between notes on a single rail
 				railSegmentEnds[railForThisSegment] = yPos + yScale * 10 + minGap;
 
+				// work out if this note is currently active
+				const segmentIsActive = (yPos - (yScale * 5)) < yTrackPosition &&
+					(yPos + (yScale * 5)) > yTrackPosition;
+
+				// pick a material based on state
+				let material = (yPos + (yScale * 5)) > yTrackPosition
+					? this.getMaterial(railForThisSegment)
+					: (this.segmentsCorrect[segmentId]
+						? finishedSegmentMaterials[railForThisSegment]
+						: simpleRedMaterial);
+
+				if (segmentIsActive) {
+					this.railsHaveActiveSegment[railForThisSegment] = true;
+					if (this.railButtons[railForThisSegment] || this.segmentsCorrect[segmentId]) {
+						material = simpleWhiteMaterial;
+						this.segmentsCorrect[segmentId] = true;
+					} else {
+						// supposed to be pressing key but not, so make segment red
+						material = simpleRedMaterial;
+					}
+				}
+
+				segmentId++;
 				segmentMeshes.push(
 					<Mesh key={segmentIndex + '-' + pitchLoopIndex}
 						  geometry={boxGeometry}
-						  material={(yPos + (yScale * 5)) > yTrackPosition
-							  ? this.getMaterial(railForThisSegment) : finishedSegmentMaterials[railForThisSegment]}
+						  material={material}
 						  scale={new THREE.Vector3(
 							  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
 							  Math.max(0.5, yScale),
-							  0.1
+							  material === segmentIsActive ? 1 : 0.1
 						  )}
 						  position={new THREE.Vector3(xPos, yPos, 0)}
 					/>
@@ -255,6 +320,14 @@ export default class MusicBlocks3D extends Component {
 
 		return (
 			<div>
+				<div className={theme.keys}>
+					{railKeys.map((key, index) => (
+						<div className={this.railButtons[index] ? theme.keyPressed : theme.key}
+							 index={key}>
+							<div className={theme.keycap}>{key}</div>
+						</div>
+					))}
+				</div>
 				<Renderer width={width} height={height}
 						  enableRapidRender={true}
 						  transparent={true}
@@ -275,7 +348,6 @@ export default class MusicBlocks3D extends Component {
 						))}
 						<Object3D>
 							{segmentMeshes}
-
 						</Object3D>
 					</Scene>
 				</Renderer>

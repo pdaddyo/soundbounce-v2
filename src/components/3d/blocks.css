@@ -1,0 +1,45 @@
+.keys {
+	position: absolute;
+	top: 373px;
+	left: 72px;
+}
+
+.key {
+	text-transform: uppercase;
+	width: 40px;
+	height: 45px;
+	margin: 2px;
+	margin-right: 20px;
+	border-width: 3px 7px 10px;
+	border-style: solid;
+	border-radius: 4px;
+	float: left;
+	color: #222;
+}
+
+.key {
+	background: #d3cfcc;
+	border-color: #ece8e4 #dedad6 #c9c4c4;
+}
+
+.keyPressed {
+	composes: key;
+	transform: scale(0.9);
+}
+
+.key .keycap, .keyPressed .keycap {
+	width: 33px;
+	height: 40px;
+	padding: 5px 0 0 7px;
+	font-size: 18px;
+	line-height: 1;
+	background: #f5f3f1;
+	background: -webkit-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
+	background: -moz-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
+	background: -ms-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
+	background: -o-linear-gradient(left, #e5e2e1, #f5f3f1, #e5e2e1);
+	background: linear-gradient(to right, #e5e2e1, #f5f3f1, #e5e2e1);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+	border-radius: 4px;
+	position: relative;
+}
