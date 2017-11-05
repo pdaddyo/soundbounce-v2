@@ -5,12 +5,11 @@
 import React, {Component, PropTypes} from 'react';
 import {Mesh, Object3D, PerspectiveCamera, Renderer, Scene} from 'react-three';
 import * as THREE from 'expose?THREE!three';
-import take from 'lodash/take';
-import takeRight from 'lodash/takeRight';
-import sortBy from 'lodash/sortBy';
+
 import moment from 'moment';
 import Proton from 'three.proton.js';
 import theme from './blocks.css';
+import NoteExtractor from './NoteExtractor';
 
 const railColors = ['#FA0B84', '#00BFFF', '#f57c00', '#b2ff59'];
 const railKeys = ['h', 'j', 'k', 'l'];
@@ -192,7 +191,7 @@ export default class MusicBlocks3D extends Component {
 	}
 
 	customRender = (renderer, scene, camera) => {
-		if (!this.particlesReady) { // scene.children.find(t => t.type === 'Points')) {
+		if (!this.particlesReady) {
 			console.log('initParticles');
 			this.initParticles(scene);
 		}
@@ -249,74 +248,61 @@ export default class MusicBlocks3D extends Component {
 			lookat: new THREE.Vector3(50, yTrackPosition + 55, 0)
 		};
 
-		// const segmentsToRender = analysis.segments.filter(s => s.confidence > 0.3);
-		const segmentsToRender = sortBy(takeRight(sortBy(analysis.segments, 'confidence'), 400), 'start');
-		const segmentMeshes = [];
+		// todo: avoid this every frame, do this only on track change for perf increase!
+		const notes = NoteExtractor.extractNotes(analysis);
+		//	console.log(notes);
+		const noteMeshes = [];
 		const railSegmentEnds = [];
 
 		this.railsHaveActiveSegment = [false, false, false, false];
 		let segmentId = 0;
-		segmentsToRender.forEach((segment, segmentIndex) => {
-			const mostConfidentPitches = take([...segment.pitches].sort(), 3);
+		notes.forEach((note, noteIndex) => {
+			//	const timbreForPitch = segment.timbre[pitchIndex];
+			const yScale = Math.max(note.duration * yStretch / 10, 0.7);
+			const segmentWidth = 0.6; // 0.01 + (0.016 * (40 + note.loudness));
+			const railForThisSegment = note.rail;
+			const xPos = (railForThisSegment) * (120 / numRails);
+			const yPos = note.start * yStretch + (yScale * 5);
 
-			mostConfidentPitches.forEach((pitchConfidence, pitchLoopIndex) => {
-				const pitchIndex = segment.pitches.indexOf(pitchConfidence);
-				if (pitchLoopIndex > 0 && pitchConfidence < 0.55) {
-					return;
+			// store the end point of this segment on this rail, plus the minimum gap we want
+			// between notes on a single rail
+			railSegmentEnds[railForThisSegment] = yPos + yScale * 10 + minGap;
+
+			// work out if this note is currently active
+			const segmentIsActive = (yPos - (yScale * 5)) < yTrackPosition &&
+				(yPos + (yScale * 5)) > yTrackPosition;
+
+			// pick a material based on state
+			let material = (yPos + (yScale * 5)) > yTrackPosition
+				? this.getMaterial(railForThisSegment)
+				: (this.segmentsCorrect[segmentId]
+					? finishedSegmentMaterials[railForThisSegment]
+					: simpleRedMaterial);
+
+			if (segmentIsActive) {
+				this.railsHaveActiveSegment[railForThisSegment] = true;
+				if (this.railButtons[railForThisSegment] || this.segmentsCorrect[segmentId]) {
+					material = simpleWhiteMaterial;
+					this.segmentsCorrect[segmentId] = true;
+				} else {
+					// supposed to be pressing key but not, so make segment red
+					material = simpleRedMaterial;
 				}
+			}
 
-				//	const timbreForPitch = segment.timbre[pitchIndex];
-				const yScale = segment.duration * yStretch / 10;
-				const segmentWidth = 0.01 + (0.016 * (40 + segment.loudness_max));
-				const railForThisSegment = Math.abs((pitchIndex)) % numRails;
-				const xPos = (railForThisSegment) * (120 / numRails);
-				const yPos = segment.start * yStretch + (yScale * 5);
-
-				if (railSegmentEnds[railForThisSegment] > yPos) {
-					// skip this one because there's a segment in the way on this rail
-					return;
-				}
-
-				// store the end point of this segment on this rail, plus the minimum gap we want
-				// between notes on a single rail
-				railSegmentEnds[railForThisSegment] = yPos + yScale * 10 + minGap;
-
-				// work out if this note is currently active
-				const segmentIsActive = (yPos - (yScale * 5)) < yTrackPosition &&
-					(yPos + (yScale * 5)) > yTrackPosition;
-
-				// pick a material based on state
-				let material = (yPos + (yScale * 5)) > yTrackPosition
-					? this.getMaterial(railForThisSegment)
-					: (this.segmentsCorrect[segmentId]
-						? finishedSegmentMaterials[railForThisSegment]
-						: simpleRedMaterial);
-
-				if (segmentIsActive) {
-					this.railsHaveActiveSegment[railForThisSegment] = true;
-					if (this.railButtons[railForThisSegment] || this.segmentsCorrect[segmentId]) {
-						material = simpleWhiteMaterial;
-						this.segmentsCorrect[segmentId] = true;
-					} else {
-						// supposed to be pressing key but not, so make segment red
-						material = simpleRedMaterial;
-					}
-				}
-
-				segmentId++;
-				segmentMeshes.push(
-					<Mesh key={segmentIndex + '-' + pitchLoopIndex}
-						  geometry={boxGeometry}
-						  material={material}
-						  scale={new THREE.Vector3(
-							  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
-							  Math.max(0.5, yScale),
-							  material === segmentIsActive ? 1 : 0.1
-						  )}
-						  position={new THREE.Vector3(xPos, yPos, 0)}
-					/>
-				);
-			});
+			segmentId++;
+			noteMeshes.push(
+				<Mesh key={noteIndex}
+					  geometry={boxGeometry}
+					  material={material}
+					  scale={new THREE.Vector3(
+						  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
+						  yScale,
+						  material === segmentIsActive ? 1 : 0.1
+					  )}
+					  position={new THREE.Vector3(xPos, yPos, 0)}
+				/>
+			);
 		});
 
 		return (
@@ -357,7 +343,7 @@ export default class MusicBlocks3D extends Component {
 								  position={new THREE.Vector3(50, bar.start * yStretch, 0)}/>
 						))}
 						<Object3D>
-							{segmentMeshes}
+							{noteMeshes}
 						</Object3D>
 					</Scene>
 				</Renderer>
