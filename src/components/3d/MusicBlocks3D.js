@@ -67,8 +67,8 @@ export default class MusicBlocks3D extends Component {
 
 		this.setState({
 			time: player.is_playing
-				//		? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
-				? (player.progress_ms + (moment().valueOf() - player.timestamp)) / 1000 : 0
+				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
+			//		? (player.progress_ms + (moment().valueOf() - player.timestamp)) / 1000 : 0
 		});
 	};
 
@@ -149,7 +149,7 @@ export default class MusicBlocks3D extends Component {
 		const geometry = new THREE.Geometry();
 		for (let i = 0; i < this.props.analysis.track.duration * 5; i++) {
 			const vertex = new THREE.Vector3();
-			vertex.x = Math.random() * 2000 - 100;
+			vertex.x = Math.random() * 2000 - 1000;
 			vertex.y = Math.random() * (this.props.analysis.track.duration + 50) * yStretch - 200;
 			vertex.z = Math.random() * -2000 - 50;
 			geometry.vertices.push(vertex);
@@ -259,7 +259,7 @@ export default class MusicBlocks3D extends Component {
 		let segmentId = 0;
 		notes.forEach((note, noteIndex) => {
 			//	const timbreForPitch = segment.timbre[pitchIndex];
-			const yScale = Math.max(note.duration * yStretch / 10, 0.3);
+			const yScale = Math.max(note.duration * yStretch / 10, 0.4);
 			const segmentWidth = 0.01 + (0.016 * (40 + note.loudness));
 			const railForThisSegment = note.rail;
 			const xPos = (railForThisSegment) * (120 / numRails);

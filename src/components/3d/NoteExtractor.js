@@ -3,7 +3,7 @@
  */
 
 import {sortBy, takeRight, take} from 'lodash';
-const minGapBeats = 0.4; // seconds
+const minGapBeats = 0.25; // seconds
 const minGapSegments = 0.6; // seconds
 
 const railsForBeats = 1;
@@ -17,7 +17,7 @@ export default class NoteExtractor {
 
 		// beats for leftmost rail(s)
 		const confidentBeats = sortBy(
-			takeRight(sortBy(tatums, 'confidence'), track.duration * 2)
+			takeRight(sortBy(tatums, 'confidence'), track.duration * 1.5)
 			, 'start');
 		let lastBeatEnded = 0, barNotes = [];
 
