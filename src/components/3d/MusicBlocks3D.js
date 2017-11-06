@@ -279,6 +279,8 @@ export default class MusicBlocks3D extends Component {
 
 		const yTrackPosition = this.state.time * yStretch;
 
+		const yMin = yTrackPosition - 100;
+		const yMax = yTrackPosition + 300;
 		const cameraProps = {
 			fov: 85, aspect: width / height,
 			near: 1, far: 5000,
@@ -337,18 +339,20 @@ export default class MusicBlocks3D extends Component {
 			}
 
 			segmentId++;
-			noteMeshes.push(
-				<Mesh key={noteIndex}
-					  geometry={boxGeometry}
-					  material={material}
-					  scale={new THREE.Vector3(
-						  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
-						  yScale,
-						  material === segmentIsActive ? 1 : 0.1
-					  )}
-					  position={new THREE.Vector3(xPos, yPos, 0)}
-				/>
-			);
+			if (railSegmentEnds[railForThisSegment] > yMin && yPos < yMax) {
+				noteMeshes.push(
+					<Mesh key={noteIndex}
+						  geometry={boxGeometry}
+						  material={material}
+						  scale={new THREE.Vector3(
+							  Math.min(segmentWidth, 1) * ((120 / numRails) / 10),
+							  yScale,
+							  material === segmentIsActive ? 1 : 0.1
+						  )}
+						  position={new THREE.Vector3(xPos, yPos, 0)}
+					/>
+				);
+			}
 		});
 
 		return (
@@ -393,6 +397,7 @@ export default class MusicBlocks3D extends Component {
 							 />
 							 */ }
 							{analysis.bars.map(bar => (
+								bar.start * yStretch > yMin && bar.start * yStretch < yMax &&
 								<Mesh geometry={boxGeometry}
 									  key={bar.start}
 									  material={simpleWhiteMaterial}
