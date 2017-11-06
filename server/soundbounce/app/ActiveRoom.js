@@ -284,7 +284,7 @@ export default class ActiveRoom {
 			trackIds = take(uniq(trackIds), 50);
 			// ensure they're in our database
 			this.app.tracks.findInDbOrQuerySpotifyApi(trackIds).then(tracks => {
-				if (tracks.length === 0) {
+				if (!tracks || tracks.length === 0) {
 					return [];
 				}
 
