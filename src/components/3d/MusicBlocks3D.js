@@ -15,7 +15,9 @@ const railColors = ['#FA0B84', '#00BFFF', '#f57c00', '#b2ff59'];
 const railKeys = ['h', 'j', 'k', 'l'];
 const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
 const simpleWhiteMaterial = new THREE.MeshBasicMaterial({});
-const simpleRedMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+const simpleRedMaterial = new THREE.MeshBasicMaterial({
+	color: 0xff0000, transparent: true, opacity: 0.7
+});
 const finishedSegmentMaterials = railColors.map(color => (new THREE.MeshBasicMaterial({
 	color: parseInt(`0x${color.substr(1)}`),
 	transparent: true,
@@ -69,30 +71,35 @@ export default class MusicBlocks3D extends Component {
 		// update scores
 		const oldScore = this.state.score;
 		let newScore = oldScore;
+		// use clock delta so score is framerate independent
+		const delta = this.clock.getDelta();
+
 		for (let rail = 0; rail < numRails; rail++) {
 			if (!this.railHasActiveNote[rail] && this.railButtons[rail]) {
 				// pressing the note when they shouldn't be
 				this.railStatus[rail] = 'losing';
 			}
-			// use clock delta so score is framerate independent
-			const delta = this.clock.getDelta();
 			if (this.railStatus[rail] === 'scoring') {
-				newScore += Math.ceil(delta * 100000);
+				newScore += Math.ceil(delta * 10000);
 			}
 			if (this.railStatus[rail] === 'losing') {
-				newScore -= Math.ceil(delta * 30000);
+				newScore -= Math.ceil(delta * 6000);
 			}
 		}
+		let scoreDirection = newScore === oldScore ? 'Same' : newScore > oldScore ? 'Rising' : 'Falling';
 
 		if (newScore < 0) {
 			newScore = 0;
+			scoreDirection = 'Falling';
 		}
+
+		let requestTime = 150; // player.updateArrivedAt - player.updateRequestedAt;
 
 		this.setState({
 			score: newScore,
-			scoreDirection: newScore === oldScore ? 'Same' : newScore > oldScore ? 'Rising' : 'Falling',
+			scoreDirection,
 			time: player.is_playing
-				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
+				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - (requestTime / 2))) / 1000 : 0
 			//		? (player.progress_ms + (moment().valueOf() - player.timestamp)) / 1000 : 0
 		})
 		;
@@ -151,20 +158,24 @@ export default class MusicBlocks3D extends Component {
 			emitter.addInitialize(new Proton.V(new Proton.Span(100, isFail ? 200 : 400), new Proton.Vector3D(0, 1, 0), 30));
 		}
 
-		emitter.addBehaviour(new Proton.RandomDrift(10, 10, 10, 0.05));
+		if (isFail) {
+			emitter.addBehaviour(new Proton.RandomDrift(5, 5, 5, 0.02));
+		} else {
+			emitter.addBehaviour(new Proton.RandomDrift(10, 10, 10, 0.05));
+		}
 		emitter.addBehaviour(new Proton.Alpha(1, 0.1));
 		if (isSpark) {
 			emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.5, 0.7), 0));
 		} else {
 			if (isFail) {
-				emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.7, 0.9), 0));
+				emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.5, 0.6), 0));
 			} else {
 				emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.5, 1.4), 0));
 			}
 		}
 		emitter.addBehaviour(new Proton.G(9.8));
 		emitter.addBehaviour(new Proton.Color(isFail ? '#FF0026' : (isSpark ? '#ffffff' : railColors[rail]),
-			['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
+			['#ffff00', '#ffffcc'], Infinity, Proton.easeOutSine));
 		emitter.p.x = rail * (120 / numRails);
 		emitter.p.y = 0;
 		return emitter;
@@ -219,7 +230,6 @@ export default class MusicBlocks3D extends Component {
 
 	customRender = (renderer, scene, camera) => {
 		if (!this.particlesReady) {
-			console.log('initParticles');
 			this.initParticles(scene);
 		}
 

@@ -15,7 +15,7 @@
 	width: 450px;
 	text-align: center;
 	font-weight: 600;
-	color: black;
+	color: #222;
 	text-shadow: -1px -1px 0 #99a,
 	1px -1px 0 #999,
 	-1px 1px 0 #bbb,
@@ -34,7 +34,7 @@
 	width: 450px;
 	text-align: center;
 	font-weight: 900;
-	color: black;
+	color: rgba(0, 0, 0, 0.8);
 	text-shadow: -1px -1px 0 #999,
 	1px -1px 0 #999,
 	-1px 1px 0 #bbb,
@@ -45,10 +45,10 @@
 
 .scoreFalling {
 	composes: scoreSame;
-	text-shadow: -1px -1px 0 #c00,
-	1px -1px 0 #c00,
-	-1px 1px 0 #d00,
-	1px 1px 0 #d00;
+	text-shadow: -1px -1px 0 #a00,
+	1px -1px 0 #a00,
+	-1px 1px 0 #b00,
+	1px 1px 0 #b00;
 }
 
 .scoreRising {
