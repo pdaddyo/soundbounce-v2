@@ -17,7 +17,10 @@ export default class NoteExtractor {
 
 		// beats for leftmost rail(s)
 		const confidentBeats = sortBy(
-			takeRight(sortBy(tatums, 'confidence'), track.duration * 1.5)
+			takeRight(sortBy(
+				tatums.filter(tatum => tatum.confidence > 0.2),
+				tatum => tatum.confidence), track.duration * 1.5
+			)
 			, 'start');
 		let lastBeatEnded = 0, barNotes = [];
 

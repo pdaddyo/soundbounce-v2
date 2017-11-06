@@ -35,15 +35,16 @@ export default class MusicBlocks3D extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {time: 0};
+		this.state = {time: 0, score: 0};
 		this.clock = new THREE.Clock();
 
 		// super basic material cache
 		this.materialCache = {};
 		this.colorIndex = 0;
 		this.railButtons = [false, false, false, false];
-		this.railsHaveActiveSegment = [false, false, false, false];
-		this.segmentsCorrect = [];
+		this.railHasActiveNote = [false, false, false, false];
+		this.railStatus = [null, null, null, null];
+		this.noteStatus = [];
 
 		this.getMaterial = (key) => {
 			if (this.materialCache[key]) {
@@ -63,13 +64,38 @@ export default class MusicBlocks3D extends Component {
 		if (!this.mounted) {
 			return;
 		}
-		requestAnimationFrame(this.animate);
+		this.frameId = requestAnimationFrame(this.animate);
+
+		// update scores
+		const oldScore = this.state.score;
+		let newScore = oldScore;
+		for (let rail = 0; rail < numRails; rail++) {
+			if (!this.railHasActiveNote[rail] && this.railButtons[rail]) {
+				// pressing the note when they shouldn't be
+				this.railStatus[rail] = 'losing';
+			}
+			// use clock delta so score is framerate independent
+			const delta = this.clock.getDelta();
+			if (this.railStatus[rail] === 'scoring') {
+				newScore += Math.ceil(delta * 100000);
+			}
+			if (this.railStatus[rail] === 'losing') {
+				newScore -= Math.ceil(delta * 30000);
+			}
+		}
+
+		if (newScore < 0) {
+			newScore = 0;
+		}
 
 		this.setState({
+			score: newScore,
+			scoreDirection: newScore === oldScore ? 'Same' : newScore > oldScore ? 'Rising' : 'Falling',
 			time: player.is_playing
 				? (player.progress_ms + (moment().valueOf() - player.updateArrivedAt - 50)) / 1000 : 0
 			//		? (player.progress_ms + (moment().valueOf() - player.timestamp)) / 1000 : 0
-		});
+		})
+		;
 	};
 
 	componentDidMount() {
@@ -118,7 +144,7 @@ export default class MusicBlocks3D extends Component {
 		emitter.addInitialize(new Proton.Body(this.createSprite()));
 		emitter.addInitialize(new Proton.Mass(isFail ? 2.5 : 1));
 		emitter.addInitialize(new Proton.Life(1, 3));
-		emitter.addInitialize(new Proton.Position(new Proton.SphereZone(20)));
+		emitter.addInitialize(new Proton.Position(new Proton.SphereZone(30)));
 		if (isSpark) {
 			emitter.addInitialize(new Proton.V(new Proton.Span(20, 100), new Proton.Vector3D(0, 1, 0), 30));
 		} else {
@@ -204,7 +230,7 @@ export default class MusicBlocks3D extends Component {
 			this.sparkEmitters[railIndex].p.y = this.state.time * yStretch;
 
 			// check if rail has segment active and if key / button is pushed:
-			if (this.railsHaveActiveSegment[railIndex]) {
+			if (this.railHasActiveNote[railIndex]) {
 				if (this.railButtons[railIndex]) {
 					// button is down, and it's supposed to be
 					this.enableEmitter(this.successEmitters[railIndex], true);
@@ -230,6 +256,7 @@ export default class MusicBlocks3D extends Component {
 				}
 			}
 		}
+
 		this.proton.update();
 		renderer.render(scene, camera);
 //		Proton.Debug.renderInfo(this.proton, 3);
@@ -237,7 +264,7 @@ export default class MusicBlocks3D extends Component {
 
 	render() {
 		const {
-			width, height, analysis
+			width, height, analysis, player
 		} = this.props;
 
 		const yTrackPosition = this.state.time * yStretch;
@@ -251,11 +278,17 @@ export default class MusicBlocks3D extends Component {
 
 		// todo: avoid this every frame, do this only on track change for perf increase!
 		const notes = NoteExtractor.extractNotes(analysis);
-		//	console.log(notes);
 		const noteMeshes = [];
 		const railSegmentEnds = [];
 
-		this.railsHaveActiveSegment = [false, false, false, false];
+		// this is a bit naughty and a react anti-pattern, mutating this component's hidden
+		// state during render (we pick these values up during this.animate).
+		// would never do this in 'normal' code but this render
+		// is hit literally every single frame anyway
+		// so is actually better than firing extra state changes
+		this.railHasActiveNote = [false, false, false, false];
+		this.railStatus = [null, null, null, null];
+
 		let segmentId = 0;
 		notes.forEach((note, noteIndex) => {
 			//	const timbreForPitch = segment.timbre[pitchIndex];
@@ -276,18 +309,20 @@ export default class MusicBlocks3D extends Component {
 			// pick a material based on state
 			let material = (yPos + (yScale * 5)) > yTrackPosition
 				? this.getMaterial(railForThisSegment)
-				: (this.segmentsCorrect[segmentId]
+				: (this.noteStatus[segmentId]
 					? finishedSegmentMaterials[railForThisSegment]
 					: simpleRedMaterial);
 
 			if (segmentIsActive) {
-				this.railsHaveActiveSegment[railForThisSegment] = true;
-				if (this.railButtons[railForThisSegment] || this.segmentsCorrect[segmentId]) {
+				this.railHasActiveNote[railForThisSegment] = true;
+				if (this.railButtons[railForThisSegment] || this.noteStatus[segmentId]) {
+					this.railStatus[railForThisSegment] = 'scoring';
+					this.noteStatus[segmentId] = true;
 					material = simpleWhiteMaterial;
-					this.segmentsCorrect[segmentId] = true;
 				} else {
 					// supposed to be pressing key but not, so make segment red
 					material = simpleRedMaterial;
+					this.railStatus[railForThisSegment] = 'losing';
 				}
 			}
 
@@ -308,46 +343,58 @@ export default class MusicBlocks3D extends Component {
 
 		return (
 			<div>
+				<div className={theme[`score${this.state.scoreDirection}`]}>
+					{this.state.score.toLocaleString(navigator.language,
+						{minimumFractionDigits: 0}
+					)}
+				</div>
+				<div className={theme.title}>
+					{player.item.name}
+				</div>
 				<div className={theme.keys}>
 					{railKeys.map((key, index) => (
 						<div
 							className={this.railButtons[index]
-								? theme.keyPressed : this.railsHaveActiveSegment[index]
+								? theme.keyPressed : this.railHasActiveNote[index]
 									? theme.keyShouldPress : theme.key}
 							key={index}>
 							<div className={theme.keycap}
 								 style={{
 									 color: (!this.railButtons[index] &&
-									 this.railsHaveActiveSegment[index])
+									 this.railHasActiveNote[index])
 										 ? 'red' : railColors[index]
 								 }}>{key}</div>
 						</div>
 					))}
 				</div>
-				<Renderer width={width} height={height}
-						  enableRapidRender={true}
-						  transparent={true}
-						  className={theme.key}
-						  customRender={this.customRender}>
-					<Scene width={width} height={height} camera="maincamera">
-						<PerspectiveCamera name="maincamera" {...cameraProps} />
-						{/*  <Mesh geometry={boxGeometry}
-						 material={simpleWhiteMaterial}
-						 scale={new THREE.Vector3(200, 0.05, 0.01)}
-						 position={new THREE.Vector3(-100, yTrackPosition, 0)}
-						 /> */}
-						{analysis.bars.map(bar => (
-							<Mesh geometry={boxGeometry}
-								  key={bar.start}
-								  material={simpleWhiteMaterial}
-								  scale={new THREE.Vector3(12, 0.01, 0.01)}
-								  position={new THREE.Vector3(50, bar.start * yStretch, 0)}/>
-						))}
-						<Object3D>
-							{noteMeshes}
-						</Object3D>
-					</Scene>
-				</Renderer>
+				<div className={theme.threeContainer}>
+					<Renderer width={width} height={height}
+							  enableRapidRender={true}
+							  transparent={true}
+							  customRender={this.customRender}>
+						<Scene width={width} height={height} camera="maincamera">
+							<PerspectiveCamera name="maincamera" {...cameraProps} />
+							{ /*
+							 hit line
+							 <Mesh geometry={boxGeometry}
+							 material={simpleWhiteMaterial}
+							 scale={new THREE.Vector3(200, 0.05, 0.01)}
+							 position={new THREE.Vector3(-100, yTrackPosition, 0)}
+							 />
+							 */ }
+							{analysis.bars.map(bar => (
+								<Mesh geometry={boxGeometry}
+									  key={bar.start}
+									  material={simpleWhiteMaterial}
+									  scale={new THREE.Vector3(12, 0.01, 0.01)}
+									  position={new THREE.Vector3(50, bar.start * yStretch, 0)}/>
+							))}
+							<Object3D>
+								{noteMeshes}
+							</Object3D>
+						</Scene>
+					</Renderer>
+				</div>
 			</div>
 		);
 	}

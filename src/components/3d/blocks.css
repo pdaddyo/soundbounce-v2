@@ -1,7 +1,62 @@
+.threeContainer {
+	margin-top: 30px;
+}
+
 .keys {
 	position: absolute;
-	top: 373px;
+	top: 403px;
 	left: 72px;
+}
+
+.title {
+	position: absolute;
+	top: 1px;
+	left: 0;
+	width: 450px;
+	text-align: center;
+	font-weight: 600;
+	color: black;
+	text-shadow: -1px -1px 0 #99a,
+	1px -1px 0 #999,
+	-1px 1px 0 #bbb,
+	1px 1px 0 #bbb;
+	font-size: 1.5rem;
+	white-space: nowrap;
+	overflow: hidden;
+	letter-spacing: -1px;
+}
+
+.scoreSame {
+	transition: all 420ms cubic-bezier(0.815, 0.015, 0.440, 1.000);
+	position: absolute;
+	top: 30px;
+	left: 0;
+	width: 450px;
+	text-align: center;
+	font-weight: 900;
+	color: black;
+	text-shadow: -1px -1px 0 #999,
+	1px -1px 0 #999,
+	-1px 1px 0 #bbb,
+	1px 1px 0 #bbb;
+	font-size: 2.5rem;
+	letter-spacing: -1px;
+}
+
+.scoreFalling {
+	composes: scoreSame;
+	text-shadow: -1px -1px 0 #c00,
+	1px -1px 0 #c00,
+	-1px 1px 0 #d00,
+	1px 1px 0 #d00;
+}
+
+.scoreRising {
+	composes: scoreSame;
+	text-shadow: -1px -1px 0 #0c0,
+	1px -1px 0 #0c0,
+	-1px 1px 0 #0d0,
+	1px 1px 0 #0d0;
 }
 
 .key {
