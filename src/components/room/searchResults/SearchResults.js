@@ -6,16 +6,21 @@ import {connect} from 'react-redux';
 import Track from 'components/track/Track';
 
 import theme from './searchResults.css';
+import Discover from './Discover';
 class SearchResults extends Component {
 	static propTypes = {
 		tracks: PropTypes.array,
-		onClickVote: PropTypes.func
+		onClickVote: PropTypes.func,
+		search: PropTypes.string
 	};
 
 	render() {
-		const {tracks, onClickVote} = this.props;
+		const {tracks, onClickVote, search} = this.props;
 		return (
 			<div className={theme.container}>
+				{!search && (
+					<Discover onClickVote={onClickVote}/>
+				)}
 				{
 					tracks.map((track, index) => (
 						<div className={theme.trackContainer}
@@ -46,7 +51,7 @@ const mapStateToProps = (state) => {
 			})
 		};
 	}
-	return {tracks: []};
+	return {tracks: [], search: state.ui['inRoomSearch']};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({});

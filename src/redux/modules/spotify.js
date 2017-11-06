@@ -30,6 +30,8 @@ export const SPOTIFY_MY_PLAYLISTS_UPDATE = 'SPOTIFY_MY_PLAYLISTS_UPDATE';
 export const SPOTIFY_ADD_TRACK_TO_PLAYLIST = 'SPOTIFY_ADD_TRACK_TO_PLAYLIST';
 export const SPOTIFY_AUDIO_ANALYSIS_REQUEST = 'SPOTIFY_AUDIO_ANALYSIS_REQUEST';
 export const SPOTIFY_AUDIO_ANALYSIS_UPDATE = 'SPOTIFY_AUDIO_ANALYSIS_UPDATE';
+export const SPOTIFY_RECOMMENDATIONS_REQUEST = 'SPOTIFY_RECOMMENDATIONS_REQUEST';
+export const SPOTIFY_RECOMMENDATIONS_UPDATE = 'SPOTIFY_RECOMMENDATIONS_UPDATE';
 
 export const actions = {
 	SPOTIFY_AUTH_REQUIRED,
@@ -54,7 +56,9 @@ export const actions = {
 	SPOTIFY_MY_PLAYLISTS_UPDATE,
 	SPOTIFY_ADD_TRACK_TO_PLAYLIST,
 	SPOTIFY_AUDIO_ANALYSIS_REQUEST,
-	SPOTIFY_AUDIO_ANALYSIS_UPDATE
+	SPOTIFY_AUDIO_ANALYSIS_UPDATE,
+	SPOTIFY_RECOMMENDATIONS_REQUEST,
+	SPOTIFY_RECOMMENDATIONS_UPDATE
 };
 
 // ------------------------------------
@@ -71,7 +75,8 @@ const defaultState = {
 	myPlaylists: [],
 	audioAnalysis: {}, // stored by track id
 	audioFeatures: {}, // stored by track id
-	tracks: {}  // tracks stored by key object key 'id'
+	tracks: {},  // tracks stored by key object key 'id'
+	recommendations: []
 };
 
 // ------------------------------------
@@ -186,6 +191,16 @@ export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysi
 	payload: {trackId, audioFeatures, audioAnalysis}
 });
 
+export const spotifyRecommendationsRequest = ({trackIds, tuneableAttributes}) => ({
+	type: SPOTIFY_RECOMMENDATIONS_REQUEST,
+	payload: {trackIds, tuneableAttributes}
+});
+
+export const spotifyRecommendationsUpdate = ({tracks}) => ({
+	type: SPOTIFY_RECOMMENDATIONS_UPDATE,
+	payload: {tracks}
+});
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -285,6 +300,22 @@ const ACTION_HANDLERS = {
 				myPlaylists: [...state.myPlaylists, ...playlists]
 			}
 		),
+		[SPOTIFY_RECOMMENDATIONS_REQUEST]: (state, {payload}) => (
+			{
+				...state,
+				recommendations: []
+			}
+		),
+		[SPOTIFY_RECOMMENDATIONS_UPDATE]: (state, {payload: {tracks}}) => {
+			const newState = {
+				...state,
+				recommendations: tracks
+			};
+			if (tracks) {
+				return mergeTracks({state: newState, tracks});
+			}
+			return newState;
+		},
 		[ROOM_FULL_SYNC]: (state, {payload}) => {
 			// merge any track data from room sync
 			return mergeTracks({state, tracks: payload.fullSync.tracks});

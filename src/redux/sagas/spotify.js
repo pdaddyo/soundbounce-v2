@@ -14,7 +14,7 @@ import {
 	spotifySearchUpdate,
 	spotifyMyPlaylistsUpdate,
 	spotifyMyPlaylistsRequest,
-	actions as spotifyActions, spotifyAudioAnalysisUpdate
+	actions as spotifyActions, spotifyAudioAnalysisUpdate, spotifyRecommendationsUpdate
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
 import {
@@ -384,6 +384,26 @@ function * watchForSearchRequest() {
 		yield put(spotifySearchUpdate({query, apiResult}));
 	}
 }
+function * watchForRecommendationsRequest() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+
+	// listen for requests to fetch recommendations
+	while (true) {
+		const {payload: {trackIds, tuneableAttributes}} = yield take(spotifyActions.SPOTIFY_RECOMMENDATIONS_REQUEST);
+		let query = '';
+		for (let attr of tuneableAttributes) {
+			if (attr.from !== attr.min || attr.to !== attr.max) {
+				query += (`&min_${attr.name}=${attr.from / attr.divisor}&max_${attr.name}=${attr.to / attr.divisor}`);
+			}
+		}
+		const apiResult = yield call(spotifyApiCall, {
+			url: `/v1/recommendations?limit=100&seed_tracks=${trackIds.join(',')}${query}`
+		});
+
+		yield put(spotifyRecommendationsUpdate({tracks: apiResult.tracks}));
+	}
+}
 
 function * loadMyPlaylists() {
 	// wait for login
@@ -443,6 +463,7 @@ export default function * spotifyInit() {
 			loadMyPlaylists(),
 			watchForAddTrackToPlaylist(),
 			watchForAudioAnalysisRequests(),
+			watchForRecommendationsRequest(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart()
 		];

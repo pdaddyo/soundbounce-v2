@@ -1,0 +1,37 @@
+.tuneableAttribute {
+	float: left;
+	margin-right: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+.attributeName {
+	font-size: 0.8rem;
+	text-transform: capitalize;
+}
+
+.attributeName span {
+	float: right;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.slider {
+	width: 10rem;
+}
+
+.trackContainer {
+	padding: 0.7rem 0.9rem 0.5rem 0;
+	max-width: 50rem;
+}
+
+.trackContainer:nth-child(odd) {
+	background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05));
+}
+
+.clear {
+	clear: both;
+}
+
+.title {
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+}
