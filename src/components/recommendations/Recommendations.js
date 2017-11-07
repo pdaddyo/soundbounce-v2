@@ -3,11 +3,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import MultiSlider from 'multi-slider';
-import {debounce, take} from 'lodash';
-import theme from './discover.css';
-import {spotifyRecommendationsRequest} from '../../../redux/modules/spotify';
-import Track from '../../track/Track';
-import {uiUpdate} from '../../../redux/modules/ui';
+import {debounce} from 'lodash';
+import theme from './recommendations.css';
+import {spotifyRecommendationsRequest} from '../../redux/modules/spotify';
+import Track from '../track/Track';
+import {uiUpdate} from '../../redux/modules/ui';
 
 const tuneableAttributeList = [
 	{name: 'acousticness', min: 0, max: 100, from: 0, to: 100, divisor: 100},
@@ -21,7 +21,7 @@ const tuneableAttributeList = [
 	{name: 'bpm', min: 50, max: 195, from: 50, to: 180, divisor: 1}
 ];
 
-class Discover extends Component {
+class Recommendations extends Component {
 	static propTypes = {
 		tracks: PropTypes.array,
 		playlist: PropTypes.array,
@@ -32,14 +32,18 @@ class Discover extends Component {
 		setFiltersVisible: PropTypes.func,
 		filtersVisible: PropTypes.bool,
 		currentUserId: PropTypes.string,
-		roomName: PropTypes.string,
-		spotify: PropTypes.object
+		title: PropTypes.string,
+		spotify: PropTypes.object,
+		seedTrackIds: PropTypes.array
 	};
 
 	componentDidMount() {
-		const {playlist, fetchRecommendations, tuneableAttributes, setTuneableAttributes} = this.props;
+		const {
+			fetchRecommendations, tuneableAttributes,
+			setTuneableAttributes, seedTrackIds
+		} = this.props;
 		fetchRecommendations({
-			trackIds: take(playlist, 5).map(p => p.id),
+			trackIds: seedTrackIds,
 			tuneableAttributes: tuneableAttributes || tuneableAttributeList
 		});
 
@@ -64,9 +68,9 @@ class Discover extends Component {
 	};
 
 	fetch() {
-		const {playlist, fetchRecommendations, tuneableAttributes} = this.props;
+		const {fetchRecommendations, tuneableAttributes, seedTrackIds} = this.props;
 		fetchRecommendations({
-			trackIds: take(playlist, 5).map(p => p.id),
+			trackIds: seedTrackIds,
 			tuneableAttributes
 		});
 	}
@@ -76,12 +80,12 @@ class Discover extends Component {
 	render() {
 		const {
 			spotify, tuneableAttributes, playlist, currentUserId, onClickVote,
-			filtersVisible, setFiltersVisible, roomName
+			filtersVisible, setFiltersVisible, title
 		} = this.props;
 		return (
 			<div className={theme.discoverContainer}>
 				<div className={theme.title}>
-					Recommended tracks for '{roomName}'
+					{title}
 					<div className={theme.rightButtons}>
 					<span onClick={() => setFiltersVisible(!filtersVisible)}>
 						{filtersVisible ? 'Hide filters' : 'Show filters'}
@@ -138,11 +142,10 @@ class Discover extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		roomName: state.room.name,
 		spotify: state.spotify,
 		playlist: state.room.playlist,
 		tuneableAttributes: state.ui['tuneableAttributes'],
-		filtersVisible: Boolean(state.ui['discoverFiltersVisible']),
+		filtersVisible: Boolean(state.ui['recommendationsFiltersVisible']),
 		currentUserId: state.users.currentUserId
 	};
 };
@@ -155,8 +158,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 		dispatch(uiUpdate({key: 'tuneableAttributes', newState: attributes}));
 	},
 	setFiltersVisible: (visible) => {
-		dispatch(uiUpdate({key: 'discoverFiltersVisible', newState: visible}));
+		dispatch(uiUpdate({key: 'recommendationsFiltersVisible', newState: visible}));
 	}
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Discover);
+export default connect(mapStateToProps, mapDispatchToProps)(Recommendations);
