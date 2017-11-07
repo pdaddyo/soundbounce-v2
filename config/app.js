@@ -5,7 +5,7 @@
 // all delays in ms
 export default {
 	// incrementing this forces clients to download new client code in order to connect
-	buildVersion: 40,
+	buildVersion: 41,
 	spotify: {
 		webApiBaseUrl: 'https://api.spotify.com',
 		pollPlayerDelay: 5000,
