@@ -1,3 +1,8 @@
+.discoverContainer {
+	max-width: 50rem;
+	letter-spacing: 0.05rem;
+}
+
 .tuneableAttribute {
 	float: left;
 	margin-right: 2rem;
@@ -32,6 +37,26 @@
 }
 
 .title {
-	font-size: 1.2rem;
+	font-size: 1.4rem;
+	font-weight: 200;
+	letter-spacing: 0.05rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	margin-bottom: 1rem;
+}
+
+.rightButtons {
+	margin-right: 1.2rem;
+	margin-top: 0.5rem;
+	font-size: 0.8rem;
+
+	float: right;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.rightButtons span {
+	cursor: pointer;
+}
+
+.rightButtons span:hover {
+	color: rgba(255, 255, 255, 0.8);
 }

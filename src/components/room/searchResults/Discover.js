@@ -29,7 +29,10 @@ class Discover extends Component {
 		fetchRecommendations: PropTypes.func,
 		onClickVote: PropTypes.func,
 		setTuneableAttributes: PropTypes.func,
+		setFiltersVisible: PropTypes.func,
+		filtersVisible: PropTypes.bool,
 		currentUserId: PropTypes.string,
+		roomName: PropTypes.string,
 		spotify: PropTypes.object
 	};
 
@@ -60,38 +63,54 @@ class Discover extends Component {
 		this.debounceFetch();
 	};
 
-	debounceFetch = debounce(() => {
+	fetch() {
 		const {playlist, fetchRecommendations, tuneableAttributes} = this.props;
 		fetchRecommendations({
 			trackIds: take(playlist, 5).map(p => p.id),
 			tuneableAttributes
 		});
-	}, 400);
+	}
+
+	debounceFetch = debounce(this.fetch, 400);
 
 	render() {
-		const {spotify, tuneableAttributes, playlist, currentUserId, onClickVote} = this.props;
+		const {
+			spotify, tuneableAttributes, playlist, currentUserId, onClickVote,
+			filtersVisible, setFiltersVisible, roomName
+		} = this.props;
 		return (
-			<div>
+			<div className={theme.discoverContainer}>
 				<div className={theme.title}>
-					Recommendations
+					Recommended tracks for '{roomName}'
+					<div className={theme.rightButtons}>
+					<span onClick={() => setFiltersVisible(!filtersVisible)}>
+						{filtersVisible ? 'Hide filters' : 'Show filters'}
+					</span>&nbsp;•&nbsp;<span onClick={() => this.fetch()}>
+						Refresh
+					</span>
+					</div>
 				</div>
-				<div className={theme.slidersContainer}>
-					{tuneableAttributes && tuneableAttributes.map(ta => (
-						<div className={theme.tuneableAttribute} key={ta.name}>
-							<div className={theme.attributeName}>
-								{ta.name} <span>{ta.from}-{ta.to}</span>
+
+
+				{filtersVisible && (
+					<div className={theme.slidersContainer}>
+						{tuneableAttributes && tuneableAttributes.map(ta => (
+							<div className={theme.tuneableAttribute} key={ta.name}>
+								<div className={theme.attributeName}>
+									{ta.name} <span>{ta.from}-{ta.to}</span>
+								</div>
+								<div className={theme.slider}>
+									<MultiSlider
+										values={[ta.from, ta.to - ta.from, ta.max - ta.to]}
+										handleInnerDotSize={5}
+										onChange={this.sliderChange.bind(this, ta.name)}
+										bg={'rgba(255,255,255,0.7)'}
+										colors={['#333344', '#FA0B84', '#333344']}/>
+								</div>
 							</div>
-							<div className={theme.slider}>
-								<MultiSlider
-									values={[ta.from, ta.to - ta.from, ta.max - ta.to]}
-									handleInnerDotSize={5}
-									onChange={this.sliderChange.bind(this, ta.name)}
-									bg={'rgba(255,255,255,0.7)'}
-									colors={['#333344', '#FA0B84', '#333344']}/>
-							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				)}
 				<div className={theme.clear}/>
 				{
 					spotify.recommendations.map((track, index) => {
@@ -119,9 +138,11 @@ class Discover extends Component {
 
 const mapStateToProps = (state) => {
 	return {
+		roomName: state.room.name,
 		spotify: state.spotify,
 		playlist: state.room.playlist,
 		tuneableAttributes: state.ui['tuneableAttributes'],
+		filtersVisible: Boolean(state.ui['discoverFiltersVisible']),
 		currentUserId: state.users.currentUserId
 	};
 };
@@ -132,6 +153,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	},
 	setTuneableAttributes: (attributes) => {
 		dispatch(uiUpdate({key: 'tuneableAttributes', newState: attributes}));
+	},
+	setFiltersVisible: (visible) => {
+		dispatch(uiUpdate({key: 'discoverFiltersVisible', newState: visible}));
 	}
 });
 
