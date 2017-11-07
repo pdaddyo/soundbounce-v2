@@ -40,11 +40,11 @@ class SearchResults extends Component {
 const mapStateToProps = (state) => {
 	if (state.ui['inRoomSearch'] && state.spotify.searchResults[state.ui['inRoomSearch']]) {
 		return {
+			search: state.ui['inRoomSearch'],
 			tracks: state.spotify.searchResults[state.ui['inRoomSearch']].tracks['items'].map(track => {
 				const playlistEntry = state.room.playlist.find(i => i.id === track.id);
 				return {
 					...track,
-					search: state.ui['inRoomSearch'],
 					canVote: !playlistEntry ||
 					(playlistEntry && !playlistEntry.votes
 						.find(v => v.userId === state.users.currentUserId))
