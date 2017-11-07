@@ -31,7 +31,7 @@
 }
 
 .artwork:hover {
-	opacity: 0.9;
+	filter: brightness(120%);
 	cursor: pointer;
 }
 
