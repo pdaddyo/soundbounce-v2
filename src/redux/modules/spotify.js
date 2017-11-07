@@ -303,7 +303,7 @@ const ACTION_HANDLERS = {
 		[SPOTIFY_RECOMMENDATIONS_REQUEST]: (state, {payload}) => (
 			{
 				...state,
-				recommendations: []
+				recommendations: 'loading'
 			}
 		),
 		[SPOTIFY_RECOMMENDATIONS_UPDATE]: (state, {payload: {tracks}}) => {

@@ -23,7 +23,7 @@ class SearchResults extends Component {
 			<div className={theme.container}>
 				{!search && (
 					<Recommendations onClickVote={onClickVote}
-									 title={`Recommended tracks '${roomName}'`}
+									 title={`Recommended tracks for '${roomName}'`}
 									 seedTrackIds={recommendationSeedTrackIds}/>
 				)}
 				{

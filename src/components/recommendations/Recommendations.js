@@ -8,6 +8,7 @@ import theme from './recommendations.css';
 import {spotifyRecommendationsRequest} from '../../redux/modules/spotify';
 import Track from '../track/Track';
 import {uiUpdate} from '../../redux/modules/ui';
+import Loading from '../svg/loading/Loading';
 
 const tuneableAttributeList = [
 	{name: 'acousticness', min: 0, max: 100, from: 0, to: 100, divisor: 100},
@@ -115,8 +116,12 @@ class Recommendations extends Component {
 						))}
 					</div>
 				)}
+
+				{spotify.recommendations === 'loading' && <Loading />}
+
 				<div className={theme.clear}/>
 				{
+					spotify.recommendations !== 'loading' &&
 					spotify.recommendations.map((track, index) => {
 						const playlistEntry = playlist.find(i => i.id === track.id);
 

@@ -28,6 +28,7 @@ import {selectPlaylistTracksAndVotes} from '../../redux/modules/spotify';
 import {ROOM_REACTION, ROOM_TRACK_VOTE_SKIP} from '../../redux/modules/shared/room';
 import Stats from 'components/room/stats/Stats';
 import ReactionSelectionContextMenu from '../../components/contextMenu/ReactionSelectionContextMenu';
+import Loading from '../../components/svg/loading/Loading';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -138,8 +139,8 @@ class RoomView extends Component {
 
 		if (room.id !== params.roomId) {
 			// on mount we emitted a room join, so shouldn't be long now
-			return <div className={theme.container}>
-				{/* todo: room loading icon */}
+			return <div className={theme.container} style={{padding: '2.25rem'}}>
+				<Loading />
 			</div>;
 		}
 

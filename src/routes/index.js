@@ -5,6 +5,7 @@ import CoreLayout from 'layouts/CoreLayout/CoreLayout';
 import HomeView from 'views/HomeView/HomeView';
 import HelpView from 'views/HelpView/HelpView';
 import RoomView from 'views/RoomView/RoomView';
+
 import NoMatchView from 'views/NoMatchView/NoMatchView';
 
 export default (store) => (
