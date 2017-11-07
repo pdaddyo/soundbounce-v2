@@ -108,7 +108,7 @@ class MusicBubble extends Component {
 								<EmojiWrapper canClick={sentByCurrentUser}
 											  onClickEmojiAnimation={onClickEmojiAnimation}
 											  emojiId={loggedAction.payloads[0].id}
-								>{emojifyWithOptions(emoji)}</EmojiWrapper>
+								>{emojifyWithOptions(emoji, 30)}</EmojiWrapper>
 							</div>
 						)}
 					</div>

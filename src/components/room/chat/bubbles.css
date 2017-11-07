@@ -233,11 +233,11 @@
 }
 
 .reactionEmoji {
-	width: 2rem;
-	height: 2rem;
+	width: 1.8rem;
+	height: 1.8rem;
 	position: absolute;
-	left: 0.5rem;
-	top: 0.65rem;
+	left: 0.55rem;
+	top: 0.8rem;
 }
 
 .slashMe {
