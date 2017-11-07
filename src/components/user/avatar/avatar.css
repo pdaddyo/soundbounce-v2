@@ -1,9 +1,9 @@
 .avatar {
 	position: relative;
 	background-size: cover;
-	width: 2rem;
-	height: 2rem;
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	width: 1.9rem;
+	height: 1.9rem;
+	/* border: 1px solid rgba(255, 255, 255, 0.1); */
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -22,9 +22,9 @@
 	font-weight: 400;
 	color: rgba(200, 200, 200, 1);
 	text-shadow: 0 0 0.3rem rgba(0, 0, 0, 0.8);
-	width: 2rem;
+	width: 1.9rem;
 	margin-bottom: -0.5rem;
 	text-align: center;
 	top: 0.4rem;
-	font-size: 1.05rem;
+	font-size: 1.0rem;
 }

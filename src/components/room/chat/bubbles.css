@@ -30,8 +30,8 @@
 
 .musicBubble {
 	composes: bubble;
-	background-color: rgba(255, 255, 255, 0.05);
-	min-height: 2.25rem;
+	background-color: rgba(255, 255, 255, 0.06);
+	min-height: 2.45rem;
 }
 
 .bubbleOtherUser {
@@ -199,16 +199,6 @@
 	margin-left: 1.5rem;
 	font-size: 0.8rem;
 	margin-bottom: 0.5rem;
-}
-
-.albumArt {
-	width: 2em;
-	height: 2em;
-	background-size: cover;
-	float: left;
-	margin-right: 1em;
-	margin-bottom: 0.4em;
-	display: inline-block;
 }
 
 .trackContainer {
