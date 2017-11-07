@@ -44,6 +44,7 @@ const mapStateToProps = (state) => {
 				const playlistEntry = state.room.playlist.find(i => i.id === track.id);
 				return {
 					...track,
+					search: state.ui['inRoomSearch'],
 					canVote: !playlistEntry ||
 					(playlistEntry && !playlistEntry.votes
 						.find(v => v.userId === state.users.currentUserId))
