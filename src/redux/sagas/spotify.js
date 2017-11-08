@@ -14,7 +14,8 @@ import {
 	spotifySearchUpdate,
 	spotifyMyPlaylistsUpdate,
 	spotifyMyPlaylistsRequest,
-	actions as spotifyActions, spotifyAudioAnalysisUpdate, spotifyRecommendationsUpdate
+	actions as spotifyActions, spotifyAudioAnalysisUpdate, spotifyRecommendationsUpdate,
+	spotifyFullAlbumUpdate
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
 import {
@@ -474,6 +475,18 @@ function * watchForAudioAnalysisRequests() {
 	}
 }
 
+function * watchForFullAlbumRequests() {
+	// wait for login
+	yield take(spotifyActions.SPOTIFY_AUTH_OK);
+
+	// listen for requests to fetch full album details
+	while (true) {
+		const {payload: {albumId}} = yield take(spotifyActions.SPOTIFY_FULL_ALBUM_REQUEST);
+		const album = yield call(spotifyApiCall, {url: `/v1/albums/${albumId}`});
+		yield put(spotifyFullAlbumUpdate({albumId, album}));
+	}
+}
+
 export default function * spotifyInit() {
 	try {
 		yield [
@@ -488,6 +501,7 @@ export default function * spotifyInit() {
 			loadMyPlaylists(),
 			watchForAddTrackToPlaylist(),
 			watchForAudioAnalysisRequests(),
+			watchForFullAlbumRequests(),
 			watchForRecommendationsRequest(),
 			pollSpotifyPlayerStatus(),
 			watchForSyncStart(),

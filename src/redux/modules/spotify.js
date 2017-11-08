@@ -30,6 +30,8 @@ export const SPOTIFY_MY_PLAYLISTS_UPDATE = 'SPOTIFY_MY_PLAYLISTS_UPDATE';
 export const SPOTIFY_ADD_TRACK_TO_PLAYLIST = 'SPOTIFY_ADD_TRACK_TO_PLAYLIST';
 export const SPOTIFY_AUDIO_ANALYSIS_REQUEST = 'SPOTIFY_AUDIO_ANALYSIS_REQUEST';
 export const SPOTIFY_AUDIO_ANALYSIS_UPDATE = 'SPOTIFY_AUDIO_ANALYSIS_UPDATE';
+export const SPOTIFY_FULL_ALBUM_REQUEST = 'SPOTIFY_FULL_ALBUM_REQUEST';
+export const SPOTIFY_FULL_ALBUM_UPDATE = 'SPOTIFY_FULL_ALBUM_UPDATE';
 export const SPOTIFY_RECOMMENDATIONS_REQUEST = 'SPOTIFY_RECOMMENDATIONS_REQUEST';
 export const SPOTIFY_RECOMMENDATIONS_UPDATE = 'SPOTIFY_RECOMMENDATIONS_UPDATE';
 
@@ -57,6 +59,8 @@ export const actions = {
 	SPOTIFY_ADD_TRACK_TO_PLAYLIST,
 	SPOTIFY_AUDIO_ANALYSIS_REQUEST,
 	SPOTIFY_AUDIO_ANALYSIS_UPDATE,
+	SPOTIFY_FULL_ALBUM_REQUEST,
+	SPOTIFY_FULL_ALBUM_UPDATE,
 	SPOTIFY_RECOMMENDATIONS_REQUEST,
 	SPOTIFY_RECOMMENDATIONS_UPDATE
 };
@@ -75,6 +79,7 @@ const defaultState = {
 	myPlaylists: [],
 	audioAnalysis: {}, // stored by track id
 	audioFeatures: {}, // stored by track id
+	fullAlbums: {}, // stored by album id
 	tracks: {},  // tracks stored by key object key 'id'
 	recommendations: []
 };
@@ -191,6 +196,16 @@ export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysi
 	payload: {trackId, audioFeatures, audioAnalysis}
 });
 
+export const spotifyFullAlbumRequest = (albumId) => ({
+	type: SPOTIFY_FULL_ALBUM_REQUEST,
+	payload: {albumId}
+});
+
+export const spotifyFullAlbumUpdate = ({albumId, album}) => ({
+	type: SPOTIFY_FULL_ALBUM_UPDATE,
+	payload: {albumId, album}
+});
+
 export const spotifyRecommendationsRequest = ({trackIds, tuneableAttributes}) => ({
 	type: SPOTIFY_RECOMMENDATIONS_REQUEST,
 	payload: {trackIds, tuneableAttributes}
@@ -292,6 +307,13 @@ const ACTION_HANDLERS = {
 				...state,
 				audioAnalysis: {...state.audioAnalysis, [trackId]: audioAnalysis},
 				audioFeatures: {...state.audioFeatures, [trackId]: audioFeatures}
+			};
+		},
+		[SPOTIFY_FULL_ALBUM_UPDATE]: (state, {payload}) => {
+			const {albumId, album} = payload;
+			return {
+				...state,
+				fullAlbums: {...state.fullAlbums, [albumId]: album}
 			};
 		},
 		[SPOTIFY_MY_PLAYLISTS_UPDATE]: (state, {payload: {playlists}}) => (

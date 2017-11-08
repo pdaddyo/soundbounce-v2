@@ -15,6 +15,7 @@ import chunk from 'lodash/chunk';
 import meanBy from 'lodash/meanBy';
 
 import theme from './analysis.css';
+import Loading from '../svg/loading/Loading';
 
 const width = 410;
 const height = 60;
@@ -38,7 +39,7 @@ class Analysis extends Component {
 	render() {
 		const {analysis, features, progressPercent} = this.props;
 		if (!analysis) {
-			return <div>Analysing...</div>;
+			return <div><Loading /></div>;
 		}
 
 		let chunkSize = Math.floor(analysis.segments.length / desiredChunkCount);

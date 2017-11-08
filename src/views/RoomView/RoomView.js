@@ -30,6 +30,7 @@ import Stats from 'components/room/stats/Stats';
 import ReactionSelectionContextMenu from '../../components/contextMenu/ReactionSelectionContextMenu';
 import Loading from '../../components/svg/loading/Loading';
 import Sync from '../../components/svg/icons/Sync';
+import {Link} from 'react-router';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -160,17 +161,29 @@ class RoomView extends Component {
 			chatTheme = theme.chatMobileChatActive;
 		}
 
+		const backButton = <Link to={`/room/${room.id}`}
+								 className={theme.backButton}>← Back to room</Link>;
 		let roomContent = null;
 		if (children) {
+			const wrappedChild = React.cloneElement(children, {onClickVote: this.onClickVote});
+
 			roomContent = (
-				<div className={roomTheme} ref='room'>
-					{children}
+				<div>
+					{backButton}
+					<div className={roomTheme} ref='room'>
+
+						{wrappedChild}
+					</div>
 				</div>
 			);
 		} else if (roomTab === 'search') {
 			roomContent = (
-				<div className={roomTheme} ref='room'>
-					<SearchResults onClickVote={this.onClickVote}/>
+				<div>
+					{backButton}
+					<div className={roomTheme} ref='room'>
+
+						<SearchResults onClickVote={this.onClickVote}/>
+					</div>
 				</div>
 			);
 		} else {

@@ -107,6 +107,13 @@
 	min-height: 0;
 }
 
+.backButton {
+	position: absolute;
+	top: -3.6rem;
+	left: calc(8.2rem + 30%);
+	cursor: pointer;
+}
+
 @media screen and (max-width: 600px) {
 	.room {
 		right: 0;

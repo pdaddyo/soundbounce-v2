@@ -7,7 +7,6 @@
 
 .trackHero {
 	composes: track;
-	margin-bottom: 7rem;
 }
 
 .trackSmall {
