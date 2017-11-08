@@ -54,7 +54,7 @@
 	min-width: 15rem;
 	color: rgba(255, 255, 255, 0.9);
 	margin-left: 2rem;
-	letter-spacing: 0.05rem;
+	letter-spacing: 0.04rem;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	text-overflow: ellipsis;
 	overflow: hidden;
