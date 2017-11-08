@@ -7,13 +7,16 @@ import HelpView from 'views/HelpView/HelpView';
 import RoomView from 'views/RoomView/RoomView';
 
 import NoMatchView from 'views/NoMatchView/NoMatchView';
+import BrowseTrackView from '../views/BrowseView/BrowseTrackView';
 
 export default (store) => (
 	<Route path='/' component={CoreLayout}>
 		<IndexRoute component={HomeView}/>
 		<Route path='home' component={HomeView}/>
 		<Route path='help' component={HelpView}/>
-		<Route path='room/:roomId' component={RoomView}/>
+		<Route path='room/:roomId' component={RoomView}>
+			<Route path='browse/track/:trackId' component={BrowseTrackView}/>
+		</Route>
 		<Route path='room/:roomId/:roomTab' component={RoomView}/>
 		<Route path='*' component={NoMatchView}/>
 	</Route>

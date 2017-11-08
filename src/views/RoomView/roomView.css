@@ -78,6 +78,21 @@
 	background-color: rgba(0, 0, 0, 0.4);
 }
 
+.syncSurround {
+	display: none;
+	border-radius: 50%;
+	padding: 2rem;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+.syncSurround:hover {
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.play:hover .syncSurround {
+	display: block;
+}
+
 .otherTabs {
 
 }

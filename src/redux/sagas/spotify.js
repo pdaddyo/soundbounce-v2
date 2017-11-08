@@ -19,7 +19,7 @@ import {
 import {actions as roomActions} from '../modules/shared/room';
 import {
 	syncStartFail, syncStop, syncStartOk, actions as syncActions,
-	syncStart
+	syncStart, SYNC_STOP
 } from '../modules/sync';
 import {socketConnectBegin} from '../modules/socket';
 import moment from 'moment';
@@ -78,7 +78,7 @@ function * checkSyncStatus() {
 			const {player} = spotify;
 			if (!player.is_playing) {
 				// player has stopped but we're supposed to be synced, stop sync
-				yield put(syncStop('Spotify playback was stopped.'));
+				yield put(syncStop('Spotify playback was paused.'));
 				return;
 			}
 
@@ -384,6 +384,31 @@ function * watchForSearchRequest() {
 		yield put(spotifySearchUpdate({query, apiResult}));
 	}
 }
+
+function * watchForSyncStop() {
+	// listen for sync stopping
+	while (true) {
+		const {payload: {reason}} = yield take(SYNC_STOP);
+		const title = 'Soundbounce deactivated';
+		const options = {
+			body: `${reason}`,
+			silent: true,
+			icon: '/favicon.ico'
+		};
+		if ('Notification' in window) {
+			if (Notification.permission === 'granted') {
+				new Notification(title, options);
+			} else if (Notification.permission !== 'denied') {
+				Notification.requestPermission(permission => {
+					if (permission === 'granted') {
+						new Notification(title, options);
+					}
+				});
+			}
+		}
+	}
+}
+
 function * watchForRecommendationsRequest() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
@@ -465,7 +490,8 @@ export default function * spotifyInit() {
 			watchForAudioAnalysisRequests(),
 			watchForRecommendationsRequest(),
 			pollSpotifyPlayerStatus(),
-			watchForSyncStart()
+			watchForSyncStart(),
+			watchForSyncStop()
 		];
 	} catch (err) {
 		console.log('unhandled spotify saga error: ' + err);

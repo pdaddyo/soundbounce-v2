@@ -12,14 +12,20 @@ import theme from './mainNavigation.css';
 import SoundbounceLogo from '../svg/icons/SoundbounceLogo';
 import {uiUpdate} from '../../redux/modules/ui';
 import DeviceList from '../devices/DeviceList';
+import SyncOff from '../svg/icons/SyncOff';
+import {syncStart, syncStop} from '../../redux/modules/sync';
+import Sync from '../svg/icons/Sync';
 
 class MainNavigation extends Component {
 	static propTypes = {
 		currentUser: PropTypes.object,
 		player: PropTypes.object,
-		isSynced: PropTypes.bool,
+		sync: PropTypes.object,
 		spotifyDevicesRequest: PropTypes.func,
 		showDeviceList: PropTypes.func,
+		syncStop: PropTypes.func,
+		syncStart: PropTypes.func,
+		roomId: PropTypes.string,
 		deviceListVisible: PropTypes.bool
 	};
 
@@ -39,7 +45,13 @@ class MainNavigation extends Component {
 	};
 
 	render() {
-		const {currentUser, isSynced, deviceListVisible, spotifyDevicesRequest} = this.props;
+		const {
+			currentUser, sync, deviceListVisible,
+			spotifyDevicesRequest, syncStop, syncStart,
+			roomId
+		} = this.props;
+		const {isSynced} = sync;
+
 		return (
 			<div>
 				<div className={theme.nav}>
@@ -48,11 +60,19 @@ class MainNavigation extends Component {
 							<SoundbounceLogo isSynced={isSynced}/>
 						</div>
 					</Link>
+					{roomId && isSynced && (
+						<div className={theme.syncIconContainer} onClick={syncStop}>
+							<SyncOff />
+						</div>
+					)}
+					{false && roomId && !isSynced && (
+						<div className={theme.syncIconContainer} onClick={syncStart}>
+							<Sync />
+						</div>
+					)}
 					<div className={theme.deviceIconContainer} onClick={this.clickDevicesIcon}>
 						<DeviceIcon />
-
 					</div>
-
 					<Link to='/help'>
 						<div className={theme.helpContainer}>
 							<HelpIcon />
@@ -77,7 +97,7 @@ const mapStateToProps = state => {
 
 	return {
 		currentUser: selectCurrentUser(state),
-		isSynced: state.sync.isSynced,
+		sync: state.sync,
 		// always show the device list if we're in a room with no active device
 		deviceListVisible: (
 			!activeDevice &&
@@ -85,7 +105,8 @@ const mapStateToProps = state => {
 		) ||
 		(
 			Boolean(state.ui['deviceListVisible'])
-		)
+		),
+		roomId: state.room.id
 	};
 };
 
@@ -98,6 +119,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 			key: 'deviceListVisible',
 			newState: visible
 		}));
+	},
+	syncStart: () => {
+		dispatch(syncStart());
+	},
+	syncStop: () => {
+		dispatch(syncStop('Sync cancelled'));
 	}
 });
 export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);

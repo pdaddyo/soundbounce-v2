@@ -152,7 +152,8 @@ class Track extends Component {
 					<div className={sizeTheme('artistsAndTrackName')}>
 						<div className={sizeTheme('name')}
 							 onClick={() => {
-								 document.location = `spotify:track:${track.id}`;
+								 // document.location = `spotify:track:${track.id}`;
+								 router.push(`/room/${currentRoomId}/browse/track/${track.id}`);
 							 }}>
 							{track.name}
 						</div>

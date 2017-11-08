@@ -29,6 +29,7 @@ import {ROOM_REACTION, ROOM_TRACK_VOTE_SKIP} from '../../redux/modules/shared/ro
 import Stats from 'components/room/stats/Stats';
 import ReactionSelectionContextMenu from '../../components/contextMenu/ReactionSelectionContextMenu';
 import Loading from '../../components/svg/loading/Loading';
+import Sync from '../../components/svg/icons/Sync';
 
 class RoomView extends Component {
 	static propTypes = {
@@ -44,7 +45,8 @@ class RoomView extends Component {
 		clearChatText: PropTypes.func,
 		syncStart: PropTypes.func,
 		playlist: PropTypes.array,
-		sync: PropTypes.object
+		sync: PropTypes.object,
+		children: PropTypes.any
 	};
 
 	// try to pull spotify track Ids from drop text
@@ -132,7 +134,7 @@ class RoomView extends Component {
 
 	render() {
 		const {
-			room, params, actionLogForChatPanel, playlist, sync,
+			room, params, actionLogForChatPanel, playlist, sync, children,
 			syncStart, currentUser, mobileSwipePosition, setMobileSwipePosition
 		} = this.props;
 		const roomTab = params.roomTab || 'next-up';
@@ -158,6 +160,73 @@ class RoomView extends Component {
 			chatTheme = theme.chatMobileChatActive;
 		}
 
+		let roomContent = null;
+		if (children) {
+			roomContent = (
+				<div className={roomTheme} ref='room'>
+					{children}
+				</div>
+			);
+		} else if (roomTab === 'search') {
+			roomContent = (
+				<div className={roomTheme} ref='room'>
+					<SearchResults onClickVote={this.onClickVote}/>
+				</div>
+			);
+		} else {
+			roomContent = (
+				<div className={roomTheme} ref='room'>
+					<div className={theme.play} onClick={syncStart}>
+						{(!sync.isSynced) ? (
+							<div className={theme.playSurround}>
+								<Play/>
+							</div>
+						) : (
+							<div className={theme.syncSurround}>
+								<Sync/>
+							</div>
+						)}
+					</div>
+					{nowPlayingTrack && (
+						<Track track={nowPlayingTrack}
+							   percentComplete={progressPercent}
+							   size='hero'
+							   onClickVoteSkip={this.onClickVoteSkip}
+							   onClickReaction={this.onClickReaction}
+						/>
+					)}
+					<RoomMenu roomId={room.id} listeners={room.listeners}
+							  params={params}/>
+					<div className={theme.roomPlaylistContentArea}>
+						<div
+							style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
+							<FlipMove duration={400}
+									  easing='ease-in-out'
+									  enterAnimation='elevator'>
+								{drop(playlist, 1).map((track, index) => (
+									<Track key={track.id}
+										   track={track}
+										   onClickVoteSkip={this.onClickVoteSkip}
+										   onClickVote={this.onClickVote}
+										   size='normal'
+										   visible={roomTab === 'next-up'}/>
+								))}
+							</FlipMove>
+						</div>
+						<div className={theme.otherTabs}>
+							{roomTab === 'listeners' &&
+							<Listeners userIds={room.listeners}/>}
+							{roomTab === 'about' &&
+							<About room={room} currentUser={currentUser}/>}
+							{roomTab === 'stats' &&
+							<Stats room={room}/>}
+						</div>
+					</div>
+
+				</div>
+			);
+		}
+
 		return (
 			<ColorContextProvider colors={room.config.colors}>
 				<TrackContextMenu/>
@@ -168,57 +237,7 @@ class RoomView extends Component {
 				<Swipeable onSwipedLeft={() => setMobileSwipePosition('chat')}
 						   onSwipedRight={() => setMobileSwipePosition('playlist')}>
 					<div className={theme.roomAndChat}>
-						{roomTab !== 'search' ? (
-							<div className={roomTheme} ref='room'>
-								<div className={theme.play} onClick={syncStart}>
-									{(!sync.isSynced) && (
-										<div className={theme.playSurround}>
-											<Play/>
-										</div>
-									)}
-								</div>
-								{nowPlayingTrack && (
-									<Track track={nowPlayingTrack}
-										   percentComplete={progressPercent}
-										   size='hero'
-										   onClickVoteSkip={this.onClickVoteSkip}
-										   onClickReaction={this.onClickReaction}
-									/>
-								)}
-								<RoomMenu roomId={room.id} listeners={room.listeners}
-										  params={params}/>
-								<div className={theme.roomPlaylistContentArea}>
-									<div
-										style={{display: roomTab === 'next-up' ? 'block' : 'none'}}>
-										<FlipMove duration={400}
-												  easing='ease-in-out'
-												  enterAnimation='elevator'>
-											{drop(playlist, 1).map((track, index) => (
-												<Track key={track.id}
-													   track={track}
-													   onClickVoteSkip={this.onClickVoteSkip}
-													   onClickVote={this.onClickVote}
-													   size='normal'
-													   visible={roomTab === 'next-up'}/>
-											))}
-										</FlipMove>
-									</div>
-									<div className={theme.otherTabs}>
-										{roomTab === 'listeners' &&
-										<Listeners userIds={room.listeners}/>}
-										{roomTab === 'about' &&
-										<About room={room} currentUser={currentUser}/>}
-										{roomTab === 'stats' &&
-										<Stats room={room}/>}
-									</div>
-								</div>
-
-							</div>
-						) : (
-							<div className={roomTheme} ref='room'>
-								<SearchResults onClickVote={this.onClickVote}/>
-							</div>
-						)}
+						{roomContent}
 						<div className={chatTheme}>
 							<ChatPanel onChatSend={this.onChatSend.bind(this)}
 									   onClickEmojiAnimation={this.onClickEmojiAnimation.bind(this)}
