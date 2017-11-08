@@ -76,13 +76,14 @@ class Recommendations extends Component {
 		});
 	}
 
-	debounceFetch = debounce(this.fetch, 400);
+	debounceFetch = debounce(this.fetch, 300);
 
 	render() {
 		const {
 			spotify, tuneableAttributes, playlist, currentUserId, onClickVote,
 			filtersVisible, setFiltersVisible, title
 		} = this.props;
+		const {recommendations} = spotify;
 		return (
 			<div className={theme.discoverContainer}>
 				<div className={theme.title}>
@@ -117,12 +118,18 @@ class Recommendations extends Component {
 					</div>
 				)}
 
-				{spotify.recommendations === 'loading' && <Loading />}
+				{recommendations === 'loading' && <Loading />}
 
 				<div className={theme.clear}/>
+				{recommendations.length === 0 && (
+					<div>
+						Sorry, no recommendations found at this time.
+					</div>
+				)}
+
 				{
-					spotify.recommendations !== 'loading' &&
-					spotify.recommendations.map((track, index) => {
+					recommendations !== 'loading' &&
+					recommendations.map((track, index) => {
 						const playlistEntry = playlist.find(i => i.id === track.id);
 
 						const canVote = !playlistEntry ||
