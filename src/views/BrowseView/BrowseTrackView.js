@@ -7,6 +7,8 @@ import {
 import {connect} from 'react-redux';
 import Track from '../../components/track/Track';
 
+import theme from './browseTrackView.css';
+
 class BrowseTrackView extends Component {
 	static propTypes = {
 		params: PropTypes.object,
@@ -46,6 +48,20 @@ class BrowseTrackView extends Component {
 		return (
 			<div className={classes.container}>
 				<Track size='hero' track={track}/>
+				{track && fullAlbum && (
+					<div className={theme.album}>
+						<div className={theme.trackNum}>Track {track.track_number ||
+						track.json.track_number} on {fullAlbum.name}</div>
+						<div className={theme.date}>
+							Released {fullAlbum.release_date} on {fullAlbum.label}</div>
+						<div>
+							{fullAlbum.copyrights.map(c => <div key={c.text}
+																className={theme.copy}>
+								© {c.text.replace('©', '')}</div>)}
+
+						</div>
+					</div>
+				)}
 				<Recommendations onClickVote={onClickVote}
 								 title='Find similar tracks'
 								 key={this.props.params.trackId}

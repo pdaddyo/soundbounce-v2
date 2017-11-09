@@ -1,2 +1,24 @@
 .container {
 }
+
+.album {
+	margin: 0 0 2rem;
+	font-size: 0.9rem;
+}
+
+.album div {
+	margin-bottom: 0.5rem;
+}
+
+.album .trackNum {
+	margin-bottom: 1rem;
+}
+
+.copy {
+	font-size: 0.6rem;
+	margin-bottom: 0;
+}
+
+.date {
+	font-size: 0.6rem;
+}
