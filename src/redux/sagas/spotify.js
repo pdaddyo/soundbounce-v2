@@ -481,9 +481,9 @@ function * watchForFullAlbumRequests() {
 
 	// listen for requests to fetch full album details
 	while (true) {
-		const {payload: {albumId}} = yield take(spotifyActions.SPOTIFY_FULL_ALBUM_REQUEST);
-		const album = yield call(spotifyApiCall, {url: `/v1/albums/${albumId}`});
-		yield put(spotifyFullAlbumUpdate({albumId, album}));
+		const {payload: {albumIds}} = yield take(spotifyActions.SPOTIFY_FULL_ALBUM_REQUEST);
+		const apiResult = yield call(spotifyApiCall, {url: `/v1/albums/?ids=${albumIds.join(',')}`});
+		yield put(spotifyFullAlbumUpdate({albumIds, albums: apiResult.albums}));
 	}
 }
 

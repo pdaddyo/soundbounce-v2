@@ -196,14 +196,14 @@ export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysi
 	payload: {trackId, audioFeatures, audioAnalysis}
 });
 
-export const spotifyFullAlbumRequest = (albumId) => ({
+export const spotifyFullAlbumRequest = (albumIds) => ({
 	type: SPOTIFY_FULL_ALBUM_REQUEST,
-	payload: {albumId}
+	payload: {albumIds}
 });
 
-export const spotifyFullAlbumUpdate = ({albumId, album}) => ({
+export const spotifyFullAlbumUpdate = ({albumIds, albums}) => ({
 	type: SPOTIFY_FULL_ALBUM_UPDATE,
-	payload: {albumId, album}
+	payload: {albumIds, albums}
 });
 
 export const spotifyRecommendationsRequest = ({trackIds, tuneableAttributes}) => ({
@@ -310,10 +310,14 @@ const ACTION_HANDLERS = {
 			};
 		},
 		[SPOTIFY_FULL_ALBUM_UPDATE]: (state, {payload}) => {
-			const {albumId, album} = payload;
+			const {albumIds, albums} = payload;
+			const fullAlbums = {...state.fullAlbums};
+			for (let [index, albumId] of albumIds.entries()) {
+				fullAlbums[albumId] = albums[index];
+			}
 			return {
 				...state,
-				fullAlbums: {...state.fullAlbums, [albumId]: album}
+				fullAlbums
 			};
 		},
 		[SPOTIFY_MY_PLAYLISTS_UPDATE]: (state, {payload: {playlists}}) => (

@@ -55,8 +55,8 @@ class BrowseTrackView extends Component {
 						<div className={theme.date}>
 							Released {fullAlbum.release_date} on {fullAlbum.label}</div>
 						<div>
-							{fullAlbum.copyrights.map(c => <div key={c.text}
-																className={theme.copy}>
+							{fullAlbum.copyrights.map((c, i) => <div key={i}
+																	 className={theme.copy}>
 								© {c.text.replace('©', '')}</div>)}
 
 						</div>
@@ -96,8 +96,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchAnalysis: () => {
 		dispatch(spotifyAudioAnalysisRequest(ownProps.params.trackId));
 	},
-	fetchFullAlbum: (albumId) => {
-		dispatch(spotifyFullAlbumRequest(albumId));
+	fetchFullAlbum: (albumIds) => {
+		dispatch(spotifyFullAlbumRequest([albumIds]));
 	}
 });
 
