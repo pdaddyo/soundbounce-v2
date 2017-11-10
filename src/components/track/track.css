@@ -24,14 +24,25 @@
 }
 
 .artwork:after {
+	content: ' ';
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	opacity: 0;
+	background: url(components/svg/icons/play.svg) no-repeat 50% 50%;
 }
 
 .artwork:hover {
 	filter: brightness(115%);
 	cursor: pointer;
+}
+
+.artwork:hover:after {
+	opacity: 1;
+}
+
+.artworkIsPreviewing {
+	composes: artwork;
 }
 
 .artworkHero {
@@ -46,6 +57,28 @@
 	width: 2.25rem;
 	min-width: 2.25rem;
 	height: 2.25rem;
+}
+
+.artworkIsPreviewingHero {
+	composes: artworkHero;
+}
+
+.artworkIsPreviewingSmall {
+	composes: artworkSmall;
+}
+
+.artworkIsPreviewing:hover:after {
+	background: url(components/svg/icons/loading-spin.svg) no-repeat 50% 50%;
+}
+
+.artworkIsPreviewingHero:hover:after {
+	background: url(components/svg/icons/loading-spin.svg) no-repeat 50% 50%;
+	background-size: 80px 80px;
+}
+
+.artworkIsPreviewingSmall:hover:after {
+	background: url(components/svg/icons/loading-spin.svg) no-repeat 50% 50%;
+	background-size: 24px 24px;
 }
 
 .artistsAndTrackName {

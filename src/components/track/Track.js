@@ -47,13 +47,20 @@ class Track extends Component {
 	// trigger for context menu
 	contextTrigger = null;
 
+	constructor(props) {
+		super(props);
+		this.state = {isPreviewing: false};
+	}
+
 	artworkMouseDown = evt => {
 		this.props.previewStart(this.props.track.id);
+		this.setState({isPreviewing: true});
 		document.addEventListener('mouseup', this.artworkMouseUp);
 	};
 
 	artworkMouseUp = evt => {
 		document.removeEventListener('mouseup', this.artworkMouseUp);
+		this.setState({isPreviewing: false});
 		this.props.previewStop();
 	};
 
@@ -144,9 +151,10 @@ class Track extends Component {
 								holdToDisplay={-1}>
 				<div className={sizeTheme('track')}
 					 style={{visibility: visible ? 'visible' : 'hidden'}}>
-					<div className={sizeTheme('artwork')}
-						 style={{backgroundImage: `url(${albumArt})`}}
-						 onMouseDown={this.artworkMouseDown}>
+					<div
+						className={sizeTheme(`artwork${this.state.isPreviewing ? 'IsPreviewing' : ''}`)}
+						style={{backgroundImage: `url(${albumArt})`}}
+						onMouseDown={this.artworkMouseDown}>
 						{progress}
 					</div>
 					<div className={sizeTheme('artistsAndTrackName')}>
