@@ -252,3 +252,44 @@
 	color: rgba(255, 255, 255, 0.9);
 	padding: 3px;
 }
+
+:global .twitter-tweet, :global .fb-xfbml-parse-ignore {
+	text-align: left;
+	background: white;
+	padding: 0.2rem 1rem 1rem;
+	border-radius: 0.5rem;
+	margin: 0;
+	font-size: 0.9rem;
+	color: #333;
+	line-height: 1.3rem;
+	text-shadow: none;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+:global .fb-xfbml-parse-ignore {
+	font-size: 0.6rem;
+}
+
+:global .fb-xfbml-parse-ignore p {
+	font-size: 0.75rem;
+	margin-bottom: 0.2rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+:global .twitter-tweet a {
+	font-size: 0.6rem;
+	display: block;
+	color: #666;
+}
+
+:global .twitter-tweet p a {
+	color: #00BFFF;
+	display: inline-block;
+}
+
+:global .fb-xfbml-parse-ignore a {
+	color: #365899;
+	display: inline-block;
+}

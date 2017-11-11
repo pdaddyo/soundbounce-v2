@@ -37,6 +37,10 @@ class MoreFromArtist extends Component {
 
 	render() {
 		const {albums, artistName} = this.props;
+		// if we have no detailed album information show nothing at all
+		if (!albums.find(a => a.release_date)) {
+			return null;
+		}
 		return (
 			<div className={theme.container}>
 				<div className={theme.title}>
