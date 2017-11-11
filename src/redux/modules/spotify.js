@@ -196,9 +196,10 @@ export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysi
 	payload: {trackId, audioFeatures, audioAnalysis}
 });
 
-export const spotifyFullAlbumRequest = (albumIds) => ({
+// only supply one of these options.
+export const spotifyFullAlbumRequest = ({albumIds, artistId}) => ({
 	type: SPOTIFY_FULL_ALBUM_REQUEST,
-	payload: {albumIds}
+	payload: {albumIds, artistId}
 });
 
 export const spotifyFullAlbumUpdate = ({albumIds, albums}) => ({
@@ -312,13 +313,22 @@ const ACTION_HANDLERS = {
 		[SPOTIFY_FULL_ALBUM_UPDATE]: (state, {payload}) => {
 			const {albumIds, albums} = payload;
 			const fullAlbums = {...state.fullAlbums};
-			for (let [index, albumId] of albumIds.entries()) {
-				fullAlbums[albumId] = albums[index];
-			}
-			return {
-				...state,
-				fullAlbums
+			let newState = {
+				...state
 			};
+			for (let [index, albumId] of albumIds.entries()) {
+				// copyrights are only on the detailed API objects, so don't overwrite those
+				if (!fullAlbums[albumId] || !fullAlbums[albumId].copyrights) {
+					fullAlbums[albumId] = albums[index];
+				}
+				// save any track data there might be
+				const {tracks} = fullAlbums[albumId];
+				if (tracks && tracks.items) {
+					newState = mergeTracks({state: newState, tracks: tracks.items});
+				}
+			}
+			newState.fullAlbums = fullAlbums;
+			return newState;
 		},
 		[SPOTIFY_MY_PLAYLISTS_UPDATE]: (state, {payload: {playlists}}) => (
 			{

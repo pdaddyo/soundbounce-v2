@@ -1,6 +1,6 @@
 import {delay} from 'redux-saga';
 import config from '../../../config/app';
-import {select, put, call, take, all} from 'redux-saga/effects';
+import {select, put, call, take, all, fork} from 'redux-saga/effects';
 import {
 	spotifyAuthRequired,
 	spotifyAuthInit,
@@ -15,7 +15,7 @@ import {
 	spotifyMyPlaylistsUpdate,
 	spotifyMyPlaylistsRequest,
 	actions as spotifyActions, spotifyAudioAnalysisUpdate, spotifyRecommendationsUpdate,
-	spotifyFullAlbumUpdate
+	spotifyFullAlbumUpdate, spotifyFullAlbumRequest
 } from '../modules/spotify';
 import {actions as roomActions} from '../modules/shared/room';
 import {
@@ -475,15 +475,38 @@ function * watchForAudioAnalysisRequests() {
 	}
 }
 
+function * handleFullAlbumRequest({albumIds, artistId}) {
+	let apiResult = null;
+	if (artistId) {
+		// limit 20 so we can pass onto the full request later (that is max 20)
+		apiResult = yield call(spotifyApiCall, {
+			url: `/v1/artists/${artistId}/albums?limit=20&album_type=album` // ,single
+		});
+		const albumIds = apiResult.items.map(a => a.id);
+		yield put(spotifyFullAlbumUpdate({
+			albumIds,
+			albums: apiResult.items
+		}));
+
+		if (albumIds.length > 0) {
+			// now we have the crappy small objects that don't have release date,
+			// they're enough to get us going, but ask api for the detail now:
+			yield put(spotifyFullAlbumRequest({albumIds}));
+		}
+	} else {
+		apiResult = yield call(spotifyApiCall, {url: `/v1/albums/?ids=${albumIds.join(',')}`});
+		yield put(spotifyFullAlbumUpdate({albumIds, albums: apiResult.albums}));
+	}
+}
+
 function * watchForFullAlbumRequests() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
-
 	// listen for requests to fetch full album details
 	while (true) {
-		const {payload: {albumIds}} = yield take(spotifyActions.SPOTIFY_FULL_ALBUM_REQUEST);
-		const apiResult = yield call(spotifyApiCall, {url: `/v1/albums/?ids=${albumIds.join(',')}`});
-		yield put(spotifyFullAlbumUpdate({albumIds, albums: apiResult.albums}));
+		const {payload} = yield take(spotifyActions.SPOTIFY_FULL_ALBUM_REQUEST);
+		// non blocking fork since we might want to do multiple album requests at once
+		yield fork(handleFullAlbumRequest, payload);
 	}
 }
 
