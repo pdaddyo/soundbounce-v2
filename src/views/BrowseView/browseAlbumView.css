@@ -1,0 +1,92 @@
+.container {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow: auto;
+}
+
+.copy {
+	font-size: 0.6rem;
+	margin-bottom: 0.5rem;
+}
+
+.date {
+	font-size: 0.6rem;
+	margin-bottom: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.artwork {
+	composes: artworkHero from 'components/track/track.css';
+	width: 12rem;
+	height: 12rem;
+	vertical-align: top;
+}
+
+.album {
+	display: flex;
+	width: 100%;
+	max-width: 50rem;
+	margin-bottom: 2rem;
+}
+
+.artworkAndCopyright {
+	display: inline-block;
+	vertical-align: top;
+	width: 12rem;
+}
+
+.trackList {
+	flex-grow: 10;
+	margin-left: 0.5rem;
+}
+
+.tracks {
+}
+
+.track {
+	display: flex;
+	padding: 0.5rem;
+}
+
+.trackSelected {
+	composes: track;
+	background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1));
+}
+
+.albumName {
+	font-size: 1.4rem;
+	font-weight: 200;
+	letter-spacing: 0.04rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	margin-bottom: 0.5rem;
+	margin-left: 2.5rem;
+	color: rgba(255, 255, 255, 0.95);
+}
+
+.artists {
+	font-size: 1rem;
+	font-weight: 200;
+	letter-spacing: 0.04rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	margin-bottom: 1rem;
+	margin-left: 2.5rem;
+	color: rgba(255, 255, 255, 0.70);
+}
+
+.trackName {
+	letter-spacing: 0.04rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	font-size: 0.8rem;
+}
+
+.number {
+	margin-right: 1rem;
+	width: 1rem;
+	text-align: right;
+	font-size: 0.8rem;
+	color: rgba(255, 255, 255, 0.4);
+}
+

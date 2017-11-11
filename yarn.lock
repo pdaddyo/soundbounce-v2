@@ -1289,6 +1289,12 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   version "1.0.30000649"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000649.tgz#1ee1754a6df235450c8b7cd15e0ebf507221a86a"
 
+canvas@^2.0.0-alpha.6:
+  version "2.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.0.0-alpha.6.tgz#5538c4d3bb3fffcd23c8e0bf2770c9f5b07b543e"
+  dependencies:
+    nan "^2.4.0"
+
 caseless@~0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.11.0.tgz#715b96ea9841593cc33067923f5ec60ebda4f7d7"
@@ -1512,6 +1518,10 @@ codecov@^1.0.1:
     execSync "1.0.2"
     request ">=2.42.0"
     urlgrey ">=0.4.0"
+
+colibrijs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/colibrijs/-/colibrijs-1.0.0.tgz#cfb2427f46331b160c57190840a7743b7ea4fd14"
 
 color-convert@^1.3.0:
   version "1.9.0"
@@ -4998,7 +5008,7 @@ mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
 
-nan@^2.3.0, nan@^2.3.2:
+nan@^2.3.0, nan@^2.3.2, nan@^2.4.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.1.tgz#8c84f7b14c96b89f57fbc838012180ec8ca39a01"
 
@@ -5926,7 +5936,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.6.0, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.6:
+prop-types@15.6.0, prop-types@^15.5.10, prop-types@^15.5.6:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -5934,7 +5944,7 @@ prop-types@15.6.0, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.6:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
+prop-types@^15.5.0, prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
   version "15.5.8"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.8.tgz#6b7b2e141083be38c8595aa51fc55775c7199394"
   dependencies:

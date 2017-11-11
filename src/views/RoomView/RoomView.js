@@ -165,13 +165,15 @@ class RoomView extends Component {
 								 className={theme.backButton}>← Back to room</Link>;
 		let roomContent = null;
 		if (children) {
-			const wrappedChild = React.cloneElement(children, {onClickVote: this.onClickVote});
+			const wrappedChild = React.cloneElement(children, {
+				onClickVote: this.onClickVote,
+				roomId: room.id
+			});
 
 			roomContent = (
 				<div>
 					{backButton}
 					<div className={roomTheme} ref='room'>
-
 						{wrappedChild}
 					</div>
 				</div>

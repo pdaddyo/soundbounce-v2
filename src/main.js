@@ -38,6 +38,7 @@ history.listen(location => {
 		//	console.log('Couldn\'t find google analytics object to notify of navigate');
 		return;
 	}
+	window.scrollTo(0, 0);
 	// ga('send', 'pageview', location.pathname);
 });
 

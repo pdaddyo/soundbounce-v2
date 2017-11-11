@@ -140,6 +140,12 @@ class Track extends Component {
 					)
 			));
 
+		let albumId = null;
+		if (track.json) {
+			albumId = track.json.album.id;
+		} else {
+			albumId = track.album.id;
+		}
 		return (
 			<ContextMenuTrigger id='track'
 								ref={ctx => this.contextTrigger = ctx}
@@ -160,8 +166,7 @@ class Track extends Component {
 					<div className={sizeTheme('artistsAndTrackName')}>
 						<div className={sizeTheme('name')}
 							 onClick={() => {
-								 // document.location = `spotify:track:${track.id}`;
-								 router.push(`/room/${currentRoomId}/browse/track/${track.id}`);
+								 router.push(`/room/${currentRoomId}/browse/album/${albumId}/${track.id}`);
 							 }}>
 							{track.name}
 						</div>
