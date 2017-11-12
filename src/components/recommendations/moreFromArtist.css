@@ -28,8 +28,8 @@
 	font-weight: 200;
 	letter-spacing: 0.05rem;
 	position: relative;
-	width: 6rem;
-	height: 6rem;
+	width: 4rem;
+	height: 4rem;
 	float: left;
 	background-size: cover;
 	margin: 0 1rem 1rem 0;
@@ -46,11 +46,12 @@
 	left: 0;
 	right: 0;
 	padding: 4px;
-	color: rgba(255, 255, 255, 0.9);
-	font-size: 0.8rem;
+	color: #eef;
+	font-size: 0.6rem;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.9), 1px 1px 0 rgba(0, 0, 0, 0.8);
 	background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
 	overflow: hidden;
+	max-height: 2.5rem;
 	text-overflow: ellipsis;
 }
 
@@ -61,7 +62,7 @@
 	bottom: auto;
 	top: 0;
 	text-align: right;
-	font-size: 0.7rem;
+	font-size: 0.6rem;
 	background: none;
 	text-shadow: 0 0 0.1rem rgba(0, 0, 0, 0.95),
 	1px 1px 0 rgba(0, 0, 0, 0.95),
@@ -78,4 +79,16 @@
 .album:hover .year {
 	opacity: 1;
 	transform: translateY(0);
+}
+
+.singleOrAlbumsContainer {
+	composes: clearfix from 'shared/css/layout.css';
+}
+
+.albumsOrSinglesHeader {
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	margin-bottom: 0.5rem;
+	color: rgba(255, 255, 255, 0.6);
+	display: block;
 }

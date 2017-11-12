@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Recommendations from '../../components/recommendations/Recommendations';
 import {
-	spotifyAudioAnalysisRequest, spotifyFullAlbumRequest
+	spotifyAudioAnalysisRequest, spotifyFullAlbumRequest, spotifyPreviewTrack
 } from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
 import intersperse from 'shared/intersperse';
@@ -9,7 +9,7 @@ import intersperse from 'shared/intersperse';
 import theme from './browseAlbumView.css';
 import MoreFromArtist from '../../components/recommendations/MoreFromArtist';
 import Loading from '../../components/svg/loading/Loading';
-import {Link} from 'react-router';
+import {syncStart} from '../../redux/modules/sync';
 
 class BrowseAlbumView extends Component {
 	static propTypes = {
@@ -21,8 +21,14 @@ class BrowseAlbumView extends Component {
 		analysis: PropTypes.object,
 		features: PropTypes.object,
 		onClickVote: PropTypes.func,
+		previewStart: PropTypes.func,
+		previewStop: PropTypes.func,
 		fetchAnalysis: PropTypes.func,
 		fetchFullAlbum: PropTypes.func
+	};
+
+	static contextTypes = {
+		router: PropTypes.object
 	};
 
 	fetch = () => {
@@ -40,14 +46,42 @@ class BrowseAlbumView extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		const {fetchAnalysis, analysis} = this.props;
+
+		if (prevProps.albumId !== this.props.albumId) {
+			this.refs.container && this.refs.container.scrollTo(0, 0);
+			this.fetch();
+			return;
+		}
 		if (!prevProps.track || !this.props.track) {
 			return;
 		}
 		if (prevProps.track.id !== this.props.track.id) {
 			// track changed, get new data
-			this.fetch();
+			if (!analysis) {
+				fetchAnalysis();
+			}
 		}
 	}
+
+	constructor(props) {
+		super(props);
+		this.state = {previewingTrackId: null};
+	}
+
+	startPreview = (trackId, evt) => {
+		const {roomId, albumId} = this.props;
+		this.props.previewStart(trackId);
+		this.setState({previewingTrackId: trackId});
+		this.context.router.push(`/room/${roomId}/browse/album/${albumId}/${trackId}`);
+		document.addEventListener('mouseup', this.stopPreview);
+	};
+
+	stopPreview = evt => {
+		document.removeEventListener('mouseup', this.stopPreview);
+		this.setState({previewingTrackId: null});
+		this.props.previewStop();
+	};
 
 	render() {
 		const {album, track, onClickVote, roomId} = this.props;
@@ -55,24 +89,26 @@ class BrowseAlbumView extends Component {
 			return (<div className={theme.container}><Loading/></div>);
 		}
 		const art = album.images[Math.min(album.images.length - 1, 1)].url;
-
-		console.log(album);
 		return (
-			<div className={theme.container}>
+			<div className={theme.container} ref='container'>
 				{track && album && (
 					<div className={theme.album}>
 						<div className={theme.artworkAndCopyright}>
-							<div className={theme.artwork} style={{
-								backgroundImage: `url(${art})`
-							}}/>
+							<div className={theme.artwork}
+								 style={{
+									 backgroundImage: `url(${art})`
+								 }}
+								 onMouseDown={
+									 this.startPreview.bind(this, track.id)
+								 }/>
 							<div className={theme.date}>
 								Released {album.release_date} on {album.label}</div>
 							<div>
-								{album.copyrights && album.copyrights.map((c, i) => <div
-									key={i}
-									className={theme.copy}>
-									© {c.text.replace('©', '')}</div>)}
-
+								{album.copyrights && album.copyrights.length > 0 && (
+									<div className={theme.copy}>
+										© {album.copyrights[0].text.replace('©', '')}
+									</div>
+								)}
 							</div>
 						</div>
 						<div className={theme.trackList}>
@@ -89,18 +125,23 @@ class BrowseAlbumView extends Component {
 							</div>
 							<div className={theme.tracks}>
 								{album.tracks.items.map(albumTrack => (
-									<div className={
-										theme[`track${albumTrack.id === track.id ? 'Selected' : ''}`]
-									}>
-										<div className={theme.number}>
+									<div
+										key={albumTrack.id}
+										className={
+											theme[`track${albumTrack.id === track.id ? 'Selected' : ''}`]
+										}>
+										<div
+											className={theme[`number${this.state.previewingTrackId === albumTrack.id ? 'Previewing' : ''}`]}
+											onMouseDown={
+												this.startPreview.bind(this, albumTrack.id)
+											}>
 											{albumTrack.track_number}
 										</div>
-										<div className={theme.trackName}>
-											<Link
-												to={`/room/${roomId}/browse/album/${album.id}/${albumTrack.id}`}
-											>
-												{albumTrack.name}
-											</Link>
+										<div className={theme.trackName}
+											 onMouseDown={
+												 this.startPreview.bind(this, albumTrack.id)
+											 }>
+											{albumTrack.name}
 										</div>
 									</div>
 								))}
@@ -146,6 +187,12 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+	previewStart: (trackId) => {
+		dispatch(spotifyPreviewTrack(trackId));
+	},
+	previewStop: () => {
+		dispatch(syncStart());
+	},
 	fetchAnalysis: () => {
 		const {trackId} = ownProps.params;
 		if (trackId) {

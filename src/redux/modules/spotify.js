@@ -197,9 +197,9 @@ export const spotifyAudioAnalysisUpdate = ({trackId, audioFeatures, audioAnalysi
 });
 
 // only supply one of these options.
-export const spotifyFullAlbumRequest = ({albumIds, artistId}) => ({
+export const spotifyFullAlbumRequest = ({albumIds, artistId, fetchAll}) => ({
 	type: SPOTIFY_FULL_ALBUM_REQUEST,
-	payload: {albumIds, artistId}
+	payload: {albumIds, artistId, fetchAll}
 });
 
 export const spotifyFullAlbumUpdate = ({albumIds, albums}) => ({

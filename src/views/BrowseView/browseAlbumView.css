@@ -20,8 +20,9 @@
 
 .artwork {
 	composes: artworkHero from 'components/track/track.css';
-	width: 12rem;
-	height: 12rem;
+	width: 10rem;
+	height: 10rem;
+	min-width: 10rem;
 	vertical-align: top;
 }
 
@@ -35,12 +36,13 @@
 .artworkAndCopyright {
 	display: inline-block;
 	vertical-align: top;
-	width: 12rem;
+	width: 10rem;
 }
 
 .trackList {
 	flex-grow: 10;
 	margin-left: 0.5rem;
+	padding-top: 1rem;
 }
 
 .tracks {
@@ -80,13 +82,62 @@
 	letter-spacing: 0.04rem;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	font-size: 0.8rem;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.trackSelected .trackName {
+	color: rgba(255, 255, 255, 0.95);
 }
 
 .number {
+	position: relative;
 	margin-right: 1rem;
 	width: 1rem;
+	height: 1rem;
+	min-width: 1rem;
 	text-align: right;
 	font-size: 0.8rem;
 	color: rgba(255, 255, 255, 0.4);
+}
+
+.track:hover .number {
+	color: transparent;
+}
+
+.numberPreviewing {
+	composes: number;
+	color: transparent;
+}
+
+.numberPreviewing:after {
+	content: ' ';
+	position: absolute;
+	width: 2rem;
+	height: 2rem;
+	opacity: 0.9 !important;
+	left: -5px !important;
+	top: -9px;
+	cursor: pointer;
+	transform: scale(0.7) !important;
+	background: url(components/svg/icons/loading-spin.svg) no-repeat 50% 50% !important;
+}
+
+.track:hover .number:after {
+	content: ' ';
+	position: absolute;
+	width: 2rem;
+	height: 2rem;
+	opacity: 0.5;
+	left: -4px;
+	top: -9px;
+	cursor: pointer;
+	background: url(components/svg/icons/play.svg) no-repeat 50% 50%;
+}
+
+.track:hover .number:hover:after {
+	opacity: 0.95;
+	transform: scale(1.3);
 }
 

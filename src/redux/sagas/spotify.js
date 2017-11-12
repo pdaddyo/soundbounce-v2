@@ -25,6 +25,7 @@ import {
 import {socketConnectBegin} from '../modules/socket';
 import moment from 'moment';
 import _ from 'lodash';
+import {selectCurrentUser} from '../modules/users';
 
 const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
 const error401 = '401-unauthorized';
@@ -424,7 +425,7 @@ function * watchForRecommendationsRequest() {
 			}
 		}
 		const apiResult = yield call(spotifyApiCall, {
-			url: `/v1/recommendations?limit=100&seed_tracks=${trackIds.join(',')}${query}`
+			url: `/v1/recommendations?limit=30&seed_tracks=${trackIds.join(',')}${query}`
 		});
 
 		yield put(spotifyRecommendationsUpdate({tracks: apiResult.tracks}));
@@ -475,23 +476,31 @@ function * watchForAudioAnalysisRequests() {
 	}
 }
 
-function * handleFullAlbumRequest({albumIds, artistId}) {
+function * handleFullAlbumRequest({albumIds, artistId, fetchAll}) {
 	let apiResult = null;
 	if (artistId) {
-		// limit 20 so we can pass onto the full request later (that is max 20)
-		apiResult = yield call(spotifyApiCall, {
-			url: `/v1/artists/${artistId}/albums?limit=20&album_type=album` // ,single
-		});
-		const albumIds = apiResult.items.map(a => a.id);
-		yield put(spotifyFullAlbumUpdate({
-			albumIds,
-			albums: apiResult.items
-		}));
-
-		if (albumIds.length > 0) {
-			// now we have the crappy small objects that don't have release date,
-			// they're enough to get us going, but ask api for the detail now:
-			yield put(spotifyFullAlbumRequest({albumIds}));
+		const currentUser = yield select(state => selectCurrentUser(state));
+		// limit 20 so we can pass onto the full album request later (that is max 20)
+		let url = `/v1/artists/${artistId}/albums?limit=20&market=${currentUser.profile.country}`;
+		// loop around if we're paging >20 albums (and fetchAll is true)
+		while (url) {
+			// grab albums
+			const apiResult = yield call(spotifyApiCall, {url});
+			if (fetchAll) {
+				url = apiResult.next;
+			} else {
+				url = null;
+			}
+			const albumIds = apiResult.items.map(a => a.id);
+			yield put(spotifyFullAlbumUpdate({
+				albumIds,
+				albums: apiResult.items
+			}));
+			if (albumIds.length > 0) {
+				// now we have the crappy small objects that don't have release date,
+				// they're enough to get us going, but ask api for the detail now:
+				yield put(spotifyFullAlbumRequest({albumIds}));
+			}
 		}
 	} else {
 		apiResult = yield call(spotifyApiCall, {url: `/v1/albums/?ids=${albumIds.join(',')}`});
