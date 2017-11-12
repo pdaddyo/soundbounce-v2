@@ -24,8 +24,8 @@ export default class Waveform extends Component {
 	render() {
 		const {analysis, progressPercent, width, height, fill, stroke} = this.props;
 		if (!analysis) {
-			return <div style={{marginBottom: -1, marginTop: -1}}>
-				<Loading style={{width: 21, height: 21}}/>
+			return <div style={{marginBottom: -2, marginTop: -1}}>
+				<Loading style={{width: 23, height: 23}}/>
 			</div>;
 		}
 

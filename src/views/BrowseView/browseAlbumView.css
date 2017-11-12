@@ -179,10 +179,11 @@
 .selectedTrackDetails {
 	display: flex;
 	flex-wrap: wrap;
-	margin-top: 1rem;
+	margin-top: 0.75rem;
 	margin-bottom: 0.5rem;
 	margin-left: 2rem;
 	align-items: center;
+	height: 24px;
 }
 
 .trackFlex {

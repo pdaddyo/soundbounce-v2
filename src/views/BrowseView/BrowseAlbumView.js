@@ -241,8 +241,7 @@ class BrowseAlbumView extends Component {
 																features.mode === 1 ? '' : 'm'
 															}
 															</span><br/>
-																{Math.floor(features.tempo)}&nbsp;
-																bpm
+																{Math.floor(features.tempo)}bpm
 															</div>
 														)}
 													</div>
