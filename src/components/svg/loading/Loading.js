@@ -9,7 +9,7 @@ export default class Loading extends Component {
 
 	render() {
 		return (
-			<img src={loading}/>
+			<img src={loading} {...this.props}/>
 		);
 	}
 }

@@ -8,18 +8,13 @@ import {
 	spotifyAudioAnalysisRequest
 } from '../../redux/modules/spotify';
 import {connect} from 'react-redux';
-import {XYFrame} from 'semiotic';
-import {curveMonotoneX} from 'd3-shape';
-import minBy from 'lodash/minBy';
-import chunk from 'lodash/chunk';
-import meanBy from 'lodash/meanBy';
 
 import theme from './analysis.css';
 import Loading from '../svg/loading/Loading';
+import Waveform from '../track/waveform/Waveform';
 
 const width = 410;
 const height = 60;
-const desiredChunkCount = 200;
 
 class Analysis extends Component {
 	static propTypes = {
@@ -42,22 +37,6 @@ class Analysis extends Component {
 			return <div><Loading /></div>;
 		}
 
-		let chunkSize = Math.floor(analysis.segments.length / desiredChunkCount);
-		if (chunkSize < 1) {
-			chunkSize = 1;
-		}
-
-		// split analysis segments into around 100 chunks for our graph
-		const chunkedSegments = chunk(analysis.segments, chunkSize);
-
-		// for each chunk, work out the mean (avg) loudness
-		const segments = chunkedSegments.map(chunk => ({
-			loudness: meanBy(chunk, 'loudness_max'),
-			start: chunk[0].start
-		}));
-
-		const peakLoudness = minBy(segments, 'loudness').loudness;
-
 		const featuresKeys = ['danceability',
 							  'energy',
 							  'key',
@@ -69,49 +48,14 @@ class Analysis extends Component {
 							  'valence',
 							  'tempo'];
 
-		let progressIndicator = null;
-		if (progressPercent > 0) {
-			const xPos = progressPercent / 100 * width;
-
-			progressIndicator = <line x1={xPos} y1="0" x2={xPos} y2={height}
-									  style={{stroke: 'rgba(255,255,255,0.8)', strokeWidth: 2}}/>;
-		}
 		return (
 			<div>
-
-				{<XYFrame
-					size={[width, height]}
-					lines={[
-						{
-							id: 'loudness',
-							color: '#FA0B84',
-							data: segments.map(s => ({
-								start: s.start,
-								loudness: peakLoudness - s.loudness
-							}))
-						},
-						{
-							id: 'loudnessNeg', color: '#00BFFF',
-							data: segments.map(s => ({
-								start: s.start,
-								loudness: -peakLoudness + s.loudness
-							}))
-						}
-					]}
-					lineDataAccessor={'data'}
-					lineStyle={d => d.id === 'loudnessNeg' ? ({
-						fill: '#00BFFF',
-						fillOpacity: 0.7,
-						stroke: '#FA0B84',
-						strokeWidth: '2px'
-					}) : {}}
-
-					lineType={{type: 'difference', interpolator: curveMonotoneX}}
-					xAccessor={'start'}
-					yAccessor={'loudness'}
-					foregroundGraphics={progressIndicator}
-				/>}
-
+				<Waveform analysis={analysis}
+						  progressPercent={progressPercent}
+						  fill='#00BFFF'
+						  stroke='#FA0B84'
+						  width={width}
+						  height={height}/>
 
 				{features && (
 					<div className={theme.featuresContainer}>

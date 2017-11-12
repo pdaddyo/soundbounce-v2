@@ -49,7 +49,6 @@
 }
 
 .track {
-	display: flex;
 	padding: 0.5rem;
 }
 
@@ -82,7 +81,7 @@
 	letter-spacing: 0.04rem;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	font-size: 0.8rem;
-
+	cursor: pointer;
 	flex-grow: 10;
 }
 
@@ -93,6 +92,7 @@
 	font-size: 0.8rem;
 	color: rgba(255, 255, 255, 0.4);
 	margin-right: 0.5rem;
+	margin-left: 0.25rem;
 }
 
 .trackSelected .trackName {
@@ -125,7 +125,7 @@
 	width: 2rem;
 	height: 2rem;
 	opacity: 0.9 !important;
-	left: -6px !important;
+	left: -4px !important;
 	top: -9px;
 	cursor: pointer;
 	transform: scale(0.7) !important;
@@ -138,7 +138,7 @@
 	width: 2rem;
 	height: 2rem;
 	opacity: 0.5;
-	left: -6px;
+	left: -5px;
 	top: -9px;
 	cursor: pointer;
 	background: url(components/svg/icons/play.svg) no-repeat 50% 50%;
@@ -146,7 +146,7 @@
 
 .track:hover .number:hover:after {
 	opacity: 0.95;
-	transform: scale(1.3);
+	transform: scale(1.25);
 }
 
 .track:hover .duration {
@@ -174,4 +174,40 @@
 
 .track:hover .upvote:hover {
 	opacity: 1;
+}
+
+.selectedTrackDetails {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	margin-left: 2rem;
+	align-items: center;
+}
+
+.trackFlex {
+	display: flex;
+}
+
+.bpm {
+	font-size: 0.6rem;
+	letter-spacing: 0.02rem;
+	margin-right: 0.2rem;
+	text-align: center;
+}
+
+.key {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.key span {
+	letter-spacing: -1px;
+}
+
+.wave {
+	position: relative;
+	width: 190px;
+	margin-right: 0.5rem;
+	flex-grow: 1;
+	cursor: pointer;
 }

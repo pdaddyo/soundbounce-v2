@@ -50,8 +50,9 @@ class MoreFromArtist extends Component {
 		const art = album.images.length === 0
 			? null : album.images[album.images.length - 1].url;
 		return (
-			<Link to={`/room/${roomId}/browse/album/${album.id}`}
-				  key={album.id}>
+			<Link
+				to={`/room/${roomId}/browse/album/${album.id}/${album.tracks && album.tracks.items[0].id}`}
+				key={album.id}>
 				<div className={theme.album}
 					 style={{
 						 backgroundImage: `url(${art})`
