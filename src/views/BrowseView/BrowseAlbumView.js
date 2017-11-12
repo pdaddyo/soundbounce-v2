@@ -11,6 +11,10 @@ import MoreFromArtist from '../../components/recommendations/MoreFromArtist';
 import Loading from '../../components/svg/loading/Loading';
 import {syncStart} from '../../redux/modules/sync';
 
+const padDigits = (number, digits) => {
+	return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+};
+
 class BrowseAlbumView extends Component {
 	static propTypes = {
 		params: PropTypes.object,
@@ -142,6 +146,11 @@ class BrowseAlbumView extends Component {
 												 this.startPreview.bind(this, albumTrack.id)
 											 }>
 											{albumTrack.name}
+										</div>
+										<div className={theme.duration}>
+											{Math.floor(albumTrack.duration_ms / 1000 / 60)}:{
+											padDigits(Math.floor(albumTrack.duration_ms / 1000) % 60, 2)
+										}
 										</div>
 									</div>
 								))}

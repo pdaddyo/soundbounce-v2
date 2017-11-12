@@ -82,9 +82,16 @@
 	letter-spacing: 0.04rem;
 	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 	font-size: 0.8rem;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
+
+	flex-grow: 10;
+}
+
+.duration {
+	font-weight: 200;
+	letter-spacing: 0.04rem;
+	text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+	font-size: 0.8rem;
+	color: rgba(255, 255, 255, 0.4);
 }
 
 .trackSelected .trackName {
@@ -117,7 +124,7 @@
 	width: 2rem;
 	height: 2rem;
 	opacity: 0.9 !important;
-	left: -5px !important;
+	left: -6px !important;
 	top: -9px;
 	cursor: pointer;
 	transform: scale(0.7) !important;
@@ -130,7 +137,7 @@
 	width: 2rem;
 	height: 2rem;
 	opacity: 0.5;
-	left: -4px;
+	left: -6px;
 	top: -9px;
 	cursor: pointer;
 	background: url(components/svg/icons/play.svg) no-repeat 50% 50%;
