@@ -97,6 +97,9 @@ class BrowseAlbumView extends Component {
 	}
 
 	startPreview = (trackId, offset, evt) => {
+		if (evt.button && evt.button === 2) {
+			return;
+		}
 		const {roomId, albumId} = this.props;
 		this.props.previewStart(trackId, offset);
 		this.setState({previewingTrackId: trackId});
@@ -223,7 +226,8 @@ class BrowseAlbumView extends Component {
 																 const percent = x / waveWidth;
 																 this.startPreview(
 																	 albumTrack.id,
-																	 Math.floor(albumTrack.duration_ms * percent)
+																	 Math.floor(albumTrack.duration_ms * percent),
+																	 evt
 																 );
 															 }}>
 															<Waveform analysis={analysis}
