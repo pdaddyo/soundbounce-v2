@@ -10,6 +10,7 @@ import theme from './browseAlbumView.css';
 import MoreFromArtist from '../../components/recommendations/MoreFromArtist';
 import Loading from '../../components/svg/loading/Loading';
 import {syncStart} from '../../redux/modules/sync';
+import ArrowUpThick from '../../components/svg/icons/ArrowUpThick';
 
 const padDigits = (number, digits) => {
 	return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
@@ -20,6 +21,8 @@ class BrowseAlbumView extends Component {
 		params: PropTypes.object,
 		albumId: PropTypes.string,
 		roomId: PropTypes.string,
+		currentUserId: PropTypes.string,
+		playlist: PropTypes.array,
 		track: PropTypes.object,
 		album: PropTypes.object,
 		analysis: PropTypes.object,
@@ -88,7 +91,7 @@ class BrowseAlbumView extends Component {
 	};
 
 	render() {
-		const {album, track, onClickVote, roomId} = this.props;
+		const {album, track, onClickVote, roomId, playlist, currentUserId} = this.props;
 		if (!album) {
 			return (<div className={theme.container}><Loading/></div>);
 		}
@@ -128,32 +131,48 @@ class BrowseAlbumView extends Component {
 								)), ', ')}
 							</div>
 							<div className={theme.tracks}>
-								{album.tracks.items.map(albumTrack => (
-									<div
-										key={albumTrack.id}
-										className={
-											theme[`track${albumTrack.id === track.id ? 'Selected' : ''}`]
-										}>
+								{album.tracks.items.map(albumTrack => {
+									const playlistEntry = playlist.find(i => i.id === albumTrack.id);
+
+									const canVote = !playlistEntry ||
+										(playlistEntry && !playlistEntry.votes
+											.find(v => v.userId === currentUserId));
+
+									return (
 										<div
-											className={theme[`number${this.state.previewingTrackId === albumTrack.id ? 'Previewing' : ''}`]}
-											onMouseDown={
-												this.startPreview.bind(this, albumTrack.id)
+											key={albumTrack.id}
+											className={
+												theme[`track${albumTrack.id === track.id ? 'Selected' : ''}`]
 											}>
-											{albumTrack.track_number}
+											<div
+												className={theme[`number${this.state.previewingTrackId === albumTrack.id ? 'Previewing' : ''}`]}
+												onMouseDown={
+													this.startPreview.bind(this, albumTrack.id)
+												}>
+												{albumTrack.track_number}
+											</div>
+											<div className={theme.trackName}
+												 onMouseDown={
+													 this.startPreview.bind(this, albumTrack.id)
+												 }>
+												{albumTrack.name}
+											</div>
+											<div className={theme.duration}>
+												{Math.floor(albumTrack.duration_ms / 1000 / 60)}:{
+												padDigits(Math.floor(albumTrack.duration_ms / 1000) % 60, 2)
+											}
+											</div>
+											{canVote && (
+												<div className={theme.upvote}>
+													<div className={theme.upvoteInner}
+														 onClick={onClickVote.bind(this, albumTrack.id)}>
+														<ArrowUpThick size={1.25}/>
+													</div>
+												</div>
+											)}
 										</div>
-										<div className={theme.trackName}
-											 onMouseDown={
-												 this.startPreview.bind(this, albumTrack.id)
-											 }>
-											{albumTrack.name}
-										</div>
-										<div className={theme.duration}>
-											{Math.floor(albumTrack.duration_ms / 1000 / 60)}:{
-											padDigits(Math.floor(albumTrack.duration_ms / 1000) % 60, 2)
-										}
-										</div>
-									</div>
-								))}
+									);
+								})}
 							</div>
 						</div>
 					</div>
@@ -190,6 +209,8 @@ const mapStateToProps = (state, ownProps) => {
 		track,
 		albumId,
 		album,
+		currentUserId: state.users.currentUserId,
+		playlist: state.room.playlist,
 		analysis: state.spotify.audioAnalysis[trackId],
 		features: state.spotify.audioFeatures[trackId]
 	};
