@@ -40,5 +40,8 @@ export default [
 	},
 	{
 		emoji: ':exploding_head:', name: 'Exploding head', animation: 'bounce'
+	},
+	{
+		emoji: ':fire:', name: 'Fire', animation: 'wobble'
 	}
 ];
