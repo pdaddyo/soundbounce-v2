@@ -19,7 +19,7 @@ const tuneableAttributeList = [
 	{name: 'speechiness', min: 0, max: 100, from: 0, to: 100, divisor: 100},
 	{name: 'valence', min: 0, max: 100, from: 0, to: 100, divisor: 100},
 	{name: 'popularity', min: 0, max: 100, from: 0, to: 100, divisor: 1},
-	{name: 'bpm', min: 50, max: 195, from: 50, to: 180, divisor: 1}
+	{name: 'tempo', min: 50, max: 195, from: 50, to: 180, divisor: 1}
 ];
 
 class Recommendations extends Component {
