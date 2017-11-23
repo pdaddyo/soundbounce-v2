@@ -418,17 +418,21 @@ function * watchForRecommendationsRequest() {
 	// listen for requests to fetch recommendations
 	while (true) {
 		const {payload: {trackIds, tuneableAttributes}} = yield take(spotifyActions.SPOTIFY_RECOMMENDATIONS_REQUEST);
-		let query = '';
-		for (let attr of tuneableAttributes) {
-			if (attr.from !== attr.min || attr.to !== attr.max) {
-				query += (`&min_${attr.name}=${attr.from / attr.divisor}&max_${attr.name}=${attr.to / attr.divisor}`);
+		if (trackIds.length === 0) {
+			yield; put(spotifyRecommendationsUpdate({tracks: []}));
+		} else {
+			let query = '';
+			for (let attr of tuneableAttributes) {
+				if (attr.from !== attr.min || attr.to !== attr.max) {
+					query += (`&min_${attr.name}=${attr.from / attr.divisor}&max_${attr.name}=${attr.to / attr.divisor}`);
+				}
 			}
-		}
-		const apiResult = yield call(spotifyApiCall, {
-			url: `/v1/recommendations?limit=30&seed_tracks=${trackIds.join(',')}${query}`
-		});
+			const apiResult = yield call(spotifyApiCall, {
+				url: `/v1/recommendations?limit=30&seed_tracks=${trackIds.join(',')}${query}`
+			});
 
-		yield put(spotifyRecommendationsUpdate({tracks: apiResult.tracks}));
+			yield put(spotifyRecommendationsUpdate({tracks: apiResult.tracks}));
+		}
 	}
 }
 
