@@ -290,15 +290,21 @@ function * spotifyApiCall({url, method, body}) {
 
 		return null;
 	} catch (fetchError) {
-		if (fetchError.message === error401) {
+		if (!fetchError) {
+			yield put({
+				type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
+				payload: 'Unknown Spotify API error'
+			});
+		} else if (fetchError.message === error401) {
 			yield put({
 				type: spotifyActions.SPOTIFY_AUTH_REQUIRED
 			});
+		} else {
+			yield put({
+				type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
+				payload: fetchError.message || 'Unknown Spotify API error' + fetchError
+			});
 		}
-		yield put({
-			type: spotifyActions.SPOTIFY_API_REQUEST_ERROR,
-			payload: fetchError.message || 'Unknown Spotify API error' + fetchError
-		});
 	}
 }
 
