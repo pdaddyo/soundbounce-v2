@@ -30,7 +30,7 @@ import {selectCurrentUser} from '../modules/users';
 const {webApiBaseUrl, pollPlayerDelay, apiRetryDelay, maxRetry} = config.spotify;
 const error401 = '401-unauthorized';
 
-function * beginLogin() {
+function* beginLogin() {
 	// pull the spotify access tokens from the hash fragment of the url
 	const {hash, href} = window.location;
 	if (hash) {
@@ -55,17 +55,17 @@ function * beginLogin() {
 	yield put(spotifyAuthRequired());
 }
 
-function * getMyProfile() {
+function* getMyProfile() {
 	yield put(spotifyProfileRequest());
 	return yield call(spotifyApiCall, {url: '/v1/me'});
 }
 
-function * getPlayerState() {
+function* getPlayerState() {
 	yield put(spotifyPlayerStateRequest());
 	return yield call(spotifyApiCall, {url: '/v1/me/player'});
 }
 
-function * updatePlayerState() {
+function* updatePlayerState() {
 	// get player state from api then update redux state with the return
 	const playerState = yield getPlayerState();
 	if (playerState) {
@@ -73,7 +73,7 @@ function * updatePlayerState() {
 	}
 }
 
-function * checkSyncStatus() {
+function* checkSyncStatus() {
 	const {room, sync, spotify} = yield select(state => state);
 	if (room.playlist.length > 0) {
 		if (sync.isSynced) {
@@ -135,7 +135,7 @@ function * checkSyncStatus() {
 }
 
 // this saga runs forever checking the player status
-function * pollSpotifyPlayerStatus() {
+function* pollSpotifyPlayerStatus() {
 	while (true) {
 		// check state to see if we're logged in
 		const {isLoggedIn} = yield select(state => state.spotify);
@@ -152,7 +152,7 @@ function * pollSpotifyPlayerStatus() {
 	}
 }
 
-function * spotifyDisableShuffleIfEnabled() {
+function* spotifyDisableShuffleIfEnabled() {
 	const {player} = yield select(state => state.spotify);
 	if (player && player.shuffle_state) {
 		yield put(spotifyDisableShuffle());
@@ -164,7 +164,7 @@ function * spotifyDisableShuffleIfEnabled() {
 	}
 }
 
-function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
+function* spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 	yield put(spotifyPlayTrack({trackIds, seekPosition}));
 	// make sure shuffle hasn't been switched on
 	yield call(spotifyDisableShuffleIfEnabled);
@@ -184,7 +184,7 @@ function * spotifyPlayTracksThenSeek({trackIds, seekPosition}) {
 	}
 }
 
-function * watchForSyncStart() {
+function* watchForSyncStart() {
 	while (true) {
 		yield take(syncActions.SYNC_START);
 		const {room, sync} = yield select(state => state);
@@ -214,7 +214,7 @@ function * watchForSyncStart() {
 }
 
 // play the track if now playing in room changes and we're synced
-function * watchForRoomNowPlayingChanged() {
+function* watchForRoomNowPlayingChanged() {
 	while (true) {
 		const {payload: {trackIds}} = yield take(roomActions.ROOM_NOW_PLAYING_CHANGED);
 		const {isSynced, isSyncing} = yield select(state => state.sync);
@@ -224,7 +224,7 @@ function * watchForRoomNowPlayingChanged() {
 	}
 }
 
-function * watchForPreviewTrack() {
+function* watchForPreviewTrack() {
 	while (true) {
 		const {payload: {trackId, offset}} = yield take(spotifyActions.SPOTIFY_PREVIEW_TRACK);
 		const {tracks} = yield select(state => state.spotify);
@@ -237,7 +237,7 @@ function * watchForPreviewTrack() {
 	}
 }
 
-function * spotifyApiCall({url, method, body}) {
+function* spotifyApiCall({url, method, body}) {
 	let baseUrl = webApiBaseUrl;
 	if (url.indexOf('https') === 0) {
 		baseUrl = '';
@@ -308,7 +308,7 @@ function * spotifyApiCall({url, method, body}) {
 	}
 }
 
-function * watchForAuthRequired() {
+function* watchForAuthRequired() {
 	while (true) {
 		yield take(spotifyActions.SPOTIFY_AUTH_REQUIRED);
 		// redirect to the login page on the server which will bring us back
@@ -320,7 +320,7 @@ function * watchForAuthRequired() {
 	}
 }
 
-function * waitForAuthExpires() {
+function* waitForAuthExpires() {
 	let {payload: {expires, refreshToken, accessToken}} =
 		yield take(spotifyActions.SPOTIFY_AUTH_INIT);
 
@@ -349,7 +349,7 @@ function * waitForAuthExpires() {
 	}
 }
 
-function * watchForDevicesRequest() {
+function* watchForDevicesRequest() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 	// request devices
@@ -367,7 +367,7 @@ function * watchForDevicesRequest() {
 	}
 }
 
-function * watchForSwitchDevice() {
+function* watchForSwitchDevice() {
 	while (true) {
 		const {payload} = yield take(spotifyActions.SPOTIFY_SWITCH_DEVICE);
 		yield call(spotifyApiCall, {
@@ -379,7 +379,7 @@ function * watchForSwitchDevice() {
 	}
 }
 
-function * watchForSearchRequest() {
+function* watchForSearchRequest() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 
@@ -393,7 +393,7 @@ function * watchForSearchRequest() {
 	}
 }
 
-function * watchForSyncStop() {
+function* watchForSyncStop() {
 	// listen for sync stopping
 	while (true) {
 		const {payload: {reason}} = yield take(SYNC_STOP);
@@ -417,7 +417,7 @@ function * watchForSyncStop() {
 	}
 }
 
-function * watchForRecommendationsRequest() {
+function* watchForRecommendationsRequest() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 
@@ -425,7 +425,8 @@ function * watchForRecommendationsRequest() {
 	while (true) {
 		const {payload: {trackIds, tuneableAttributes}} = yield take(spotifyActions.SPOTIFY_RECOMMENDATIONS_REQUEST);
 		if (trackIds.length === 0) {
-			yield; put(spotifyRecommendationsUpdate({tracks: []}));
+			yield;
+			put(spotifyRecommendationsUpdate({tracks: []}));
 		} else {
 			let query = '';
 			for (let attr of tuneableAttributes) {
@@ -442,7 +443,7 @@ function * watchForRecommendationsRequest() {
 	}
 }
 
-function * loadMyPlaylists() {
+function* loadMyPlaylists() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 	yield put(spotifyMyPlaylistsRequest());
@@ -450,6 +451,11 @@ function * loadMyPlaylists() {
 	while (url) {
 		// grab playlists
 		const apiResult = yield call(spotifyApiCall, {url});
+		// skip dodgy responses
+		if (!apiResult || !apiResult['items']) {
+			url = null;
+			continue;
+		}
 		const {items} = apiResult;
 		url = apiResult.next;
 		if (items) {
@@ -458,7 +464,7 @@ function * loadMyPlaylists() {
 	}
 }
 
-function * watchForAddTrackToPlaylist() {
+function* watchForAddTrackToPlaylist() {
 	// listen for requests to fetch search results
 	while (true) {
 		const {payload: {playlistId, trackId}} = yield take(spotifyActions.SPOTIFY_ADD_TRACK_TO_PLAYLIST);
@@ -471,7 +477,7 @@ function * watchForAddTrackToPlaylist() {
 	}
 }
 
-function * watchForAudioAnalysisRequests() {
+function* watchForAudioAnalysisRequests() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 
@@ -486,7 +492,7 @@ function * watchForAudioAnalysisRequests() {
 	}
 }
 
-function * handleFullAlbumRequest({albumIds, artistId, fetchAll}) {
+function* handleFullAlbumRequest({albumIds, artistId, fetchAll}) {
 	let apiResult = null;
 	if (artistId) {
 		const currentUser = yield select(state => selectCurrentUser(state));
@@ -518,7 +524,7 @@ function * handleFullAlbumRequest({albumIds, artistId, fetchAll}) {
 	}
 }
 
-function * watchForFullAlbumRequests() {
+function* watchForFullAlbumRequests() {
 	// wait for login
 	yield take(spotifyActions.SPOTIFY_AUTH_OK);
 	// listen for requests to fetch full album details
@@ -529,7 +535,7 @@ function * watchForFullAlbumRequests() {
 	}
 }
 
-export default function * spotifyInit() {
+export default function* spotifyInit() {
 	try {
 		yield [
 			watchForAuthRequired(),
