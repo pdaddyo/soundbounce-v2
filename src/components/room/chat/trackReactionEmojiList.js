@@ -43,5 +43,8 @@ export default [
 	},
 	{
 		emoji: ':fire:', name: 'Fire', animation: 'wobble'
+	},
+	{
+		emoji: ':rotating_light:', name: 'Call the cops', animation: 'spin'
 	}
 ];
