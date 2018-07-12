@@ -100,6 +100,7 @@ export default app => {
 					request.get(profileOptions, (error, response, profile) => {
 						if (!profile) {
 							res.redirect('/error/profile-load-failed');
+							return;
 						}
 						// create the user if it doesn't exist
 						app.users
