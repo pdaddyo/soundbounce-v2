@@ -98,6 +98,11 @@ export default app => {
 
 					// use the access token to access the Spotify Web API
 					request.get(profileOptions, (error, response, profile) => {
+						if (error) {
+							res.write(JSON.stringify(error));
+							res.end();
+							return;
+						}
 						if (!profile) {
 							res.redirect('/error/profile-load-failed');
 							return;
