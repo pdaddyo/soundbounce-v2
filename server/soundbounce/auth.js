@@ -26,7 +26,7 @@ const stateKey = 'spotify_auth_state',
 		'user-top-read'
 	];
 
-export default (app) => {
+export default app => {
 	app.get('/login', (req, res) => {
 		const state = randomString(16);
 
@@ -37,23 +37,29 @@ export default (app) => {
 		}
 
 		// request authorization from spotify
-		res.redirect('https://accounts.spotify.com/authorize?' +
-			querystring.stringify({
-				response_type: 'code',
-				client_id: secrets.spotify.clientId,
-				scope: spotifyScopes.join(' '),
-				redirect_uri: secrets.spotify.redirectUri,
-				state: state
-			}));
+		res.redirect(
+			'https://accounts.spotify.com/authorize?' +
+				querystring.stringify({
+					response_type: 'code',
+					client_id: secrets.spotify.clientId,
+					scope: spotifyScopes.join(' '),
+					redirect_uri: secrets.spotify.redirectUri,
+					state: state
+				})
+		);
 	});
 
 	// spotify will reply on this endpoint (malicious users won't know the secret state)
 	app.get('/spotify-oauth-callback', (req, res) => {
-		const {code, state} = req.query;
+		const { code, state } = req.query;
 		const storedState = req.cookies ? req.cookies[stateKey] : null;
 		if (storedState && (state === null || state !== storedState)) {
-			res.redirect('/error/invalid-oauth-state?state=' + encodeURIComponent(state) +
-				'&storedState=' + encodeURIComponent(storedState));
+			res.redirect(
+				'/error/invalid-oauth-state?state=' +
+					encodeURIComponent(state) +
+					'&storedState=' +
+					encodeURIComponent(storedState)
+			);
 		} else {
 			res.clearCookie(stateKey);
 			const authOptions = {
@@ -64,57 +70,68 @@ export default (app) => {
 					grant_type: 'authorization_code'
 				},
 				headers: {
-					'Authorization': 'Basic ' +
-					(new Buffer(secrets.spotify.clientId + ':' + secrets.spotify.clientSecret).toString('base64'))
+					Authorization:
+						'Basic ' +
+						new Buffer(
+							secrets.spotify.clientId + ':' + secrets.spotify.clientSecret
+						).toString('base64')
 				},
 				json: true
 			};
 
 			request.post(authOptions, (error, response, body) => {
-					if (!error && response.statusCode === 200) {
-						const accessToken = body.access_token,
-							refreshToken = body.refresh_token,
-							expires = body['expires_in'];
+				if (!error && response.statusCode === 200) {
+					const accessToken = body.access_token,
+						refreshToken = body.refresh_token,
+						expires = body['expires_in'];
 
-						const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
-						if (redirectUrl) {
-							res.clearCookie('redirectUrl');
+					const redirectUrl = req.cookies ? req.cookies['redirectUrl'] : null;
+					if (redirectUrl) {
+						res.clearCookie('redirectUrl');
+					}
+
+					const profileOptions = {
+						url: 'https://api.spotify.com/v1/me',
+						headers: { Authorization: 'Bearer ' + accessToken },
+						json: true
+					};
+
+					// use the access token to access the Spotify Web API
+					request.get(profileOptions, (error, response, profile) => {
+						if (error) {
+							res.write(JSON.stringify(error));
+							res.end();
+							return;
 						}
-
-						const profileOptions = {
-							url: 'https://api.spotify.com/v1/me',
-							headers: {'Authorization': 'Bearer ' + accessToken},
-							json: true
-						};
-
-						// use the access token to access the Spotify Web API
-						request.get(profileOptions, (error, response, profile) => {
-
-							// create the user if it doesn't exist
-							app.users
-								.loginUser({profile, accessToken, refreshToken})
-								.then(user => {
-									// pass the token to the browser to make requests from there
-									res.redirect((redirectUrl || '/') + '#' +
+						if (!profile) {
+							res.redirect('/error/profile-load-failed');
+							return;
+						}
+						// create the user if it doesn't exist
+						app.users
+							.loginUser({ profile, accessToken, refreshToken })
+							.then(user => {
+								// pass the token to the browser to make requests from there
+								res.redirect(
+									(redirectUrl || '/') +
+										'#' +
 										querystring.stringify({
 											access_token: accessToken,
 											refresh_token: refreshToken,
 											expires
-										}));
-								})
-
-						});
-					}
-					else {
-						res.redirect('/error/invalid-token');
-					}
+										})
+								);
+							});
+					});
+				} else {
+					res.redirect('/error/invalid-token');
 				}
-			);
+			});
 		}
 	});
 
 	app.get('/spotify-token-refresh', (req, res) => {
-		const {token} = req.query;
+		const { token } = req.query;
 		const authOptions = {
 			url: 'https://accounts.spotify.com/api/token',
 			form: {
@@ -122,21 +139,22 @@ export default (app) => {
 				grant_type: 'refresh_token'
 			},
 			headers: {
-				'Authorization': 'Basic ' +
-				(new Buffer(secrets.spotify.clientId + ':' + secrets.spotify.clientSecret).toString('base64'))
+				Authorization:
+					'Basic ' +
+					new Buffer(
+						secrets.spotify.clientId + ':' + secrets.spotify.clientSecret
+					).toString('base64')
 			},
 			json: true
 		};
 
 		request.post(authOptions, (error, response, body) => {
-				if (!error && response.statusCode === 200) {
-					res.write(JSON.stringify(body));
-					res.end();
-				}
-				else {
-					res.redirect('/error/invalid-token');
-				}
+			if (!error && response.statusCode === 200) {
+				res.write(JSON.stringify(body));
+				res.end();
+			} else {
+				res.redirect('/error/invalid-token');
 			}
-		);
+		});
 	});
 };
