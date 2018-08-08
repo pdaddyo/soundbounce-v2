@@ -49,5 +49,8 @@ export default [
 	},
 	{
 		emoji: ':gun:', name: 'Pop Pop', animation: 'wobble'
+	},
+	{
+		emoji: ':nose:', name: 'Sniff Sniff', animation: 'vibrate'
 	}
 ];
