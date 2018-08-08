@@ -46,5 +46,8 @@ export default [
 	},
 	{
 		emoji: ':rotating_light:', name: 'Call the Cops', animation: 'spin'
+	},
+	{
+		emoji: ':gun:', name: 'Pop Pop', animation: 'wobble'
 	}
 ];
