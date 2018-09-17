@@ -137,14 +137,19 @@ class ChatBubble extends Component {
 
 	getUnfurledLinks(text) {
 		const matches = text.match(linkRegex);
-		const {unfurling, toggleUnfurl} = this.props;
+		const {unfurling, toggleUnfurl, chat} = this.props;
 		const returnArray = [];
 		if (matches) {
 			for (let url of matches) {
 				if (url) {
 					if (unfurling.urls[url] && unfurling.urls[url].json) {
 						// we have json data for this unfurl
-						const {json, hidden} = unfurling.urls[url];
+						let {json, hidden} = unfurling.urls[url];
+						
+						// hide robin's links by default 
+						if(chat && chat.user.nickname === 'Robin Rylander') {
+							hidden = true;
+						}
 
 						// don't show 'app' html like reddit inline comments or autoplay
 						const showHtml = json.html &&
