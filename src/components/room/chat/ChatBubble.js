@@ -148,7 +148,7 @@ class ChatBubble extends Component {
 
 						// hide robin's links by default
 						if (chat && chat.user.nickname === 'Robin Rylander') {
-							hidden = true;
+							hidden = !hidden;
 						}
 
 						// don't show 'app' html like reddit inline comments or autoplay
