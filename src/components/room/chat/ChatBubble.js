@@ -145,9 +145,9 @@ class ChatBubble extends Component {
 					if (unfurling.urls[url] && unfurling.urls[url].json) {
 						// we have json data for this unfurl
 						let {json, hidden} = unfurling.urls[url];
-						
-						// hide robin's links by default 
-						if(chat && chat.user.nickname === 'Robin Rylander') {
+
+						// hide robin's links by default
+						if (chat && chat.user.nickname === 'Robin Rylander') {
 							hidden = true;
 						}
 
