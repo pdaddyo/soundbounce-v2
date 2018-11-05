@@ -80,7 +80,8 @@ export default class ActiveRoom {
 		}
 
 		// teach the chat bot everything said so far (it forgets between sessions)
-		existingState.actionLog.filter(action => action.type === 'ROOM_CHAT').forEach(action => {
+		existingState.actionLog.filter(action => action.type === 'ROOM_CHAT' && 
+					       action.payload.userId!=='vaargen').forEach(action => {
 			this.ector.addEntry(action.payload.text);
 			this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
 			const botResponse = this.ector.generateResponse();
@@ -312,25 +313,27 @@ export default class ActiveRoom {
 			}
 
 			let userId = sender.get('id');
-			try {
-				if (text === '/parrot' || text === '/bot' || text === '/p') {
-					if (userId !== this.room.get('creatorId')) {
-						return;
+			if(userId !== 'vaargen') {
+				try {
+
+					if (text === '/parrot' || text === '/bot' || text === '/p') {
+						if (userId !== this.room.get('creatorId')) {
+							return;
+						}
+						this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+						const botResponse = this.ector.generateResponse();
+						this.ectorPreviousResponseNodes = botResponse.nodes;
+						const racistCheck = botResponse.sentence.replace(/negro/g, 'robin rylander is a racist')
+						text = racistCheck;
+						userId = 'parrot';
+					} else {
+						this.ector.addEntry(text);
 					}
-					this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
-					const botResponse = this.ector.generateResponse();
-					this.ectorPreviousResponseNodes = botResponse.nodes;
-					const racistCheck = botResponse.sentence.replace(/negro/g, 'robin rylander is a racist')
-					text = racistCheck;
-					userId = 'parrot';
-				} else {
-					this.ector.addEntry(text);
+				}
+				catch (err) {
+					this.debug(`chat bot error - ${err}`);
 				}
 			}
-			catch (err) {
-				this.debug(`chat bot error - ${err}`);
-			}
-
 			const nowPlayingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
 			this.emitUserEvent(roomChat({
 				userId,
