@@ -280,6 +280,9 @@ class ChatBubble extends Component {
 		if (!chat || chat['text'] === null) {
 			return null;
 		}
+if (chat && chat.user.nickname === 'Daniel Poole') {
+							return null;
+						}
 
 		const userTheme = (className) =>
 			theme[sentByCurrentUser ? className : className + 'OtherUser'];
