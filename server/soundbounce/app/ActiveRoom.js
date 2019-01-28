@@ -350,11 +350,8 @@ export default class ActiveRoom {
 					this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
 					const botResponse = this.ector.generateResponse();
 					this.ectorPreviousResponseNodes = botResponse.nodes;
-					/*	const racistCheck = botResponse.sentence.replace(
-						/negro/g,
-						'robin rylander is a racist'
-					);
-					text = racistCheck;*/
+
+					text = botResponse.sentence;
 					userId = 'parrot';
 				} else {
 					this.ector.addEntry(text);
