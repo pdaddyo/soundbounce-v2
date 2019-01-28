@@ -4,7 +4,7 @@
 import _debug from 'debug';
 import update from 'react-addons-update';
 import config from '../../../config/app';
-import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import roomReducer, {
 	roomFullSync,
 	roomTrackAddOrVote,
@@ -13,21 +13,23 @@ import roomReducer, {
 	roomChat,
 	roomReaction,
 	roomNowPlayingEnded,
-	actions as roomActions, roomEmojiAnimation, roomTrackVoteSkip
+	actions as roomActions,
+	roomEmojiAnimation,
+	roomTrackVoteSkip
 } from '../../../src/redux/modules/shared/room';
-import {uniq, flatten, take, some} from 'lodash';
+import { uniq, flatten, take, some } from 'lodash';
 import shortid from 'shortid';
 import moment from 'moment';
 import Refill from './Refill';
 import Ector from 'ector';
 import trackReactionEmojiList from '../../../src/components/room/chat/trackReactionEmojiList';
 
-import {TrackActivity} from '../data/schema';
+import { TrackActivity } from '../data/schema';
 
 let debug = _debug('soundbounce:activeroom');
 
 export default class ActiveRoom {
-	constructor({room, app}) {
+	constructor({ room, app }) {
 		this.room = room;
 		this.app = app;
 		this.id = room.get('id');
@@ -35,7 +37,7 @@ export default class ActiveRoom {
 		this.reduxStore = null;
 		this.trackTimeoutId = null;
 		this.refillTimeoutId = null;
-		this.refill = new Refill({room, app, activeRoom: this});
+		this.refill = new Refill({ room, app, activeRoom: this });
 		this.debug = _debug(`soundbounce:activeroom:${this.id}`);
 
 		// ector the bot
@@ -46,7 +48,7 @@ export default class ActiveRoom {
 	// called when first user joins a room so room goes active
 	startup() {
 		this.createAndPopulateReduxStore();
-		const {reduxStore, room} = this;
+		const { reduxStore, room } = this;
 
 		const existingState = reduxStore.getState();
 		let lastRoomActivityTimestamp = room.get('shutdownAt');
@@ -62,13 +64,20 @@ export default class ActiveRoom {
 			// was there a track playing when we shutdown?
 			if (existingState.playlist.length > 0) {
 				// ok resume the track as if we just left
-				const msSinceShutdown = moment().valueOf() - moment(lastRoomActivityTimestamp).valueOf();
-				debug(`Room '${this.name}' startup - resuming track that was playing ${moment.duration(msSinceShutdown).humanize()} ago`);
+				const msSinceShutdown =
+					moment().valueOf() - moment(lastRoomActivityTimestamp).valueOf();
+				debug(
+					`Room '${
+						this.name
+					}' startup - resuming track that was playing ${moment
+						.duration(msSinceShutdown)
+						.humanize()} ago`
+				);
 
 				// either start now or resume where we were
-				const nowPlayingStartedAt = existingState.nowPlayingStartedAt ?
-					existingState.nowPlayingStartedAt + msSinceShutdown :
-					moment.valueOf();
+				const nowPlayingStartedAt = existingState.nowPlayingStartedAt
+					? existingState.nowPlayingStartedAt + msSinceShutdown
+					: moment.valueOf();
 
 				this.setReduxRoomStateDuringStartup({
 					...existingState,
@@ -80,13 +89,15 @@ export default class ActiveRoom {
 		}
 
 		// teach the chat bot everything said so far (it forgets between sessions)
-		existingState.actionLog.filter(action => action.type === 'ROOM_CHAT' && 
-					       action.payload.userId!=='vaargen').forEach(action => {
-			this.ector.addEntry(action.payload.text);
-			this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
-			const botResponse = this.ector.generateResponse();
-			this.ectorPreviousResponseNodes = botResponse.nodes;
-		});
+		// && action.payload.userId!=='vaargen'
+		existingState.actionLog
+			.filter(action => action.type === 'ROOM_CHAT')
+			.forEach(action => {
+				this.ector.addEntry(action.payload.text);
+				this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+				const botResponse = this.ector.generateResponse();
+				this.ectorPreviousResponseNodes = botResponse.nodes;
+			});
 
 		// save default state so it's sent to first client
 		room.set('reduxState', reduxStore.getState());
@@ -104,7 +115,10 @@ export default class ActiveRoom {
 		if (this.refillTimeoutId) {
 			clearTimeout(this.refillTimeoutId);
 		}
-		this.refillTimeoutId = setTimeout(this.refillRoom, config.refill.roomRefillDelay);
+		this.refillTimeoutId = setTimeout(
+			this.refillRoom,
+			config.refill.roomRefillDelay
+		);
 	};
 
 	// called when last user leaves a room so shuts down (pauses) until someone rejoins
@@ -129,7 +143,7 @@ export default class ActiveRoom {
 	}
 
 	beginNextTrackTimer = () => {
-		const {reduxStore} = this;
+		const { reduxStore } = this;
 		const state = reduxStore.getState();
 		if (state.playlist.length === 0) {
 			debug('Error - beingNextTrackTimer called with no tracks in playlist');
@@ -141,10 +155,8 @@ export default class ActiveRoom {
 		this.room.save();
 
 		// find the duration for playing track from the db
-		this.app.tracks.findTracksInDb(
-			[state.playlist[0].id]
-		).then(tracks => {
-			const {duration} = tracks[0];
+		this.app.tracks.findTracksInDb([state.playlist[0].id]).then(tracks => {
+			const { duration } = tracks[0];
 			const ms = state.nowPlayingStartedAt - moment().valueOf() + duration;
 			if (this.trackTimeoutId) {
 				clearTimeout(this.trackTimeoutId);
@@ -154,7 +166,7 @@ export default class ActiveRoom {
 	};
 
 	nextTrackTimerTick = () => {
-		const {reduxStore} = this;
+		const { reduxStore } = this;
 		const state = reduxStore.getState();
 		const trackWithVotes = state.playlist[0];
 		const numTracksRemaining = state.playlist.length - 1;
@@ -180,17 +192,19 @@ export default class ActiveRoom {
 
 		// if there's a next track, find its duration
 		if (state.playlist.length > 1) {
-			finishingTrackDuration = this.app.tracks.findTracksInDb(
-				[state.playlist[0].id]
-			).then(tracks => tracks[0].get('duration'));
+			finishingTrackDuration = this.app.tracks
+				.findTracksInDb([state.playlist[0].id])
+				.then(tracks => tracks[0].get('duration'));
 			this.room.set('nowPlayingTrackId', state.playlist[1].id);
 		} else {
 			this.room.set('nowPlayingTrackId', null);
 		}
 
-		finishingTrackDuration.then((finishingTrackDuration) => {
+		finishingTrackDuration.then(finishingTrackDuration => {
 			// fire the event to update our redux store
-			this.reduxStore.dispatch(roomNowPlayingEnded({trackWithVotes, finishingTrackDuration}));
+			this.reduxStore.dispatch(
+				roomNowPlayingEnded({ trackWithVotes, finishingTrackDuration })
+			);
 			// save the redux state to the db
 			this.room.set('reduxState', this.reduxStore.getState());
 			this.room.save();
@@ -213,18 +227,20 @@ export default class ActiveRoom {
 			this.setReduxRoomStateDuringStartup(existingState);
 		} else {
 			// sync with default state
-			this.setReduxRoomStateDuringStartup(this.reduxStore.getState())
+			this.setReduxRoomStateDuringStartup(this.reduxStore.getState());
 		}
 	}
 
 	// a 'fake' sync action used to populate the server's room state during room startup
 	setReduxRoomStateDuringStartup(newState) {
-		this.reduxStore.dispatch(roomFullSync({
-			room: {
-				reduxState: newState,
-				listeners: []
-			}
-		}));
+		this.reduxStore.dispatch(
+			roomFullSync({
+				room: {
+					reduxState: newState,
+					listeners: []
+				}
+			})
+		);
 	}
 
 	// get a full state object that allows the client to render everything in this room without
@@ -234,7 +250,7 @@ export default class ActiveRoom {
 		const reduxState = this.reduxStore.getState();
 		this.room.set('reduxState', reduxState);
 
-		const roomPlain = this.room.get({plain: true});
+		const roomPlain = this.room.get({ plain: true });
 		// send back the plain sequelize object which includes the jsonb for the 'reduxState'
 		const room = {
 			...roomPlain,
@@ -259,25 +275,31 @@ export default class ActiveRoom {
 		const trackIdsInRecentlyPlayed = reduxState.recentlyPlayed.map(pt => pt.id);
 
 		const tracks = this.app.tracks.findTracksInDb(
-			uniq(flatten([...trackIdsInActionLog,
-						  ...trackIdsInPlaylist,
-						  ...trackIdsInRecentlyPlayed]))
+			uniq(
+				flatten([
+					...trackIdsInActionLog,
+					...trackIdsInPlaylist,
+					...trackIdsInRecentlyPlayed
+				])
+			)
 		);
 
-		return Promise.all([users, tracks]).then(([users, tracks]) => ({
-			room,
-			users,
-			tracks
-		})).catch(err => {
-			debug('Error in getFullSync: ', err);
-		});
+		return Promise.all([users, tracks])
+			.then(([users, tracks]) => ({
+				room,
+				users,
+				tracks
+			}))
+			.catch(err => {
+				debug('Error in getFullSync: ', err);
+			});
 	}
 
 	// client sending a message to this room
-	handleRoomEventMessage({sender, event}) {
+	handleRoomEventMessage({ sender, event }) {
 		const state = this.reduxStore.getState();
 		if (event.type === 'addOrVote') {
-			let {trackIds} = event;
+			let { trackIds } = event;
 			if (trackIds.length === 0) {
 				return;
 			}
@@ -290,16 +312,22 @@ export default class ActiveRoom {
 				}
 
 				const playlistWasEmptyBefore = state.playlist.length === 0;
-				const alreadyInPlaylist = some(state.playlist, item => item.id === tracks[0].get('id'));
-				this.emitUserEvent(roomTrackAddOrVote({
-					userId: sender ? sender.get('id') : 0,
-					// some tracks may have failed so only
-					// send back ids from the results
-					trackIds: tracks.map(t => t.get('id')),
-					isAdd: !alreadyInPlaylist
-				}), {
-					tracks: tracks.map(t => t.get({plain: true}))
-				});
+				const alreadyInPlaylist = some(
+					state.playlist,
+					item => item.id === tracks[0].get('id')
+				);
+				this.emitUserEvent(
+					roomTrackAddOrVote({
+						userId: sender ? sender.get('id') : 0,
+						// some tracks may have failed so only
+						// send back ids from the results
+						trackIds: tracks.map(t => t.get('id')),
+						isAdd: !alreadyInPlaylist
+					}),
+					{
+						tracks: tracks.map(t => t.get({ plain: true }))
+					}
+				);
 
 				if (playlistWasEmptyBefore) {
 					this.beginNextTrackTimer();
@@ -307,105 +335,127 @@ export default class ActiveRoom {
 			});
 		}
 		if (event.type === 'chat') {
-			let {text} = event;
+			let { text } = event;
 			if (!('text' in event) || text === null || text === '') {
 				return;
 			}
 
 			let userId = sender.get('id');
-			if(userId !== 'vaargen') {
-				try {
-
-					if (text === '/parrot' || text === '/bot' || text === '/p') {
-						if (userId !== this.room.get('creatorId')) {
-							return;
-						}
-						this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
-						const botResponse = this.ector.generateResponse();
-						this.ectorPreviousResponseNodes = botResponse.nodes;
-						const racistCheck = botResponse.sentence.replace(/negro/g, 'robin rylander is a racist')
-						text = racistCheck;
-						userId = 'parrot';
-					} else {
-						this.ector.addEntry(text);
+			//	if (userId !== 'vaargen') {
+			try {
+				if (text === '/parrot' || text === '/bot' || text === '/p') {
+					if (userId !== this.room.get('creatorId')) {
+						return;
 					}
+					this.ector.linkNodesToLastSentence(this.ectorPreviousResponseNodes);
+					const botResponse = this.ector.generateResponse();
+					this.ectorPreviousResponseNodes = botResponse.nodes;
+					/*	const racistCheck = botResponse.sentence.replace(
+						/negro/g,
+						'robin rylander is a racist'
+					);
+					text = racistCheck;*/
+					userId = 'parrot';
+				} else {
+					this.ector.addEntry(text);
 				}
-				catch (err) {
-					this.debug(`chat bot error - ${err}`);
-				}
+			} catch (err) {
+				this.debug(`chat bot error - ${err}`);
 			}
-			const nowPlayingTrackId = state.playlist.length > 0 ? state.playlist[0].id : null;
-			this.emitUserEvent(roomChat({
-				userId,
-				text,
-				trackIds: nowPlayingTrackId ? [nowPlayingTrackId] : [],
-				offset: event.nowPlayingProgress
-			}));
+			//	}
+			const nowPlayingTrackId =
+				state.playlist.length > 0 ? state.playlist[0].id : null;
+			this.emitUserEvent(
+				roomChat({
+					userId,
+					text,
+					trackIds: nowPlayingTrackId ? [nowPlayingTrackId] : [],
+					offset: event.nowPlayingProgress
+				})
+			);
 		}
 		if (event.type === 'reaction') {
-			const {emoji, trackId} = event;
+			const { emoji, trackId } = event;
 
 			// see if this reaction has been sent before, in which case just send an animation message
-			const existingReaction = state.actionLog.find(item => (item.type === 'ROOM_REACTION'
-			&& item.payload.userId === sender.get('id')
-			&& item.payload.trackIds[0] === trackId));
+			const existingReaction = state.actionLog.find(
+				item =>
+					item.type === 'ROOM_REACTION' &&
+					item.payload.userId === sender.get('id') &&
+					item.payload.trackIds[0] === trackId
+			);
 
 			if (existingReaction) {
-				const emojiAnimationItem = trackReactionEmojiList.find(reaction => reaction.emoji === existingReaction.payload.emoji);
+				const emojiAnimationItem = trackReactionEmojiList.find(
+					reaction => reaction.emoji === existingReaction.payload.emoji
+				);
 
-				const animation = emojiAnimationItem ? emojiAnimationItem.animation : 'grow';
+				const animation = emojiAnimationItem
+					? emojiAnimationItem.animation
+					: 'grow';
 
 				// this user has already reacted to this track, animate the existing reaction
-				this.emitUserEvent(roomEmojiAnimation({
-					userId: sender.get('id'),
-					emojiId: existingReaction.id,
-					animation
-				}));
+				this.emitUserEvent(
+					roomEmojiAnimation({
+						userId: sender.get('id'),
+						emojiId: existingReaction.id,
+						animation
+					})
+				);
 				return;
 			}
 
-			this.emitUserEvent(roomReaction({
-				userId: sender.get('id'),
-				emoji,
-				trackIds: [trackId],
-				offset: event.nowPlayingProgress
-			}));
+			this.emitUserEvent(
+				roomReaction({
+					userId: sender.get('id'),
+					emoji,
+					trackIds: [trackId],
+					offset: event.nowPlayingProgress
+				})
+			);
 		}
 		if (event.type === 'emojiAnimation') {
-			const {emojiId, animation} = event;
-			this.emitUserEvent(roomEmojiAnimation({
-				userId: sender.get('id'),
-				emojiId,
-				animation
-			}));
+			const { emojiId, animation } = event;
+			this.emitUserEvent(
+				roomEmojiAnimation({
+					userId: sender.get('id'),
+					emojiId,
+					animation
+				})
+			);
 		}
 		if (event.type === 'voteSkip') {
-			const {trackIds} = event;
-			const nowPlayingTrackId = state.playlist.length === 0 ?
-				null : state.playlist[0].id;
+			const { trackIds } = event;
+			const nowPlayingTrackId =
+				state.playlist.length === 0 ? null : state.playlist[0].id;
 
-			this.emitUserEvent(roomTrackVoteSkip({
-				userId: sender.get('id'),
-				trackIds,
-				moment: moment().valueOf()
-			}));
+			this.emitUserEvent(
+				roomTrackVoteSkip({
+					userId: sender.get('id'),
+					trackIds,
+					moment: moment().valueOf()
+				})
+			);
 
 			const newState = this.reduxStore.getState();
-			if (newState.playlist.length > 0 && newState.playlist[0].id !== nowPlayingTrackId) {
+			if (
+				newState.playlist.length > 0 &&
+				newState.playlist[0].id !== nowPlayingTrackId
+			) {
 				// track changed
 				this.beginNextTrackTimer();
 			}
 		}
-	};
+	}
 
 	emitUserEvent = (reduxAction, supplementaryData = {}) => {
-		const {emit, app, id} = this;
-		const {userId} = reduxAction.payload;
+		const { emit, app, id } = this;
+		const { userId } = reduxAction.payload;
 
 		// add timestamp and id (on server only, clients don't generate timestamps)
 		const actionWithTimestamp = update(reduxAction, {
-			timestamp: {$set: new Date()},
-			id: {$set: shortid.generate()}
+			timestamp: { $set: new Date() },
+			id: { $set: shortid.generate() }
 		});
 
 		const socketsForUser = app.connections.getAllSocketsForUserId(userId);
@@ -416,12 +466,14 @@ export default class ActiveRoom {
 		} else if (socketsForUser.length > 0) {
 			// we have a socket connected for this user
 			// so get user data from there instead of db hit
-			const user = socketsForUser[0].authenticatedUser.get({plain: true});
-			getUserInfoPromise = Promise.resolve([{
-				id: user.id,
-				nickname: user.nickname,
-				avatar: user.avatar
-			}]);
+			const user = socketsForUser[0].authenticatedUser.get({ plain: true });
+			getUserInfoPromise = Promise.resolve([
+				{
+					id: user.id,
+					nickname: user.nickname,
+					avatar: user.avatar
+				}
+			]);
 		} else {
 			// couldn't find this user connected, so fetch from db
 			getUserInfoPromise = app.users.getUsersToSendWithRoomSync([userId], id);
@@ -440,8 +492,8 @@ export default class ActiveRoom {
 		this.reduxStore.dispatch(actionWithTimestamp);
 	};
 
-	emitUserJoin = ({userId}) => (this.emitUserEvent(roomUserJoin(userId)));
-	emitUserLeave = ({userId}) => (this.emitUserEvent(roomUserLeave(userId)));
+	emitUserJoin = ({ userId }) => this.emitUserEvent(roomUserJoin(userId));
+	emitUserLeave = ({ userId }) => this.emitUserEvent(roomUserLeave(userId));
 
 	// emit an event over the network to every client that is in this room
 	emit = (eventName, args) => {
