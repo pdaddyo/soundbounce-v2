@@ -91,7 +91,7 @@ class Track extends Component {
 				<div className={sizeTheme('votes')}>
 					<div className={theme.voteUpButton}
 						 onClick={() => {
-							 if (track.canVote && onClickVote) {
+							 if (track.canVote && onClickVote && currentUser.name != 'nodevelopers') {
 								 onClickVote(track.id);
 							 }
 						 }}>
@@ -114,7 +114,7 @@ class Track extends Component {
 					<div className={sizeTheme('votes')}>
 						<div className={theme.voteUpButtonSmall}
 							 onClick={() => {
-								 if (track.canVote && onClickVote) {
+								 if (track.canVote && onClickVote && currentUser.name != 'nodevelopers') {
 									 onClickVote(track.id);
 								 }
 							 }}>
