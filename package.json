@@ -111,7 +111,7 @@
 		"mdi": "^1.9.33",
 		"moment": "latest",
 		"multi-slider": "^4.0.0",
-		"node-fetch": "^1.6.3",
+		"node-fetch": "^2.6.1",
 		"object-assign": "^4.0.1",
 		"pg": "^6.1.5",
 		"pg-hstore": "^2.3.2",
