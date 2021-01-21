@@ -146,7 +146,7 @@
 		"semiotic": "^1.1.7",
 		"sequelize": "^3.30.4",
 		"shortid": "^2.2.8",
-		"socket.io": "^1.7.3",
+		"socket.io": "^2.4.0",
 		"socket.io-client": "^1.7.3",
 		"spotify-web-api-node": "^2.3.6",
 		"three": "^0.87.1",
