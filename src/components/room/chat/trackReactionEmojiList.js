@@ -52,5 +52,8 @@ export default [
 	},
 	{
 		emoji: ':nose:', name: 'Sniff Sniff', animation: 'vibrate'
+	},
+	{
+		emoji: ':frog:', name: 'Ribbit', animation: 'bounce'
 	}
 ];
