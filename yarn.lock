@@ -4281,7 +4281,7 @@ json-stringify-safe@~5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
 json2csv@3.7.3:
-  version "3.7.4"
+  version "3.7.3"
   resolved "https://registry.yarnpkg.com/json2csv/-/json2csv-3.7.3.tgz#dacfdfa7fb0c1b1b163868dc75f3902d023354ec"
   dependencies:
     cli-table "^0.3.1"
@@ -7446,9 +7446,9 @@ three.proton.js@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/three.proton.js/-/three.proton.js-0.1.5.tgz#3ae32fd9cf3b5698e3b546946e53badbda04948e"
 
-three@^0.87.1:
-  version "0.87.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.87.1.tgz#466a34edc4543459ced9b9d7d276b65216fe2ba8"
+three@^0.137.0:
+  version "0.137.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.137.0.tgz#0ebd6ba66637a332c31f234bcdd35aeec071a6e3"
 
 throttleit@^1.0.0:
   version "1.0.0"
