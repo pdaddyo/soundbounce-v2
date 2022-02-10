@@ -202,7 +202,7 @@
 		"karma-phantomjs-launcher": "^1.0.0",
 		"karma-webpack-with-fast-source-maps": "^1.9.2",
 		"mocha": "^2.2.5",
-		"node-sass": "^3.3.3",
+		"node-sass": "^7.0.0",
 		"nodemon": "^1.8.1",
 		"phantomjs-polyfill": "0.0.1",
 		"phantomjs-prebuilt": "^2.1.3",
