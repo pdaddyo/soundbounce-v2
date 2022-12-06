@@ -101,7 +101,7 @@
 		"event-source-polyfill": "0.0.7",
 		"exports-loader": "^0.6.3",
 		"expose-loader": "^0.7.3",
-		"express": "^4.15.2",
+		"express": "^4.17.3",
 		"gregorian-calendar": "^4.1.6",
 		"history": "^2.0.0",
 		"iconv-lite": "^0.4.13",
