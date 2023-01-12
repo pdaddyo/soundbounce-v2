@@ -92,7 +92,7 @@
 		"cookie-parser": "^1.4.3",
 		"cookies-js": "^1.2.2",
 		"d3-shape": "latest",
-		"debug": "^2.2.0",
+		"debug": "^2.6.9",
 		"ector": "^1.0.1",
 		"ellipsize": "^0.0.3",
 		"emoji-mart": "^0.5.0",
